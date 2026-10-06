@@ -1,107 +1,67 @@
 # NEXT-AVPRO-BETA.V2.0
 
 ## Versión
-**NEXT-AVPRO-BETA.V2.0**  
-Fecha: 6 de octubre de 2026
+**NEXT-AVPRO-BETA.V2.0 — estabilización móvil**
 
-## Base de esta versión
-Esta versión parte de **NEXT-AVPRO-BETA.V1.75** y consolida la nueva lógica de costos y operación autorizada para la V2.0.
+## Fecha
+06 de octubre de 2026
 
-## Cambios implementados
+## Objetivo de esta actualización
+Estabilizar la arquitectura móvil y evitar que la navegación entre pasos convierta la aplicación en una página de desplazamiento vertical o vuelva a mostrar el layout Desktop.
 
-### 1. Honorarios manuales
-- Campo visible **Honorarios (USD$)**.
-- Valor predeterminado: **US$0.00**.
-- Es manual/editable.
-- Se incorpora al **FOB Miami**, Landed Cost, margen, cotización, proforma y cronograma de pagos.
-- No se agrega automáticamente ningún honorario si el usuario no lo introduce.
+## Cambios aplicados
 
-### 2. Nueva Operación
-Se agregó **＋ Nueva Operación** con tres opciones:
-- Nueva consulta con IA.
-- Nueva Cotización.
-- Nueva Proforma.
+### 1. Navegación controlada por pasos
+- Paso 01 → Paso 02 mediante **Continuar a Aduanas**.
+- Paso 02 → Paso 03 mediante **Continuar a Inversión**.
+- Cada paso se trata como una vista independiente.
+- Se aplica una transición visual tipo slide, no un `scrollIntoView()` para avanzar.
+- El usuario conserva control para regresar a pasos desbloqueados.
 
-Antes de limpiar se solicita confirmación. Se limpia la operación actual sin borrar:
-- Base de datos de vehículos.
-- Configuración.
-- Preferencia Dark/Light.
+### 2. Layout móvil
+- En iPhone se fuerza una sola columna.
+- El panel Desktop `Live Cost Preview` queda oculto durante el flujo normal móvil.
+- El panel de resultados solo aparece en la vista final.
+- Se evita el desbordamiento horizontal.
 
-### 3. FOB Miami
-El **FOB Miami** representa el costo completo de la operación en Miami:
-- Compra en subasta.
-- Auction Fees.
-- Grúa/Inland.
-- Documentación y logística en origen.
-- Reparación en Miami.
-- Fee Broker.
-- Honorarios manuales, si existen.
+### 3. PDF / Cotización / Proforma
+Se corrigió un problema en el que el botón PDF podía imprimir la página/pestaña actual.
 
-### 4. Total Despacho Sin Placa
-Nueva definición acumulativa:
+Ahora el botón PDF construye un **documento independiente de impresión** antes de llamar al diálogo de impresión del navegador.
 
-**Total Despacho Sin Placa = FOB Miami + Flete + Aduanas/Impuestos + Paquete de Despacho**
+- **Cotización:** documento independiente con inversión, FOB Miami, Despacho Sin Placa, Emisión de Placa, Landed y rentabilidad.
+- **Factura Proforma:** documento independiente con el cronograma completo de 5 pagos y Total Inversión (Landed).
+- No se imprime el formulario actual de la aplicación.
 
-El paquete de despacho conserva el valor predeterminado de **US$465**.
+### 4. Estructura de costos conservada
+- FOB Miami = operación completa en Miami.
+- Total Despacho Sin Placa = FOB Miami + Flete + Paquete de Despacho + Aduanas/Impuestos convertidos a USD.
+- Paquete de Despacho = US$465 por defecto.
+- Honorarios = campo manual en USD.
+- Normativa 03-25 = RD$0 por defecto y manual.
+- Placa PP = RD$2,000.
+- Gastos de Endoso / Gestión = RD$5,000.
 
-### 5. Emisión de Placa
-La sección ahora se denomina:
+### 5. Proforma
+Se mantiene obligatoriamente:
+1. Pago 1 — Depósito de Seguridad
+2. Pago 2 — Balance Subasta
+3. Pago 3 — Logística Origen
+4. Pago 4 — Aduanas y Flete
+5. Pago 5 — Placa y Endoso
+6. Total Inversión (Landed)
 
-**EMISIÓN DE PLACA**
+## Correcciones
+- Evitado el retorno accidental al layout Desktop al cambiar de paso en móvil.
+- Evitado el desplazamiento automático como mecanismo de navegación del wizard.
+- Evitado que PDF imprima la pestaña actual.
+- Se mantiene el documento formal separado de la interfaz de cálculo.
 
-Campos:
-- **Normativa 03-25:** RD$0.00 por defecto y manual/editable.
-- **Placa PP:** RD$2,000.00.
-- **Gastos de Endoso / Gestión:** RD$5,000.00.
+## Base de datos
+Se incluye:
+`mobile/Base de Datos Valores Vehiculos 2026 - 2027.csv`
 
-Los valores de esta sección se manejan en **RD$**.
-
-### 6. Etapas del costo
-La estructura de la operación queda:
-
-**FOB Miami → Total Despacho Sin Placa → EMISIÓN DE PLACA → Landed Cost**
-
-### 7. Cronograma de pagos permanente
-La Proforma conserva siempre los cinco pagos:
-1. **Pago 1: Depósito de Seguridad**
-2. **Pago 2: Balance Subasta**
-3. **Pago 3: Logística Origen**
-4. **Pago 4: Aduanas y Flete**
-5. **Pago 5: Placa y Endoso**
-
-También conserva **Total Inversión (Landed)**.
-
-El Pago 2 incorpora compra/fees, broker y honorarios. El Pago 5 toma los conceptos de emisión de placa y endoso/gestión convertidos a USD mediante la tasa vigente de la cotización.
-
-### 8. PDF y WhatsApp
-La Proforma mantiene el cronograma completo de cinco pagos y los valores se sincronizan con el motor de cálculo.
-
-### 9. IA y Live Cost
-La IA y el Live Cost usan la misma lógica principal de costos, incluyendo honorarios dentro del FOB y la nueva estructura de despacho sin placa.
-
-## Ejemplo de referencia
-Si:
-- FOB Miami = US$12,000
-- Flete = US$910
-- Aduanas = RD$67,500
-- Paquete despacho = US$465
-- Tasa = RD$60.00/USD
-
-Entonces:
-
-**Total Despacho Sin Placa = 12,000 + 910 + 465 + 67,500/60 = US$14,500**
-
-La emisión de placa se agrega después:
-- Normativa 03-25: manual.
-- Placa PP: RD$2,000.
-- Endoso/Gestión: RD$5,000.
-
-## Pendientes / no incluidos
-- Cálculo automático de la Normativa 03-25: **pendiente**; permanece manual en RD$0 por defecto.
-- Max Bidder: **excluido** por decisión del proyecto.
-- Base de datos futura de ubicaciones IAAI/Copart: pendiente de una fase posterior.
-
-## Estructura del paquete
+## Estructura
 ```text
 NEXT-AVPRO-BETA.V2.0-GITHUB/
 ├── README.md
@@ -110,5 +70,16 @@ NEXT-AVPRO-BETA.V2.0-GITHUB/
     └── Base de Datos Valores Vehiculos 2026 - 2027.csv
 ```
 
+## Validación
+- 17 bloques JavaScript inspeccionados.
+- 0 errores de sintaxis con `node --check`.
+- La versión Desktop **NEXT-AVPRO-BETA.V2.1** no fue modificada.
+- Este paquete es una versión móvil preparada para GitHub Pages.
+
+## Pendientes / próximos pasos
+- Pruebas completas en iPhone de todos los pasos y documentos.
+- Consolidación adicional de código heredado de versiones anteriores si se decide hacer una limpieza estructural mayor.
+- Integración futura de funciones OCR, ubicaciones de IAAI/Copart y otras funciones del roadmap.
+
 ## Nota
-Esta versión no modifica la versión Desktop **NEXT-AVPRO-BETA.V2.1**. Es una versión de trabajo móvil V2.0 y debe probarse antes de publicarse en GitHub.
+No se debe mezclar esta versión móvil con la aplicación Desktop V2.1. El ZIP está preparado para publicarse como la versión móvil del proyecto.
