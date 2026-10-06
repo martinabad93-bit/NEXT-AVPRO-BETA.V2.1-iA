@@ -1,154 +1,114 @@
-# NEXT-AVPRO-BETA.V1.75 — Mobile
+# NEXT-AVPRO-BETA.V2.0
 
 ## Versión
-**NEXT-AVPRO-BETA.V1.75**
+**NEXT-AVPRO-BETA.V2.0**  
+Fecha: 6 de octubre de 2026
 
-## Fecha
-**2026-10-06**
-
-## Objetivo
-Estabilizar la operación móvil para que cada nueva operación comience realmente desde cero, completar la Proforma con la estructura de la versión web y corregir la lógica de honorarios y cronograma de pagos.
+## Base de esta versión
+Esta versión parte de **NEXT-AVPRO-BETA.V1.75** y consolida la nueva lógica de costos y operación autorizada para la V2.0.
 
 ## Cambios implementados
 
-### 1. Nueva operación desde cero
-Se agregó **＋ Nueva operación** como acción visible en la parte superior.
+### 1. Honorarios manuales
+- Campo visible **Honorarios (USD$)**.
+- Valor predeterminado: **US$0.00**.
+- Es manual/editable.
+- Se incorpora al **FOB Miami**, Landed Cost, margen, cotización, proforma y cronograma de pagos.
+- No se agrega automáticamente ningún honorario si el usuario no lo introduce.
 
-Al pulsarlo aparecen tres opciones:
-- 🤖 Nueva consulta con IA
-- 📊 Nueva cotización
-- 📄 Nueva proforma
-- Cancelar
+### 2. Nueva Operación
+Se agregó **＋ Nueva Operación** con tres opciones:
+- Nueva consulta con IA.
+- Nueva Cotización.
+- Nueva Proforma.
 
-La nueva operación elimina los datos de la operación anterior y no reutiliza el resultado de la IA anterior.
+Antes de limpiar se solicita confirmación. Se limpia la operación actual sin borrar:
+- Base de datos de vehículos.
+- Configuración.
+- Preferencia Dark/Light.
 
-### 2. Limpieza de operación
-Se limpian los datos de:
-- Vehículo
-- VIN
-- Millaje
-- Compra/subasta
-- Auction fees
-- Grúa Inland
-- Documentación
-- Taller Miami
-- Broker
-- Honorarios
-- Flete
-- Despacho
-- Placa
-- Reparación RD
-- Precio de venta
-- Depósito de seguridad
-- Resultado IA
-- Consulta IA anterior
+### 3. FOB Miami
+El **FOB Miami** representa el costo completo de la operación en Miami:
+- Compra en subasta.
+- Auction Fees.
+- Grúa/Inland.
+- Documentación y logística en origen.
+- Reparación en Miami.
+- Fee Broker.
+- Honorarios manuales, si existen.
 
-No se elimina:
-- Base de datos de vehículos
-- Configuración de valores predeterminados
-- Tema Dark/Light
-- Configuración de la aplicación
+### 4. Total Despacho Sin Placa
+Nueva definición acumulativa:
 
-También se elimina el estado persistido de la operación para evitar que una operación nueva recupere valores de la anterior.
+**Total Despacho Sin Placa = FOB Miami + Flete + Aduanas/Impuestos + Paquete de Despacho**
 
-### 3. Honorarios
-Los **Honorarios NEXT GB** pasan a formar parte real del costo de inversión/Landed Cost, siguiendo la estructura de la Proforma web.
+El paquete de despacho conserva el valor predeterminado de **US$465**.
 
-El valor es manual y editable.
+### 5. Emisión de Placa
+La sección ahora se denomina:
 
-Se sincroniza con:
-- Costos
-- Margen
-- Cotización
-- Proforma
-- Cronograma de pagos
-- WhatsApp
-- PDF
+**EMISIÓN DE PLACA**
 
-### 4. Proforma completa
-La Proforma móvil fue alineada con la estructura de la referencia web e incluye:
+Campos:
+- **Normativa 03-25:** RD$0.00 por defecto y manual/editable.
+- **Placa PP:** RD$2,000.00.
+- **Gastos de Endoso / Gestión:** RD$5,000.00.
 
-- Vehículo
-- VIN / Chasis
-- Millaje
-- Tasa DOP
-- Subasta y Fees
-- Grúa Inland
-- Documentación y Taller Miami
-- Fee Broker & Honorarios
-- Total Gastos en Origen
-- Flete Marítimo
-- Despacho Aduanal (Sin Placa)
-- Total Despacho (Sin Placa)
-- Primera Placa y Marbete
-- Reparación en RD
-- Total Destino Local
-- Costo Total (Landed Cost)
-- Cronograma completo de 5 pagos
-- Total Inversión
-- Nota de presupuesto referencial
+Los valores de esta sección se manejan en **RD$**.
 
-### 5. Cronograma de pagos
-Los cinco pagos quedan sincronizados con el cálculo real:
+### 6. Etapas del costo
+La estructura de la operación queda:
 
-1. Depósito de Seguridad
-2. Balance Subasta — incluye compra, fees, broker y honorarios, menos el depósito
-3. Logística Origen — grúa, taller y documentación
-4. Aduanas y Flete
-5. Placa y Endoso
+**FOB Miami → Total Despacho Sin Placa → EMISIÓN DE PLACA → Landed Cost**
 
-El total de los pagos debe corresponder al Landed Cost de la operación.
+### 7. Cronograma de pagos permanente
+La Proforma conserva siempre los cinco pagos:
+1. **Pago 1: Depósito de Seguridad**
+2. **Pago 2: Balance Subasta**
+3. **Pago 3: Logística Origen**
+4. **Pago 4: Aduanas y Flete**
+5. **Pago 5: Placa y Endoso**
 
-### 6. Total Despacho (Sin Placa)
-Se agregó un subtotal/total específico para el despacho sin placa.
+También conserva **Total Inversión (Landed)**.
 
-Se muestra:
-- Equivalente en USD
-- Equivalente en RD$
-
-La cifra agrupa el paquete de despacho/puerto RD y el despacho aduanal sin incluir primera placa.
-
-### 7. Margen
-El margen neto ahora se calcula sobre el Landed Cost real, incluyendo Honorarios cuando fueron introducidos.
-
-**Margen = Precio de Venta − Landed Cost**
+El Pago 2 incorpora compra/fees, broker y honorarios. El Pago 5 toma los conceptos de emisión de placa y endoso/gestión convertidos a USD mediante la tasa vigente de la cotización.
 
 ### 8. PDF y WhatsApp
-La Proforma PDF y el mensaje de WhatsApp utilizan el cronograma corregido y los valores de honorarios/depósito correspondientes.
+La Proforma mantiene el cronograma completo de cinco pagos y los valores se sincronizan con el motor de cálculo.
 
-## Pendiente / Roadmap
-No forma parte de V1.75:
-- Base completa de ubicaciones IAAI/Copart
-- Selección automática de sucursal
-- OCR de facturas
-- Escáner VIN por cámara
-- Decoder VIN premium
-- Max Bidder
-- Inteligencia de mercado
-- CRM avanzado
-- Automatización avanzada de WhatsApp/correo
-- Dashboard administrativo
+### 9. IA y Live Cost
+La IA y el Live Cost usan la misma lógica principal de costos, incluyendo honorarios dentro del FOB y la nueva estructura de despacho sin placa.
 
-## Estructura GitHub
+## Ejemplo de referencia
+Si:
+- FOB Miami = US$12,000
+- Flete = US$910
+- Aduanas = RD$67,500
+- Paquete despacho = US$465
+- Tasa = RD$60.00/USD
+
+Entonces:
+
+**Total Despacho Sin Placa = 12,000 + 910 + 465 + 67,500/60 = US$14,500**
+
+La emisión de placa se agrega después:
+- Normativa 03-25: manual.
+- Placa PP: RD$2,000.
+- Endoso/Gestión: RD$5,000.
+
+## Pendientes / no incluidos
+- Cálculo automático de la Normativa 03-25: **pendiente**; permanece manual en RD$0 por defecto.
+- Max Bidder: **excluido** por decisión del proyecto.
+- Base de datos futura de ubicaciones IAAI/Copart: pendiente de una fase posterior.
+
+## Estructura del paquete
 ```text
-NEXT-AVPRO-BETA.V1.75-iA/
-├── index.html                 # Desktop V2.1, fuera de esta actualización
+NEXT-AVPRO-BETA.V2.0-GITHUB/
+├── README.md
 └── mobile/
-    ├── index.html             # NEXT-AVPRO-BETA.V1.75 Mobile
-    ├── README.md
+    ├── index.html
     └── Base de Datos Valores Vehiculos 2026 - 2027.csv
 ```
 
-## Nota de compatibilidad
-La versión Desktop **NEXT-AVPRO-BETA.V2.1** no se modifica en esta actualización.
-
-## Regla de versiones
-Cada nueva mejora debe generar un README actualizado con:
-- versión
-- fecha
-- cambios
-- correcciones
-- nuevas funciones
-- pendientes
-- estructura de archivos
-- notas de uso
+## Nota
+Esta versión no modifica la versión Desktop **NEXT-AVPRO-BETA.V2.1**. Es una versión de trabajo móvil V2.0 y debe probarse antes de publicarse en GitHub.

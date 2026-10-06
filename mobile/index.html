@@ -827,7 +827,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                     <option value="">📂 Cargar guardada</option>
                 </select>
                 <button class="btn-outline" onclick="guardarCotizacion(); closeTopTools();">💾 Guardar cotización</button>
-                <button class="btn-reset" onclick="limpiarCaso(); closeTopTools();">↻ Nueva cotización</button>
+                <button class="btn-reset" onclick="abrirNuevaOperacion(); closeTopTools();">＋ Nueva Operación</button>
                 
                 <!-- NUEVA CARGA DE CSV -->
                 <div style="border-top: 1px solid var(--border-strong); margin: 4px 0;"></div>
@@ -838,6 +838,18 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             </div>
         </div>
     </div>
+</div>
+
+<div id="nextgb-new-operation-modal" class="nextgb-config-modal no-print" aria-hidden="true">
+  <div class="nextgb-config-box" style="max-width:520px;">
+    <div class="nextgb-config-head"><div><h3>＋ Nueva Operación</h3><p>Inicia una operación completamente limpia sin borrar la base de datos ni la configuración.</p></div><button type="button" class="btn-reset" onclick="cerrarNuevaOperacion()">✕</button></div>
+    <div style="display:grid;gap:10px;margin-top:12px;">
+      <button type="button" class="btn-action btn-primary" onclick="confirmarNuevaOperacion('ia')">🤖 Nueva consulta con IA</button>
+      <button type="button" class="btn-action" onclick="confirmarNuevaOperacion('cotizacion')">📊 Nueva Cotización</button>
+      <button type="button" class="btn-action" onclick="confirmarNuevaOperacion('proforma')">📄 Nueva Proforma</button>
+      <button type="button" class="btn-outline" onclick="cerrarNuevaOperacion()">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <div id="nextgb-config-modal" class="nextgb-config-modal no-print" aria-hidden="true"><div class="nextgb-config-box"><div class="nextgb-config-head"><div><h3>⚙️ Valores predeterminados NEXT GB</h3><p>Se usan automáticamente hasta que los cambies manualmente.</p></div><button type="button" class="btn-reset" onclick="nextGBCerrarConfiguracion()">✕</button></div><div class="field-grid"><div class="input-group"><label>Flete marítimo USD</label><input id="cfg_flete" type="number" step="0.01"></div><div class="input-group"><label>Broker USD</label><input id="cfg_broker" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Límite broker USD</label><input id="cfg_broker_limite" type="number" step="0.01"></div><div class="input-group"><label>Inspección rebuilt USD</label><input id="cfg_inspeccion" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Transporte inspección → puerto USD</label><input id="cfg_transporte_puerto" type="number" step="0.01"></div><div class="input-group"><label>Exportación USD</label><input id="cfg_exportacion" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Documentación y logística origen USD</label><input id="cfg_documentacion_origen" type="number" step="0.01"></div><div class="input-group"><label>Paquete despacho RD USD</label><input id="cfg_despacho_usd" type="number" step="0.01"></div><div class="input-group"><label>Reparación Miami sugerida USD</label><input id="cfg_reparacion_miami" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Depósito formalización USD</label><input id="cfg_deposito" type="number" step="0.01"></div><div class="input-group"><label>Tasa DOP inicial</label><input id="cfg_tasa" type="number" step="0.01"></div></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button type="button" class="btn-outline" onclick="nextGBRestaurarPredeterminados()">Restaurar valores</button><button type="button" class="btn-action btn-primary" onclick="nextGBGuardarConfiguracion()">Guardar</button></div></div></div>
@@ -1045,13 +1057,19 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="field-grid">
                 <div class="input-group"><label>Paquete despacho / puerto (USD$)</label><input type="number" id="paquete_despacho_usd" value="465" oninput="calcCostos()" class="reset-target default-despacho-usd"></div>
                 <div class="input-group">
-                    <label>Despacho DGA (Sin Placa) (RD$)</label>
+                    <label>Despacho Aduanal / Impuestos (RD$)</label>
                     <input type="number" id="c_despacho_rds" value="0" oninput="calcCostos()" class="reset-target default-zero">
                 </div>
-                <div class="input-group">
-                    <label>Placa y Marbete (RD$)</label>
-                    <input type="number" id="c_placa_rds" value="0" oninput="calcCostos()" class="reset-target default-zero">
+            </div>
+
+            <div style="margin-top:18px;padding:16px;border:1px solid var(--border-color);border-radius:16px;background:rgba(59,130,246,.035);">
+                <div style="font-size:12px;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">🏷️ EMISIÓN DE PLACA</div>
+                <div class="field-grid">
+                    <div class="input-group"><label>Normativa 03-25 (RD$) · Manual</label><input type="number" id="normativa_0325_rds" value="0" oninput="calcCostos()" class="reset-target default-zero" min="0"></div>
+                    <div class="input-group"><label>Placa PP (RD$)</label><input type="number" id="placa_pp_rds" value="2000" oninput="calcCostos()" class="reset-target default-placa-pp" min="0"></div>
+                    <div class="input-group"><label>Gastos de Endoso / Gestión (RD$)</label><input type="number" id="gestion_endoso_rds" value="5000" oninput="calcCostos()" class="reset-target default-gestion-endoso" min="0"></div>
                 </div>
+                <small style="color:var(--text-muted);font-size:10px;display:block;margin-top:4px;">La Normativa 03-25 queda en RD$0 por defecto y se ingresa manualmente cuando se conozca el monto.</small>
             </div>
             <div class="field-grid">
                 <div class="input-group"><label>Reparación en RD (RD$)</label><input type="number" id="reparaciones_rds" value="0" oninput="calcCostos()" class="reset-target default-zero"></div>
@@ -1078,6 +1096,10 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                     <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.03);"><small style="color:var(--text-muted);">Precio venta</small><strong id="live-sale" style="display:block;font-size:20px;margin-top:4px;">US$ 0.00</strong></div>
                     <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.03);"><small style="color:var(--text-muted);">Margen bruto</small><strong id="live-margin" style="display:block;font-size:20px;margin-top:4px;">US$ 0.00</strong></div>
                     <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.03);"><small style="color:var(--text-muted);">Margen después honorarios</small><strong id="live-net-margin" style="display:block;font-size:20px;margin-top:4px;">US$ 0.00</strong></div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px;font-size:11px;">
+                    <div><span style="color:var(--text-muted);">FOB Miami</span><b id="live-fob-miami" style="float:right;">US$ 0.00</b></div>
+                    <div><span style="color:var(--text-muted);">Total Despacho Sin Placa</span><b id="live-despacho-sin-placa" style="float:right;">US$ 0.00</b></div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px;font-size:11px;">
                     <div><span style="color:var(--text-muted);">Costo origen + flete</span><b id="live-origin-freight" style="float:right;">US$ 0.00</b></div>
@@ -1175,11 +1197,14 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             
             <div class="res-line" style="margin-top: 10px;"><span>Flete Marítimo</span><span id="rc_flete_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Paquete despacho / puerto RD</span><span id="rc_paquete_despacho_usd">US$ 0.00</span></div>
-            <div class="res-line"><span>Despacho Aduanal (Sin Placa)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
-            <div class="res-line subtotal-line" style="font-size:12px;"><span>Total Despacho (Sin Placa)</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
-            <div class="res-line"><span>Primera Placa y Marbete</span><span id="rc_placa_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Despacho Aduanal / Impuestos (RD$)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
+            <div class="res-line highlight-subtotal"><span>🏁 Total Despacho Sin Placa</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
+            <div class="res-line" style="margin-top:10px;"><span>Normativa 03-25</span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Placa PP</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
+            <div class="res-line"><span>Gastos de Endoso / Gestión</span><span id="rc_gestion_endoso_rds">RD$ 5,000.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Emisión de Placa</span><span id="rc_total_placa_rds">RD$ 7,000.00</span></div>
             <div class="res-line"><span>Reparación en RD</span><span id="rc_reparacion_local">RD$ 0.00</span></div>
-            <div class="res-line subtotal-line"><span>Total Destino Local (RD$)</span><span id="rc_total_local">RD$ 0.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Destino Local (RD$)</span><span id="rc_total_local">RD$ 7,000.00</span></div>
             
             <div class="res-line" style="font-size:11px"><span>Margen después de honorarios</span><span id="rc_margen_despues_honorarios_usd">US$ 0.00</span></div><div class="res-line highlight-subtotal" style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); border-left-color: var(--danger);">
                 <span>Costo Total (Landed Cost)</span><span id="rc_landed_usd" style="color: var(--danger); font-weight: 900; font-size: 15px;">US$ 0.00</span>
@@ -1240,7 +1265,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                 <div class="res-line" style="padding: 10px 0;">
                     <div style="display: flex; flex-direction: column;">
                         <span style="color: var(--text-main); font-weight: 700;">Pago 5: Placa y Endoso</span>
-                        <span style="font-size: 9px; opacity: 0.7; text-transform: uppercase;">Impuestos DGII Placa y Normativa 03-20</span>
+                        <span style="font-size: 9px; opacity: 0.7; text-transform: uppercase;">Impuestos DGII Placa y Normativa 03-25</span>
                     </div>
                     <span id="cro_pago5">US$ 0.00</span>
                 </div>
@@ -1299,6 +1324,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                         <div><span>Documentación / Taller</span><strong id="final-docs">US$ 0.00</strong></div>
                         <div><span>Fee Broker & Honorarios</span><strong id="final-broker">US$ 0.00</strong></div>
                         <div><span>Flete marítimo</span><strong id="final-freight">US$ 0.00</strong></div>
+                        <div><span>FOB Miami</span><strong id="final-fob-miami">US$ 0.00</strong></div>
+                        <div><span>Total Despacho Sin Placa</span><strong id="final-dispatch-no-plate">US$ 0.00</strong></div>
+                        <div><span>Normativa 03-25</span><strong id="final-normativa">RD$ 0.00</strong></div>
+                        <div><span>Placa PP</span><strong id="final-plate-pp">RD$ 2,000.00</strong></div>
+                        <div><span>Endoso / Gestión</span><strong id="final-gestion">RD$ 5,000.00</strong></div>
                         <div><span>Destino local</span><strong id="final-local">RD$ 0.00</strong></div>
                     </div>
                     <div class="final-total-line"><span>Costo total Landed</span><strong id="final-total-emphasis">US$ 0.00</strong></div>
@@ -1477,6 +1507,32 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         showToast(`Cotización "${val}" Cargada`, '📂');
     }
 
+    function abrirNuevaOperacion(){
+        const m=document.getElementById('nextgb-new-operation-modal'); if(m){m.classList.add('open');m.setAttribute('aria-hidden','false');}
+    }
+    function cerrarNuevaOperacion(){
+        const m=document.getElementById('nextgb-new-operation-modal'); if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');}
+    }
+    function confirmarNuevaOperacion(tipo){
+        if(!confirm('¿Deseas borrar los datos de la operación actual y comenzar desde cero?')) return;
+        limpiarCaso();
+        cerrarNuevaOperacion();
+        const result=document.getElementById('nextgb-ai-result'); if(result){result.classList.remove('show','v14');result.innerHTML='';}
+        const home=document.getElementById('nextgb-ai-aduanas'); if(home) home.classList.remove('nextgb-ai-has-analysis');
+        if(tipo==='ia'){
+            try{startNewQuery();}catch(e){try{nextGBV21StartNewQuery?.();}catch(_){}}
+            showToast('Nueva consulta con IA iniciada.','🤖');
+        }else if(tipo==='proforma'){
+            const dt=document.getElementById('doc_type'); if(dt){dt.value='proforma';toggleDocType();}
+            openTab('tab-costos');markWizardStep(3);
+            showToast('Nueva Proforma iniciada.','📄');
+        }else{
+            const dt=document.getElementById('doc_type'); if(dt){dt.value='cotizacion';toggleDocType();}
+            openTab('tab-subastas');markWizardStep(1);
+            showToast('Nueva Cotización iniciada.','📊');
+        }
+    }
+
     function limpiarCaso() {
         document.querySelectorAll('.reset-target').forEach(input => {
             if(input.classList.contains('default-zero')) input.value = 0;
@@ -1488,6 +1544,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             else if(input.classList.contains('default-broker')) input.value = nextGBConfig.broker;
             else if(input.classList.contains('default-reparacion-miami')) input.value = nextGBConfig.reparacionMiami;
             else if(input.classList.contains('default-despacho-usd')) input.value = nextGBConfig.despachoUSD;
+            else if(input.classList.contains('default-placa-pp')) input.value = 2000;
+            else if(input.classList.contains('default-gestion-endoso')) input.value = 5000;
             else input.value = '';
         });
         document.querySelectorAll('.reset-select').forEach(select => { select.innerHTML = '<option value="">Seleccione...</option>'; });
@@ -1638,25 +1696,29 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     }
 
     function calcCostos() {
-        const n2=id=>parseFloat(document.getElementById(id)?.value)||0;
-        const subasta=n2('costo_subasta'), fees=n2('fees_subasta'), inland=n2('grua_inland');
-        const flete=n2('flete_real'), documentacionOrigen=n2('documentacion_origen_usd');
-        const reparacionMiami=n2('reparacion_miami_usd'), feeBroker=n2('fee_broker_usd');
-        const dealerUsd=n2('derecho_dealer_usd'), paqueteDespachoUSD=n2('paquete_despacho_usd');
-        const despachoRds=n2('c_despacho_rds'), placaRds=n2('c_placa_rds'), reparacionesRds=n2('reparaciones_rds');
-        const precioVentaUsd=n2('precio_venta_estimado_usd'), depositoUsd=n2('pago_inicial_usd'), t=n2('tasa')||60.60;
-        const costosOrigenUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker+dealerUsd;
-        const totalDestinoRds=despachoRds+placaRds+reparacionesRds;
-        const totalDespachoSinPlacaUsd=paqueteDespachoUSD+(despachoRds/t);
-        const totalDespachoSinPlacaRds=(paqueteDespachoUSD*t)+despachoRds;
-        const landedCostUsd=costosOrigenUsd+paqueteDespachoUSD+flete+(totalDestinoRds/t);
-        const margenNeto=precioVentaUsd-landedCostUsd;
-        window.c_landed=landedCostUsd;window.c_venta=precioVentaUsd;window.c_margen=margenNeto;window.c_margen_despues_honorarios=margenNeto;window.c_honorarios=dealerUsd;window.c_total_despacho_sin_placa_usd=totalDespachoSinPlacaUsd;window.c_total_despacho_sin_placa_rds=totalDespachoSinPlacaRds;
-        const put=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v;};
-        put('rc_subasta_usd','US$ '+fmt(subasta+fees));put('rc_inland_usd','US$ '+fmt(inland));put('rc_documentos_usd','US$ '+fmt(documentacionOrigen+reparacionMiami));put('rc_broker_honorarios_usd','US$ '+fmt(feeBroker));put('rc_margen_honorarios_usd','US$ '+fmt(dealerUsd)+' (manual)');put('rc_total_origen_usd','US$ '+fmt(costosOrigenUsd));put('rc_flete_usd','US$ '+fmt(flete));put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD));put('rc_despacho_rds','RD$ '+fmt(despachoRds));put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd)+' · RD$ '+fmt(totalDespachoSinPlacaRds));put('av15-dispatch-total','US$ '+fmt(totalDespachoSinPlacaUsd));put('av15-dispatch-total-rd','RD$ '+fmt(totalDespachoSinPlacaRds));put('rc_placa_rds','RD$ '+fmt(placaRds));put('rc_reparacion_local','RD$ '+fmt(reparacionesRds));put('rc_total_local','RD$ '+fmt(totalDestinoRds));put('rc_landed_usd','US$ '+fmt(landedCostUsd));put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd));put('rc_margen_neto_usd','US$ '+fmt(margenNeto));put('rc_margen_neto_rds','RD$ '+fmt(margenNeto*t));put('rc_margen_despues_honorarios_usd','US$ '+fmt(margenNeto));
-        const cro_pago1=depositoUsd,cro_pago2=Math.max(0,(subasta+fees+feeBroker+dealerUsd)-depositoUsd),cro_pago3=inland+documentacionOrigen+reparacionMiami,cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t),cro_pago5=placaRds/t;
-        put('cro_pago1','US$ '+fmt(cro_pago1));put('cro_pago2','US$ '+fmt(cro_pago2));put('cro_pago3','US$ '+fmt(cro_pago3));put('cro_pago4','US$ '+fmt(cro_pago4));put('cro_pago5','US$ '+fmt(cro_pago5));put('cro_total','US$ '+fmt(landedCostUsd));
-        try{updateFinalSummary();nextGBLiveCostUpdate();}catch(e){}
+        const n = id => parseFloat(document.getElementById(id)?.value)||0;
+        const subasta=n('costo_subasta'), fees=n('fees_subasta'), inland=n('grua_inland');
+        const flete=n('flete_real'), documentacionOrigen=n('documentacion_origen_usd'), reparacionMiami=n('reparacion_miami_usd'), feeBroker=n('fee_broker_usd');
+        const honorarios=n('derecho_dealer_usd'), paqueteDespachoUSD=n('paquete_despacho_usd');
+        const despachoRds=n('c_despacho_rds'), normativa0325=n('normativa_0325_rds'), placaPP=n('placa_pp_rds'), gestionEndoso=n('gestion_endoso_rds');
+        const reparacionesRds=n('reparaciones_rds'), precioVentaUsd=n('precio_venta_estimado_usd'), depositoUsd=n('pago_inicial_usd'), t=n('tasa')||60.60;
+        const fobMiamiUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker+honorarios;
+        const totalDespachoSinPlacaUsd=fobMiamiUsd+flete+paqueteDespachoUSD+(despachoRds/t);
+        const totalPlacaRds=normativa0325+placaPP+gestionEndoso;
+        const totalDestinoRds=despachoRds+totalPlacaRds+reparacionesRds;
+        const landedCostUsd=totalDespachoSinPlacaUsd+(totalPlacaRds/t)+(reparacionesRds/t);
+        const margen=precioVentaUsd-landedCostUsd;
+        const roi=landedCostUsd>0 ? margen/landedCostUsd*100 : 0;
+        window.c_fob_miami=fobMiamiUsd; window.c_despacho_sin_placa=totalDespachoSinPlacaUsd;
+        window.c_landed=landedCostUsd; window.c_venta=precioVentaUsd; window.c_margen=margen; window.c_margen_despues_honorarios=margen; window.c_honorarios=honorarios; window.c_roi=roi;
+        const put=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v};
+        put('rc_subasta_usd','US$ '+fmt(subasta+fees)); put('rc_inland_usd','US$ '+fmt(inland)); put('rc_documentos_usd','US$ '+fmt(documentacionOrigen+reparacionMiami)); put('rc_broker_honorarios_usd','US$ '+fmt(feeBroker)); put('rc_margen_honorarios_usd','US$ '+fmt(honorarios)+' (manual)'); put('rc_total_origen_usd','US$ '+fmt(fobMiamiUsd));
+        put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
+        put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
+        put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
+        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t); const cro_pago5=totalPlacaRds/t;
+        put('cro_pago1','US$ '+fmt(cro_pago1)); put('cro_pago2','US$ '+fmt(cro_pago2)); put('cro_pago3','US$ '+fmt(cro_pago3)); put('cro_pago4','US$ '+fmt(cro_pago4)); put('cro_pago5','US$ '+fmt(cro_pago5)); put('cro_total','US$ '+fmt(landedCostUsd));
+        updateFinalSummary(); nextGBLiveCostUpdate();
     }
 
     function setAuctionPlatform(platform) {
@@ -1827,7 +1889,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         document.getElementById('lblMillaje').innerText = millaje ? fmt(millaje) + " mi" : "--";
         
         document.getElementById('c_despacho_rds').value = dSin.toFixed(2);
-        document.getElementById('c_placa_rds').value = subPla.toFixed(2);
+        // La Placa PP pertenece a EMISIÓN DE PLACA y es manual (RD$2,000 por defecto).
         calcCostos();
 
         document.getElementById('lblVehiculo').innerText = window.currentVehiculo; document.getElementById('lblTasaGlobal').innerText = t.toFixed(2); document.getElementById('lblPorcentajeGravamen').innerText = pAr === 0 ? "0" : "10";
@@ -1931,7 +1993,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         txt += `🔹 *Pago 2 (Balance Subasta):* ${p2}\n_Facturas, fees de subasta, broker y honorarios._\n\n`;
         txt += `🔹 *Pago 3 (Logística Origen):* ${p3}\n_Grúa inland, taller y documentación._\n\n`;
         txt += `🔹 *Pago 4 (Aduanas y Flete):* ${p4}\n_Flete, agente aduanal, parqueo e impuestos DGA._\n\n`;
-        txt += `🔹 *Pago 5 (Placa y Endoso):* ${p5}\n_Impuestos DGII Placa y normativa 03-20._\n\n`;
+        txt += `🔹 *Pago 5 (Placa y Endoso):* ${p5}\n_Impuestos DGII Placa y normativa 03-25._\n\n`;
         
         txt += `🏁 *TOTAL INVERSIÓN (Landed):* ${total}\n\n`;
         txt += `_Nota: Valores en USD. Presupuesto sujeto a disponibilidad en subasta y variación naviera._\n\n`;
@@ -1978,7 +2040,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         let dealer_usd = parseFloat(document.getElementById('derecho_dealer_usd').value) || 0;
         
         let despacho_rds = parseFloat(document.getElementById('c_despacho_rds').value) || 0;
-        let placa_rds = parseFloat(document.getElementById('c_placa_rds').value) || 0;
+        let placa_rds = parseFloat(document.getElementById('placa_pp_rds').value) || 0;
         let rep_rds = parseFloat(document.getElementById('reparaciones_rds').value) || 0;
         
         let txt = `📊 *REPORTE INTERNO DE INVERSIÓN*\nNext GB Auto Import\n\n`;
@@ -2176,7 +2238,12 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const docs = (parseFloat(document.getElementById('documentacion_usd')?.value) || 0) + (parseFloat(document.getElementById('taller_miami_usd')?.value) || 0);
         const broker = (parseFloat(document.getElementById('fee_broker_usd')?.value) || 0) + (parseFloat(document.getElementById('derecho_dealer_usd')?.value) || 0);
         const freight = parseFloat(document.getElementById('flete_real')?.value) || 0;
-        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + (parseFloat(document.getElementById('c_placa_rds')?.value) || 0) + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
+        const fobMiami = window.c_fob_miami || 0;
+        const dispatchNoPlate = window.c_despacho_sin_placa || 0;
+        const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
+        const platePP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
+        const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
+        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + normativa + platePP + gestion + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
         const score = getInvestmentScore(pct);
 
         set('final-vehicle', vehicle);
@@ -2195,6 +2262,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         set('final-docs', 'US$ ' + fmt(docs));
         set('final-broker', 'US$ ' + fmt(broker));
         set('final-freight', 'US$ ' + fmt(freight));
+        set('final-fob-miami', 'US$ ' + fmt(fobMiami));
+        set('final-dispatch-no-plate', 'US$ ' + fmt(dispatchNoPlate));
+        set('final-normativa', 'RD$ ' + fmt(normativa));
+        set('final-plate-pp', 'RD$ ' + fmt(platePP));
+        set('final-gestion', 'RD$ ' + fmt(gestion));
         set('final-local', 'RD$ ' + fmt(localRds));
         set('final-total-emphasis', 'US$ ' + fmt(landed));
         set('final-margin-copy', 'US$ ' + fmt(margin));
@@ -2885,7 +2957,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const margen=n(window.c_margen);
         const neto=n(window.c_margen_despues_honorarios);
         const origenFreight=n(document.getElementById('costo_subasta')?.value)+n(document.getElementById('fees_subasta')?.value)+n(document.getElementById('grua_inland')?.value)+n(document.getElementById('documentacion_origen_usd')?.value)+n(document.getElementById('reparacion_miami_usd')?.value)+n(document.getElementById('fee_broker_usd')?.value)+n(document.getElementById('flete_real')?.value)+n(document.getElementById('paquete_despacho_usd')?.value);
-        const customs=(n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('c_placa_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value))/tasa;
+        const customs=(n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('placa_pp_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value))/tasa;
         const roi=inversion>0 ? (neto/inversion)*100 : 0;
         const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
         put('live-investment','US$ '+fmt(inversion)); put('live-sale','US$ '+fmt(venta)); put('live-margin','US$ '+fmt(margen)); put('live-net-margin','US$ '+fmt(neto)); put('live-origin-freight','US$ '+fmt(origenFreight)); put('live-customs','US$ '+fmt(customs)); put('live-roi',fmt(roi)+'%');
@@ -3085,7 +3157,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   const money=v=>'US$ '+fmt(num(v));
   const saveState=()=>{
     try{
-      const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','c_placa_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen','marca','modelo','anio','version'];
+      const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','normativa_0325_rds','placa_pp_rds','gestion_endoso_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen','marca','modelo','anio','version'];
       const fields={}; ids.forEach(id=>{const e=document.getElementById(id);if(e)fields[id]=e.value});
       localStorage.setItem(KEY,JSON.stringify({fields,query:document.getElementById('nextgb-ai-input')?.value||'',savedAt:Date.now()}));
     }catch(e){}
@@ -3117,8 +3189,10 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const result=document.getElementById('nextgb-ai-result'); if(!result) return;
     const vals={}; result.querySelectorAll('[data-ai-field]').forEach(e=>vals[e.dataset.aiField]=num(e.value));
     const purchase=vals.costo_subasta, fees=vals.fees_subasta, inland=vals.grua_inland, docs=vals.documentacion_origen_usd, repair=vals.reparacion_miami_usd, broker=vals.fee_broker_usd, freight=vals.flete_real, port=vals.paquete_despacho_usd, sale=vals.precio_venta_estimado_usd, honor=vals.derecho_dealer_usd, rate=num(document.getElementById('tasa')?.value)||60.60;
-    const local=num(document.getElementById('c_despacho_rds')?.value)+num(document.getElementById('c_placa_rds')?.value)+num(document.getElementById('reparaciones_rds')?.value);
-    const landed=purchase+fees+inland+docs+repair+broker+honor+freight+port+(local/rate);
+    const despacho=num(document.getElementById('c_despacho_rds')?.value), normativa=num(document.getElementById('normativa_0325_rds')?.value), placaPP=num(document.getElementById('placa_pp_rds')?.value), gestion=num(document.getElementById('gestion_endoso_rds')?.value), reparacionRD=num(document.getElementById('reparaciones_rds')?.value);
+    const fob=purchase+fees+inland+docs+repair+broker+honor;
+    const despachoSinPlaca=fob+freight+port+(despacho/rate);
+    const landed=despachoSinPlaca+(normativa+placaPP+gestion+reparacionRD)/rate;
     const gross=sale-landed, net=gross, roi=landed?net/landed*100:0;
     ['v14-investment','v14-gross','v14-net','v14-roi'].forEach(id=>{});
     const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
@@ -3244,7 +3318,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     shell.querySelector('.nextgb-ai-row')?.after(wrap);
   }
   function bindPersistence(){
-    const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','c_placa_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen'];
+    const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','normativa_0325_rds','placa_pp_rds','gestion_endoso_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen'];
     ids.forEach(id=>document.getElementById(id)?.addEventListener('input',saveState));
     document.getElementById('nextgb-ai-input')?.addEventListener('input',saveState);
   }
@@ -3395,7 +3469,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     /* FIX CRÍTICO: compra pasa también a auction_bid antes de recalcular fees. */
     if(vals.costo_subasta!==undefined){set('costo_subasta',vals.costo_subasta);set('auction_bid',vals.costo_subasta);}
     if(vals.fees_subasta!==undefined)set('fees_subasta',vals.fees_subasta);
-    ['grua_inland','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','flete_real','paquete_despacho_usd'].forEach(id=>{if(vals[id]!==undefined)set(id,vals[id])});
+    ['grua_inland','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','flete_real','paquete_despacho_usd','normativa_0325_rds','placa_pp_rds','gestion_endoso_rds'].forEach(id=>{if(vals[id]!==undefined)set(id,vals[id])});
     if(original.honorarios!=null && vals.derecho_dealer_usd!==undefined)set('derecho_dealer_usd',vals.derecho_dealer_usd);
     if(original.venta!=null && vals.precio_venta_estimado_usd!==undefined)set('precio_venta_estimado_usd',vals.precio_venta_estimado_usd);
     /* Si el fee no fue manual, recalcular usando el máximo conservador. */
@@ -3408,11 +3482,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   window.nextGBLiveCostUpdate=function(){
     const rate=n(document.getElementById('tasa')?.value)||60.60;
     const purchase=n(document.getElementById('costo_subasta')?.value), fees=n(document.getElementById('fees_subasta')?.value), inland=n(document.getElementById('grua_inland')?.value), docs=n(document.getElementById('documentacion_origen_usd')?.value), repair=n(document.getElementById('reparacion_miami_usd')?.value), broker=n(document.getElementById('fee_broker_usd')?.value), freight=n(document.getElementById('flete_real')?.value), port=n(document.getElementById('paquete_despacho_usd')?.value);
-    const fob=purchase+fees+inland+docs+repair+broker;
-    const local=n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('c_placa_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value);
+    const honor=n(document.getElementById('derecho_dealer_usd')?.value); const fob=purchase+fees+inland+docs+repair+broker+honor;
+    const local=n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('placa_pp_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value);
     const customs=local/rate; const sale=n(window.c_venta), investment=n(window.c_landed), gross=n(window.c_margen), net=n(window.c_margen_despues_honorarios), roi=investment?net/investment*100:0;
     const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-    put('live-investment',money(investment));put('live-sale',money(sale));put('live-margin',money(gross));put('live-net-margin',money(net));put('live-origin-freight',money(fob));put('live-customs',money(customs));put('live-roi',fmt(roi)+'%');
+    put('live-investment',money(investment));put('live-sale',money(sale));put('live-margin',money(gross));put('live-net-margin',money(net));put('live-origin-freight',money(fob));put('live-customs',money(customs));put('live-fob-miami',money(fob));put('live-despacho-sin-placa',money(window.c_despacho_sin_placa||0));put('live-roi',fmt(roi)+'%');
     put('v15-live-fob',money(fob));put('v15-live-freight',money(freight));put('v15-live-rd',money(port+customs));put('v15-live-total',money(investment));
   };
   const oldCalcCostos=window.calcCostos;
@@ -3554,13 +3628,20 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const honor=o.honorarios!=null?o.honorarios:0;
     const sale=o.venta!=null?o.venta:null;
     const rate=n24(document.getElementById('tasa')?.value)||60.60;
-    const local=n24(document.getElementById('c_despacho_rds')?.value)+n24(document.getElementById('c_placa_rds')?.value)+n24(document.getElementById('reparaciones_rds')?.value);
+    const despacho=n24(document.getElementById('c_despacho_rds')?.value);
+    const normativa=n24(document.getElementById('normativa_0325_rds')?.value);
+    const placaPP=n24(document.getElementById('placa_pp_rds')?.value);
+    const gestion=n24(document.getElementById('gestion_endoso_rds')?.value);
+    const reparacionRD=n24(document.getElementById('reparaciones_rds')?.value);
+    const local=despacho+normativa+placaPP+gestion+reparacionRD;
     const originTotal=purchase+fees+inland+docs+repair+broker+honor;
-    const landed=originTotal+freight+port+(local/rate);
+    const fob=originTotal;
+    const despachoSinPlaca=fob+freight+port+(despacho/rate);
+    const landed=despachoSinPlaca+((normativa+placaPP+gestion+reparacionRD)/rate);
     const gross=sale==null?0:sale-landed;
-    const net=gross-honor;
+    const net=gross;
     const roi=landed?net/landed*100:0;
-    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,landed,gross,net,roi};
+    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,fob,despachoSinPlaca,normativa,placaPP,gestion,reparacionRD,landed,gross,net,roi};
   }
   function render24(data){
     const result=document.getElementById('nextgb-ai-result');if(!result)return;
@@ -3575,7 +3656,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const payment2=d.purchase+d.fees+d.broker+d.honor;
     const payment3=d.inland+d.docs+d.repair;
     const payment4=d.freight+d.port+(n24(document.getElementById('c_despacho_rds')?.value)/d.rate);
-    const payment5=n24(document.getElementById('c_placa_rds')?.value)/d.rate;
+    const payment5=(n24(document.getElementById('normativa_0325_rds')?.value)+n24(document.getElementById('placa_pp_rds')?.value)+n24(document.getElementById('gestion_endoso_rds')?.value))/d.rate;
     result.classList.add('show','v14');
     result.innerHTML=`
       <div class="nextgb-v24-document ${isProforma?'proforma':''}" id="nextgb-v24-document">
@@ -3604,8 +3685,10 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-line subtotal"><span>Total Gastos en Origen (USD)</span><strong id="v24-origin-total">${money24(d.originTotal)}</strong></div>
             <div class="nextgb-v24-line"><span>Flete Marítimo</span><strong id="v24-freight">${money24(d.freight)}</strong></div>
             <div class="nextgb-v24-line"><span>Paquete despacho / puerto RD</span><strong id="v24-port">${money24(d.port)}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>FOB Miami</span><strong>${money24(d.fob)}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>Total Despacho Sin Placa</span><strong>${money24(d.despachoSinPlaca)}</strong></div>
             <div class="nextgb-v24-line"><span>Despacho Aduanal (Sin Placa)</span><strong>${'RD$ '+fmt(n24(document.getElementById('c_despacho_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line"><span>Primera Placa y Marbete</span><strong>${'RD$ '+fmt(n24(document.getElementById('c_placa_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line"><span>Primera Placa y Marbete</span><strong>${'RD$ '+fmt(n24(document.getElementById('placa_pp_rds')?.value))}</strong></div>
             <div class="nextgb-v24-line"><span>Reparación en RD</span><strong>${'RD$ '+fmt(n24(document.getElementById('reparaciones_rds')?.value))}</strong></div>
             <div class="nextgb-v24-line subtotal"><span>Total Destino Local (RD$)</span><strong>RD$ ${fmt(d.local)}</strong></div>
             <div class="nextgb-v24-line"><span>Margen después de honorarios</span><strong id="v24-net-inline">${money24(d.net)}</strong></div>
@@ -3623,6 +3706,9 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-edit"><label>Flete marítimo</label><input data-ai-field="flete_real" value="${n24(d.freight)}" type="number" step="0.01"></div>
             <div class="nextgb-v24-edit"><label>Paquete puerto RD</label><input data-ai-field="paquete_despacho_usd" value="${n24(d.port)}" type="number" step="0.01"></div>
             <div class="nextgb-v24-edit"><label>Honorarios NEXT GB</label><input data-ai-field="derecho_dealer_usd" value="${n24(d.honor)}" type="number" step="0.01"></div>
+            <div class="nextgb-v24-edit"><label>Normativa 03-25 (RD$)</label><input data-ai-field="normativa_0325_rds" value="${n24(d.normativa)}" type="number" step="0.01"></div>
+            <div class="nextgb-v24-edit"><label>Placa PP (RD$)</label><input data-ai-field="placa_pp_rds" value="${n24(d.placaPP)}" type="number" step="0.01"></div>
+            <div class="nextgb-v24-edit"><label>Gastos Endoso / Gestión (RD$)</label><input data-ai-field="gestion_endoso_rds" value="${n24(d.gestion)}" type="number" step="0.01"></div>
             <div class="nextgb-v24-edit"><label>Precio de venta</label><input data-ai-field="precio_venta_estimado_usd" value="${d.sale==null?'':n24(d.sale)}" type="number" step="0.01"></div>
           </div>
           ${isProforma?`<div class="nextgb-v24-proforma"><h4>Cronograma de pagos</h4>
@@ -3663,26 +3749,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   };
 })();
 </script>
-
-<!-- NEXT-AVPRO-MOBILE V1.2 · AI VISIBILITY + THEME SWITCH FIX -->
-<style id="next-avpro-mobile-v12">
-@media (max-width:700px), (pointer:coarse){
-  body.mobile-app.mobile-ai .app-shell,
-  body.mobile-app.nextgb-ai-main-view .app-shell{display:block!important;width:100%!important;max-width:100%!important;min-height:100vh!important;margin:0!important;padding:0!important;}
-  body.mobile-app.mobile-ai .page-heading,body.mobile-app.nextgb-ai-main-view .page-heading{display:none!important;}
-  body.mobile-app.mobile-ai .app-container,body.mobile-app.nextgb-ai-main-view .app-container{display:none!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas{display:flex!important;width:100%!important;min-height:calc(100vh - 72px)!important;margin:0!important;padding:18px 10px 96px!important;position:relative!important;inset:auto!important;overflow-x:hidden!important;overflow-y:auto!important;align-items:flex-start!important;justify-content:center!important;background:var(--bg-body)!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-home-shell,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-home-shell{display:block!important;width:100%!important;max-width:680px!important;min-height:0!important;margin:0!important;padding:18px 12px 28px!important;border-radius:22px!important;border:1px solid var(--border-color)!important;background:var(--bg-card)!important;box-shadow:var(--shadow-soft)!important;}
-  body.mobile-app #theme-switch{display:flex!important;position:fixed!important;top:max(10px,env(safe-area-inset-top))!important;right:12px!important;bottom:auto!important;z-index:100001!important;min-height:38px!important;height:38px!important;padding:0 11px!important;align-items:center!important;justify-content:center!important;border-radius:12px!important;font-size:10px!important;line-height:1!important;white-space:nowrap!important;background:var(--bg-card-2)!important;color:var(--text-main)!important;border:1px solid var(--border-strong)!important;box-shadow:0 8px 22px rgba(0,0,0,.18)!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-head,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-head{padding-right:48px!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-input,body.mobile-app.nextgb-ai-main-view #nextgb-ai-input{width:100%!important;min-height:118px!important;padding:14px!important;font-size:16px!important;line-height:1.45!important;resize:vertical!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-row,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-row{display:flex!important;flex-direction:column!important;width:100%!important;gap:8px!important;padding:8px!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-btn,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-btn{width:100%!important;min-height:50px!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-result,body.mobile-app.nextgb-ai-main-view #nextgb-ai-result{width:100%!important;max-width:100%!important;overflow:visible!important;}
-}
-</style>
 </body>
-
+</html>
 <style>
 /* NEXT GB V16 · synchronization fixes */
 .v16-sync-note{margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.45}
@@ -5596,414 +5664,8 @@ body.light-mode.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-has-analysis .v
 })();
 </script>
 
-
-<!-- NEXT-AVPRO-BETA.V2.1 · FINAL DARK MODE AI RESULT VISIBILITY -->
-<style id="next-avpro-v21-dark-ai-result">
-/* The AI result must remain readable in dark mode regardless of inline/template colors. */
-body:not(.light-mode) #nextgb-ai-result,
-body:not(.light-mode) #nextgb-ai-result * {
-  color: var(--text-main) !important;
-  text-shadow: none !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-kpi,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-answer,
-body:not(.light-mode) #nextgb-ai-result > div {
-  background-color: var(--bg-card-2) !important;
-  border-color: var(--border-strong) !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-kpi span,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-answer-body,
-body:not(.light-mode) #nextgb-ai-result [style*="color:var(--text-muted)"],
-body:not(.light-mode) #nextgb-ai-result [style*="color: var(--text-muted)"] {
-  color: var(--text-soft) !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-kpi strong,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-answer-title,
-body:not(.light-mode) #nextgb-ai-result b,
-body:not(.light-mode) #nextgb-ai-result strong {
-  color: #ffffff !important;
-}
-body:not(.light-mode) #nextgb-ai-result a { color: var(--accent-2) !important; }
-body:not(.light-mode) #nextgb-ai-result hr { border-color: var(--border-color) !important; }
-body:not(.light-mode) #nextgb-ai-result input,
-body:not(.light-mode) #nextgb-ai-result select,
-body:not(.light-mode) #nextgb-ai-result textarea {
-  background: var(--input-bg) !important;
-  color: var(--text-main) !important;
-  border-color: var(--border-strong) !important;
-}
-/* Tax/quick-query result cards that may be generated with inline light colors. */
-body:not(.light-mode) #nextgb-ai-result .nextgb-tax-result,
-body:not(.light-mode) #nextgb-ai-result .nextgb-tax-card,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-tax,
-body:not(.light-mode) #nextgb-ai-result .nextgb-v24-document {
-  color: #0f172a !important;
-  background: #ffffff !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-v24-document * { color: inherit !important; }
-</style>
-
-
-<style id="next-avpro-mobile-v1">
-/* NEXT-AVPRO-MOBILE V1.0 — mobile-first layer; desktop logic preserved */
-@media (max-width: 700px){
-  html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
-  body{padding-bottom:78px!important;}
-  #app,#root,.app,.container,.main-container{max-width:100%!important;width:100%!important;}
-  header,.header,.topbar{position:sticky!important;top:0!important;z-index:1000;}
-  input,textarea,select,button{font-size:16px!important;}
-  textarea{min-height:120px!important;}
-  .modal,.dialog{width:calc(100vw - 24px)!important;max-width:none!important;margin:12px!important;}
-  .card,.panel,.box,.section{border-radius:18px!important;}
-  table{display:block!important;width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
-  .grid,.row,.columns{grid-template-columns:1fr!important;display:grid!important;}
-  .actions,.button-row{display:grid!important;grid-template-columns:1fr 1fr;gap:10px!important;}
-  button{min-height:46px!important;border-radius:13px!important;}
-  #nextgb-ai-result{width:100%!important;max-width:100%!important;margin:12px 0!important;}
-  #nextgb-ai-result *{max-width:100%;box-sizing:border-box;}
-  #nextgb-ai-result pre{white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
-  .nextgb-mobile-nav{position:fixed;left:8px;right:8px;bottom:8px;height:62px;z-index:99999;display:flex!important;align-items:center;justify-content:space-around;gap:4px;padding:6px 4px;border:1px solid rgba(127,127,127,.25);border-radius:18px;background:rgba(20,20,24,.94);backdrop-filter:blur(14px);box-shadow:0 8px 30px rgba(0,0,0,.28);}
-  .nextgb-mobile-nav button{flex:1!important;min-height:50px!important;border:0!important;background:transparent!important;color:inherit!important;font-size:12px!important;padding:4px!important;}
-  .nextgb-mobile-nav button span{display:block;font-size:20px;line-height:22px;}
-}
-@media (min-width:701px){.nextgb-mobile-nav{display:none!important;}}
-</style>
-<script>
-(function(){
-  function nav(){
-    if(document.querySelector('.nextgb-mobile-nav')) return;
-    const n=document.createElement('nav'); n.className='nextgb-mobile-nav'; n.setAttribute('aria-label','NEXT AVPRO Mobile');
-    const items=[['AI','🤖'],['Vehículo','🚗'],['Costos','💰'],['Margen','📊'],['Cotización','📄']];
-    items.forEach(([label,icon])=>{const b=document.createElement('button'); b.type='button'; b.innerHTML='<span>'+icon+'</span>'+label; b.addEventListener('click',()=>{
-      const text=label.toLowerCase();
-      const candidates=[...document.querySelectorAll('button,[role="button"],a')];
-      const target=candidates.find(x=>(x.textContent||'').trim().toLowerCase()===text)||candidates.find(x=>(x.textContent||'').toLowerCase().includes(text));
-      if(target && target!==b) target.click();
-      else if(label==='AI'){window.scrollTo({top:0,behavior:'smooth'});}
-    }); n.appendChild(b);});
-    document.body.appendChild(n);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',nav); else nav();
-})();
-</script>
-
-<!-- NEXT-AVPRO-MOBILE V1.2 · AI VISIBILITY + THEME SWITCH FIX -->
-<style id="next-avpro-mobile-v12">
-@media (max-width:700px), (pointer:coarse){
-  body.mobile-app.mobile-ai .app-shell,
-  body.mobile-app.nextgb-ai-main-view .app-shell{display:block!important;width:100%!important;max-width:100%!important;min-height:100vh!important;margin:0!important;padding:0!important;}
-  body.mobile-app.mobile-ai .page-heading,body.mobile-app.nextgb-ai-main-view .page-heading{display:none!important;}
-  body.mobile-app.mobile-ai .app-container,body.mobile-app.nextgb-ai-main-view .app-container{display:none!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas{display:flex!important;width:100%!important;min-height:calc(100vh - 72px)!important;margin:0!important;padding:18px 10px 96px!important;position:relative!important;inset:auto!important;overflow-x:hidden!important;overflow-y:auto!important;align-items:flex-start!important;justify-content:center!important;background:var(--bg-body)!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-home-shell,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-home-shell{display:block!important;width:100%!important;max-width:680px!important;min-height:0!important;margin:0!important;padding:18px 12px 28px!important;border-radius:22px!important;border:1px solid var(--border-color)!important;background:var(--bg-card)!important;box-shadow:var(--shadow-soft)!important;}
-  body.mobile-app #theme-switch{display:flex!important;position:fixed!important;top:max(10px,env(safe-area-inset-top))!important;right:12px!important;bottom:auto!important;z-index:100001!important;min-height:38px!important;height:38px!important;padding:0 11px!important;align-items:center!important;justify-content:center!important;border-radius:12px!important;font-size:10px!important;line-height:1!important;white-space:nowrap!important;background:var(--bg-card-2)!important;color:var(--text-main)!important;border:1px solid var(--border-strong)!important;box-shadow:0 8px 22px rgba(0,0,0,.18)!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-head,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-head{padding-right:48px!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-input,body.mobile-app.nextgb-ai-main-view #nextgb-ai-input{width:100%!important;min-height:118px!important;padding:14px!important;font-size:16px!important;line-height:1.45!important;resize:vertical!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-row,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-row{display:flex!important;flex-direction:column!important;width:100%!important;gap:8px!important;padding:8px!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-aduanas .nextgb-ai-btn,body.mobile-app.nextgb-ai-main-view #nextgb-ai-aduanas .nextgb-ai-btn{width:100%!important;min-height:50px!important;}
-  body.mobile-app.mobile-ai #nextgb-ai-result,body.mobile-app.nextgb-ai-main-view #nextgb-ai-result{width:100%!important;max-width:100%!important;overflow:visible!important;}
-}
-</style>
-
-<!-- NEXT-AVPRO-BETA.V1.5 · FUNCTIONAL MOBILE APP -->
-<style id="next-avpro-mobile-v15-style">
-@media (max-width:700px),(pointer:coarse){
-  #next-avpro-mobile-v13{display:none!important}
-  html,body{overflow:hidden!important;width:100%!important;min-width:0!important}
-  #next-avpro-mobile-v15{position:fixed;inset:0;z-index:1000000;display:flex;flex-direction:column;width:100vw;height:100dvh;background:var(--bg-body);color:var(--text-main);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-  .av15-top{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--border-color);background:color-mix(in srgb,var(--bg-body) 88%,transparent);backdrop-filter:blur(20px);z-index:4}
-  .av15-brand{display:flex;align-items:center;gap:10px}.av15-logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:900;font-size:12px;box-shadow:0 8px 20px rgba(37,99,235,.22)}
-  .av15-brand strong{display:block;font-size:14px;letter-spacing:.2px}.av15-brand span{display:block;font-size:10px;color:var(--text-muted);margin-top:2px}
-  .av15-theme{border:1px solid var(--border-strong);background:var(--bg-card);color:var(--text-main);border-radius:12px;min-width:42px;height:38px;font-size:17px}
-  .av15-main{flex:1;min-height:0;overflow:hidden;position:relative}.av15-screen{position:absolute;inset:0;display:none;overflow:auto;padding:16px 14px calc(92px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}.av15-screen.active{display:block}
-  .av15-title{font-size:25px;line-height:1.08;letter-spacing:-.8px;margin:4px 0 6px}.av15-sub{font-size:12px;line-height:1.5;color:var(--text-muted);margin:0 0 15px}
-  .av15-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:15px;margin-bottom:12px;box-shadow:var(--shadow-soft)}
-  .av15-card h2{font-size:14px;margin:0 0 12px}.av15-kicker{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:900;color:var(--accent-2);margin-bottom:6px}
-  .av15-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.av15-field{min-width:0}.av15-field.full{grid-column:1/-1}.av15-label{display:block;font-size:10px;font-weight:800;color:var(--text-muted);margin:0 0 5px}
-  .av15-input,.av15-select{width:100%;height:46px;border:1px solid var(--border-strong);border-radius:13px;background:var(--input-bg);color:var(--text-main);padding:0 12px;font-size:15px;outline:none}.av15-input:focus,.av15-select:focus{border-color:var(--accent-2);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
-  .av15-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.av15-actions.one{grid-template-columns:1fr}.av15-btn{border:0;border-radius:13px;min-height:46px;padding:10px 12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:850;font-size:12px}.av15-btn.secondary{background:var(--bg-card-2);color:var(--text-main);border:1px solid var(--border-strong)}.av15-btn.green{background:linear-gradient(135deg,#059669,#047857)}.av15-btn.whatsapp{background:#16a34a}.av15-btn:active{transform:scale(.985)}
-  .av15-status{font-size:10px;color:var(--text-muted);margin-top:9px}.av15-chiprow{display:flex;gap:7px;overflow:auto;padding-bottom:2px}.av15-chip{white-space:nowrap;border:1px solid var(--border-color);background:var(--bg-card-2);color:var(--text-main);border-radius:999px;padding:9px 11px;font-size:10px;font-weight:800}
-  .av15-result{margin-top:12px}.av15-result:empty{display:none}.av15-result .v14-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}.av15-result button{min-height:48px!important;border-radius:13px!important}
-  .av15-metric{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color)}.av15-metric:last-child{border-bottom:0}.av15-metric span{font-size:11px;color:var(--text-muted)}.av15-metric strong{font-size:13px;text-align:right;color:var(--text-main)}
-  .av15-live{padding:16px;border-radius:17px;background:linear-gradient(145deg,#2563eb,#1e3a8a);color:#fff;margin-top:12px}.av15-live small{display:block;font-size:9px;text-transform:uppercase;letter-spacing:1.4px;opacity:.78;font-weight:900}.av15-live strong{display:block;font-size:27px;letter-spacing:-1px;margin-top:4px}
-  .av15-kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.av15-kpi{background:var(--bg-card-2);border:1px solid var(--border-color);border-radius:15px;padding:12px}.av15-kpi span{display:block;font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px}.av15-kpi strong{display:block;font-size:19px;margin-top:5px}.av15-kpi small{font-size:9px;color:var(--text-muted)}
-  .av15-doc-toggle{display:grid;grid-template-columns:1fr 1fr;padding:4px;background:var(--bg-card-2);border:1px solid var(--border-color);border-radius:14px;margin-bottom:12px}.av15-doc-toggle button{border:0;background:transparent;color:var(--text-muted);border-radius:11px;min-height:40px;font-weight:900;font-size:11px}.av15-doc-toggle button.active{background:var(--accent);color:#fff}
-  .av15-doc{background:#fff;color:#111827;border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.12)}.av15-doc h2{color:#111827;font-size:18px;margin:0}.av15-doc .line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #e5e7eb;font-size:11px}.av15-doc .total{font-size:16px;font-weight:900;padding-top:12px}.av15-doc .profit{color:#047857;font-weight:900}.av15-doc .dochead{display:flex;justify-content:space-between;gap:12px;margin-bottom:15px}.av15-doc .muted{color:#6b7280;font-size:9px}.av15-nav{flex:0 0 auto;height:72px;padding:6px 6px calc(6px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:rgba(12,16,24,.96);border-top:1px solid var(--border-strong);backdrop-filter:blur(18px);z-index:5}.light-mode .av15-nav{background:rgba(255,255,255,.96)}.av15-nav button{border:0;background:transparent;color:var(--text-muted);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:850}.av15-nav button span{font-size:20px;line-height:21px}.av15-nav button.active{background:rgba(59,130,246,.15);color:var(--accent-2)}
-  .av15-toast{position:fixed;left:14px;right:14px;bottom:88px;z-index:1000002;background:var(--bg-card);color:var(--text-main);border:1px solid var(--border-strong);border-radius:14px;padding:12px;font-size:11px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.2);display:none}.av15-toast.show{display:block}
-  @media(max-width:380px){.av15-grid,.av15-kpis{grid-template-columns:1fr}.av15-title{font-size:23px}}
-}
-@media(min-width:701px){#next-avpro-mobile-v15{display:none!important}}
-@media print{#next-avpro-mobile-v15{display:none!important}}
-</style>
-
-<div id="next-avpro-mobile-v15" aria-label="NEXT AVPRO Mobile V1.5">
-  <header class="av15-top"><div class="av15-brand"><div class="av15-logo">AI</div><div><strong>NEXT GB AUTO IMPORT</strong><span>Importación · Aduanas · Rentabilidad</span></div></div><button id="av15-theme" class="av15-theme" type="button">☾</button></header>
-  <main class="av15-main">
-    <section class="av15-screen active" data-av15-screen="AI">
-      <div class="av15-kicker">Copiloto de importación</div><h1 class="av15-title">Analiza una operación</h1><p class="av15-sub">La IA ya funciona. Ahora puedes aplicar su resultado al vehículo, costos, margen y documento.</p>
-      <div class="av15-card"><label class="av15-label">Consulta</label><textarea id="av15-ai-input" class="av15-input" style="height:132px;padding:12px;resize:vertical" placeholder="Ej.: Tucson SEL FWD 2022, compra 9000, fee 1300, grúa 900, reparación 1200, venta 24000"></textarea><div class="av15-actions one"><button id="av15-ai-run" class="av15-btn">Analizar operación</button></div><div class="av15-chiprow" style="margin-top:10px"><button class="av15-chip" data-av15-q="Consulta impuestos Tucson SEL AWD 2022 USA">🧾 Impuestos</button><button class="av15-chip" data-av15-q="Tucson SEL AWD 2022, compra 12000">🚙 Vehículo</button><button class="av15-chip" data-av15-q="Tucson SEL AWD 2022, compra 12000, venta 24000">📊 Margen</button></div><div id="av15-ai-status" class="av15-status">IA lista</div><div id="av15-ai-result" class="av15-result"></div></div>
-    </section>
-
-    <section class="av15-screen" data-av15-screen="Vehículo">
-      <div class="av15-kicker">Paso 01</div><h1 class="av15-title">Vehículo & subasta</h1><p class="av15-sub">Selecciona manualmente el vehículo o aplica el resultado de la IA.</p>
-      <div class="av15-card"><div class="av15-grid"><div class="av15-field"><label class="av15-label">Plataforma</label><select id="av15-platform" class="av15-select"><option value="iaai">IAAI</option><option value="copart">COPART</option></select></div><div class="av15-field"><label class="av15-label">Compra / oferta USD</label><input id="av15-buy" class="av15-input" inputmode="decimal" placeholder="0"></div><div class="av15-field full"><label class="av15-label">Marca</label><select id="av15-make" class="av15-select"><option value="">Cargando…</option></select></div><div class="av15-field full"><label class="av15-label">Modelo</label><select id="av15-model" class="av15-select" disabled><option value="">Seleccione marca</option></select></div><div class="av15-field"><label class="av15-label">Año</label><select id="av15-year" class="av15-select" disabled><option value="">Seleccione modelo</option></select></div><div class="av15-field"><label class="av15-label">Tracción</label><select id="av15-drive" class="av15-select"><option value="">Todas</option><option>FWD</option><option>AWD</option><option>4WD</option><option>4X4</option><option>RWD</option><option>4X2</option><option>2WD</option></select></div><div class="av15-field full"><label class="av15-label">Serie / Trim</label><select id="av15-trim" class="av15-select" disabled><option value="">Seleccione año</option></select></div></div><div class="av15-actions"><button id="av15-sync" class="av15-btn">Aplicar selección</button><button id="av15-vin" class="av15-btn secondary">Decodificar VIN</button></div><div class="av15-status" id="av15-db-status">⏳ Cargando base de datos…</div></div>
-      <div class="av15-card"><h2>VIN</h2><input id="av15-vin-input" class="av15-input" maxlength="17" placeholder="17 caracteres"><div class="av15-status">El VIN puede complementar la selección; la coincidencia de base mantiene año/modelo/trim/tracción.</div></div>
-    </section>
-
-    <section class="av15-screen" data-av15-screen="Costos">
-      <div class="av15-kicker">Paso 02</div><h1 class="av15-title">Aduanas & costos</h1><p class="av15-sub">Todos los campos son editables y comparten el mismo cálculo.</p>
-      <div class="av15-card"><h2>Selección manual de Aduanas</h2><div class="av15-grid"><div class="av15-field full"><label class="av15-label">Vehículo</label><input id="av15-custom-vehicle" class="av15-input" placeholder="Marca / modelo / año" readonly></div><div class="av15-field full"><label class="av15-label">Marca</label><select id="av15-custom-make" class="av15-select"><option value="">Seleccione marca</option></select></div><div class="av15-field full"><label class="av15-label">Modelo</label><select id="av15-custom-model" class="av15-select" disabled><option value="">Seleccione modelo</option></select></div><div class="av15-field"><label class="av15-label">Año</label><select id="av15-custom-year" class="av15-select" disabled><option value="">Seleccione año</option></select></div><div class="av15-field"><label class="av15-label">Serie / Trim</label><select id="av15-custom-trim" class="av15-select" disabled><option value="">Seleccione serie</option></select></div><div class="av15-field"><label class="av15-label">Origen</label><input id="av15-origin" class="av15-input" placeholder="—"></div><div class="av15-field"><label class="av15-label">Valor base USD</label><input id="av15-value" class="av15-input" inputmode="decimal" placeholder="0"></div></div><div class="av15-actions one"><button id="av15-custom-apply" class="av15-btn">Aplicar selección a la operación</button></div></div>
-      <div class="av15-card"><h2>Costos de origen</h2><div id="av15-costs"></div><div class="av15-live"><small>Live Cost · inversión total</small><strong id="av15-live-cost">US$ 0.00</strong></div></div>
-      <div class="av15-card"><h2>Aduanas / RD</h2><div class="av15-grid"><div class="av15-field"><label class="av15-label">Despacho RD$</label><input id="av15-customs" class="av15-input" inputmode="decimal" placeholder="0"></div><div class="av15-field"><label class="av15-label">Placa / marbete RD$</label><input id="av15-plate" class="av15-input" inputmode="decimal" placeholder="0"></div><div class="av15-field full"><label class="av15-label">Reparaciones locales RD$</label><input id="av15-local-repair" class="av15-input" inputmode="decimal" placeholder="0"></div></div><div class="av15-live" style="margin-top:10px"><small>Total Despacho · Sin Placa</small><strong id="av15-dispatch-total">US$ 0.00</strong><div class="muted" id="av15-dispatch-total-rd" style="margin-top:4px">RD$ 0.00</div></div><div class="av15-status">La fórmula de DGA se mantiene como estimación del motor NEXT GB y debe verificarse antes de una liquidación oficial.</div></div>
-    </section>
-
-    <section class="av15-screen" data-av15-screen="Margen">
-      <div class="av15-kicker">Paso 03</div><h1 class="av15-title">Margen & rentabilidad</h1><p class="av15-sub">Se recalcula automáticamente con el mismo Live Cost.</p>
-      <div class="av15-card"><div class="av15-kpis"><div class="av15-kpi"><span>Inversión</span><strong id="av15-invest">US$ 0.00</strong></div><div class="av15-kpi"><span>Venta</span><strong id="av15-sale-kpi">US$ 0.00</strong></div><div class="av15-kpi"><span>Ganancia</span><strong id="av15-profit">US$ 0.00</strong></div><div class="av15-kpi"><span>Rentabilidad</span><strong id="av15-roi">0.00%</strong><small>ganancia ÷ inversión</small></div></div><div style="margin-top:12px"><label class="av15-label">Precio de venta USD</label><input id="av15-sale" class="av15-input" inputmode="decimal" placeholder="0"></div></div>
-    </section>
-
-    <section class="av15-screen" data-av15-screen="Cotización">
-      <div class="av15-kicker">Documento</div><h1 class="av15-title">Cotización / Proforma</h1><p class="av15-sub">El PDF se genera como documento independiente, no como captura de la pantalla.</p>
-      <div class="av15-doc-toggle"><button id="av15-quote-type" class="active">COTIZACIÓN</button><button id="av15-proforma-type">PROFORMA</button></div>
-      <div id="av15-document" class="av15-doc"></div>
-      <div class="av15-actions"><button id="av15-pdf" class="av15-btn">📄 Generar PDF</button><button id="av15-wa" class="av15-btn whatsapp">WhatsApp</button></div><div class="av15-actions one"><button id="av15-share" class="av15-btn secondary">📤 Compartir</button></div>
-    </section>
-  </main>
-  <nav class="av15-nav"><button class="active" data-av15-nav="AI"><span>🤖</span>IA</button><button data-av15-nav="Vehículo"><span>🚙</span>Vehículo</button><button data-av15-nav="Costos"><span>💰</span>Costos</button><button data-av15-nav="Margen"><span>📊</span>Margen</button><button data-av15-nav="Cotización"><span>📄</span>Documento</button></nav>
-  <div id="av15-toast" class="av15-toast"></div>
-</div>
-
-<script id="next-avpro-mobile-v15-js">
-(function(){
-'use strict';
-const $=id=>document.getElementById(id); const N=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0};
-const M=v=>new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(N(v));
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-let dbReady=false, docType='COTIZACIÓN', lastApplied={};
-function toast(t){const e=$('av15-toast');if(!e)return;e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
-function old(id){return $(id)} function oldVal(id){return old(id)?.value||''}
-function setOld(id,v){const e=old(id);if(e&&v!==undefined&&v!==null){e.value=String(v);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}))}}
-function activate(name){document.querySelectorAll('#next-avpro-mobile-v15 .av15-screen').forEach(s=>s.classList.toggle('active',s.dataset.av15Screen===name));document.querySelectorAll('#next-avpro-mobile-v15 [data-av15-nav]').forEach(b=>b.classList.toggle('active',b.dataset.av15Nav===name));if(name==='Costos')renderCosts();if(name==='Margen'){recalc();}if(name==='Cotización')renderDocument()}
-function toggleTheme(){if(typeof window.toggleTheme==='function')window.toggleTheme();else document.body.classList.toggle('light-mode');syncTheme();}
-function syncTheme(){const l=document.body.classList.contains('light-mode');$('av15-theme').textContent=l?'☀':'☾'}
-function centralVehicle(){return {marca:$('av15-make').value,modelo:$('av15-model').value,anio:$('av15-year').value,trim:$('av15-trim').selectedOptions[0]?.dataset?.trim||$('av15-trim').value,traccion:$('av15-drive').value,compra:N($('av15-buy').value),vin:$('av15-vin-input').value}}
-function dbRows(m,mod,year){try{return db?.[m]?.[mod]?.[year]||[]}catch(e){return[]}}
-function equivalentDrive(a,b){a=String(a||'').toUpperCase().replace(/[- ]/g,'');b=String(b||'').toUpperCase().replace(/[- ]/g,'');if(!a||!b)return true;const g=x=>['AWD','4WD','4X4'].includes(x)?'AWD':x;return g(a)===g(b)}
-function populateMakes(){const sel=$('av15-make');if(!sel)return;let keys=[];try{keys=Object.keys(db||{}).sort()}catch(e){};sel.innerHTML='<option value="">Seleccione marca</option>'+keys.map(x=>`<option>${esc(x)}</option>`).join('');dbReady=keys.length>0; $('av15-db-status').textContent=dbReady?`🟢 Base activa · ${keys.length.toLocaleString()} marcas`:'⚠️ Base pendiente';}
-function populateModels(){const m=$('av15-make').value,sel=$('av15-model');sel.innerHTML='<option value="">Seleccione modelo</option>';sel.disabled=!m;if(m&&db[m])Object.keys(db[m]).sort().forEach(x=>sel.add(new Option(x,x)));$('av15-year').innerHTML='<option value="">Seleccione año</option>';$('av15-year').disabled=true;$('av15-trim').innerHTML='<option value="">Seleccione serie</option>';$('av15-trim').disabled=true;}
-function populateYears(){const m=$('av15-make').value,mod=$('av15-model').value,sel=$('av15-year');sel.innerHTML='<option value="">Seleccione año</option>';sel.disabled=!(m&&mod);if(m&&mod&&db[m]?.[mod])Object.keys(db[m][mod]).sort((a,b)=>Number(b)-Number(a)).forEach(x=>sel.add(new Option(x,x)));$('av15-trim').innerHTML='<option value="">Seleccione serie</option>';$('av15-trim').disabled=true;}
-function populateTrims(){const m=$('av15-make').value,mod=$('av15-model').value,y=$('av15-year').value,drive=$('av15-drive').value,sel=$('av15-trim');sel.innerHTML='<option value="">Seleccione serie</option>';sel.disabled=true;const rows=dbRows(m,mod,y);const filtered=drive?rows.filter(r=>equivalentDrive(r.traccion,drive)):rows;if(filtered.length){filtered.forEach((r,i)=>{const o=new Option(`${r.serie||'BASE'}${r.traccion?' · '+r.traccion.toUpperCase():''}${r.pais?' · '+r.pais:''}`,String(i));o.dataset.trim=r.serie||'';o.dataset.idx=rows.indexOf(r);o.dataset.valor=r.valor||0;o.dataset.pais=r.pais||'';o.dataset.traccion=r.traccion||'';sel.add(o)});sel.disabled=false;}}
-function selectedRow(){const s=$('av15-trim');const o=s?.selectedOptions[0];if(!o||!o.dataset.idx)return null;const rows=dbRows($('av15-make').value,$('av15-model').value,$('av15-year').value);return rows[Number(o.dataset.idx)]||null}
-function syncVehicle(){const v=centralVehicle();const r=selectedRow();setOld('marca',v.marca);setOld('modelo',v.modelo);setOld('anio',v.anio);if(v.compra)setOld('auction_bid',v.compra);if(v.compra)setOld('costo_subasta',v.compra);setOld('vin',v.vin);if(r){const rowIndex=dbRows(v.marca,v.modelo,v.anio).indexOf(r);setOld('version',rowIndex>=0?String(rowIndex):'');try{window.setAutoPrice?.()}catch(e){}setOld('pais_origen',r.pais||'');setOld('valor',r.valor||0);$('av15-value').value=r.valor||'';if(r.traccion)$('av15-drive').value=r.traccion}if(v.compra){try{if(typeof window.calcAuctionFees==='function'){const c=window.calcAuctionFees();if(!oldVal('fees_subasta')||!old('fees_subasta').dataset.manualFee)setOld('fees_subasta',c?.conservative?.total||window.currentAuctionFees||0)}}catch(e){}}try{window.calc?.();window.calcCostos?.();window.nextGBLiveCostUpdate?.()}catch(e){}syncFromLegacy();toast('Vehículo sincronizado con la operación.');activate('Costos')}
-function loadVehicleFromLegacy(){const m=oldVal('marca'),mod=oldVal('modelo'),y=oldVal('anio');if(m){$('av15-make').value=m;populateModels();if(mod){$('av15-model').value=mod;populateYears();if(y){$('av15-year').value=y;populateTrims();const target=oldVal('version');if(target){const opts=[...$('av15-trim').options];const hit=opts.find(o=>(o.dataset.trim||'').toLowerCase()===target.toLowerCase());if(hit)hit.selected=true}}}}$('av15-buy').value=oldVal('auction_bid')||oldVal('costo_subasta');$('av15-vin-input').value=oldVal('vin')}
-function syncFromLegacy(){const title=(oldVal('marca')+' '+oldVal('modelo')+' '+oldVal('anio')).trim();$('av15-custom-vehicle').value=title;$('av15-origin').value=oldVal('pais_origen')||selectedRow()?.pais||'';$('av15-value').value=oldVal('valor')||selectedRow()?.valor||'';$('av15-buy').value=oldVal('auction_bid')||oldVal('costo_subasta')||$('av15-buy').value;$('av15-sale').value=oldVal('precio_venta_estimado_usd')||'';}
-function costField(id,label,oldId,def){const v=oldVal(oldId)||def;return `<div class="av15-metric"><span>${esc(label)}</span><input id="${id}" class="av15-input" style="max-width:150px;text-align:right" inputmode="decimal" value="${esc(v)}"></div>`}
-function renderCosts(){syncFromLegacy();$('av15-costs').innerHTML=costField('av15-fee','Fee de subasta','fees_subasta','0')+costField('av15-inland','Grúa / transporte USA','grua_inland','0')+costField('av15-repair','Reparación / taller Miami','reparacion_miami_usd','950')+costField('av15-doc','Documentación y logística en origen','documentacion_origen_usd','675')+costField('av15-broker','Broker Miami','fee_broker_usd','0')+costField('av15-freight','Flete marítimo','flete_real','910')+costField('av15-port','Puerto / despacho RD','paquete_despacho_usd','465');['av15-fee','av15-inland','av15-repair','av15-doc','av15-broker','av15-freight','av15-port'].forEach((id,i)=>{const oldIds=['fees_subasta','grua_inland','reparacion_miami_usd','documentacion_origen_usd','fee_broker_usd','flete_real','paquete_despacho_usd'];$(id).addEventListener('input',()=>{setOld(oldIds[i],$(id).value);if(id==='av15-fee'&&old('fees_subasta'))old('fees_subasta').dataset.manualFee='1';recalc()})});$('av15-customs').value=oldVal('c_despacho_rds')||'';$('av15-plate').value=oldVal('c_placa_rds')||'';$('av15-local-repair').value=oldVal('reparaciones_rds')||'';['av15-customs','av15-plate','av15-local-repair'].forEach((id,i)=>$(id).oninput=()=>{setOld(['c_despacho_rds','c_placa_rds','reparaciones_rds'][i],$(id).value);recalc()});recalc()}
-function recalc(){try{window.calcCostos?.();window.nextGBLiveCostUpdate?.()}catch(e){}syncFromLegacy();const inv=N(window.c_landed),sale=N(oldVal('precio_venta_estimado_usd'));const profit=sale-inv,roi=inv>0?profit/inv*100:0;$('av15-live-cost').textContent='US$ '+M(inv);$('av15-invest').textContent='US$ '+M(inv);$('av15-sale-kpi').textContent='US$ '+M(sale);$('av15-profit').textContent='US$ '+M(profit);$('av15-roi').textContent=roi.toFixed(2)+'%';if($('av15-sale').value!==oldVal('precio_venta_estimado_usd'))$('av15-sale').value=oldVal('precio_venta_estimado_usd')||'';renderDocument(false)}
-function setSale(v){$('av15-sale').value=v;setOld('precio_venta_estimado_usd',v||'');try{window.calcCostos?.()}catch(e){}recalc()}function syncCustomSelectorsFromMain(){const a=$('av15-make'),b=$('av15-custom-make');if(!a||!b)return;b.innerHTML=a.innerHTML;b.value=a.value;customModels();$('av15-custom-model').value=$('av15-model').value;customYears();$('av15-custom-year').value=$('av15-year').value;customTrims();const t=$('av15-trim').selectedOptions[0]?.dataset?.idx;if(t!=null){const hit=[...$('av15-custom-trim').options].find(o=>o.dataset.idx===t);if(hit)hit.selected=true}}
-function customModels(){const m=$('av15-custom-make').value,s=$('av15-custom-model');s.innerHTML='<option value="">Seleccione modelo</option>';s.disabled=!m;if(m&&db[m])Object.keys(db[m]).sort().forEach(x=>s.add(new Option(x,x)));$('av15-custom-year').innerHTML='<option value="">Seleccione año</option>';$('av15-custom-year').disabled=true;$('av15-custom-trim').innerHTML='<option value="">Seleccione serie</option>';$('av15-custom-trim').disabled=true}
-function customYears(){const m=$('av15-custom-make').value,mod=$('av15-custom-model').value,s=$('av15-custom-year');s.innerHTML='<option value="">Seleccione año</option>';s.disabled=!(m&&mod);if(m&&mod&&db[m]?.[mod])Object.keys(db[m][mod]).sort((a,b)=>Number(b)-Number(a)).forEach(x=>s.add(new Option(x,x)));$('av15-custom-trim').innerHTML='<option value="">Seleccione serie</option>';$('av15-custom-trim').disabled=true}
-function customTrims(){const m=$('av15-custom-make').value,mod=$('av15-custom-model').value,y=$('av15-custom-year').value,s=$('av15-custom-trim');s.innerHTML='<option value="">Seleccione serie</option>';const rows=dbRows(m,mod,y);rows.forEach((r,i)=>{const o=new Option(`${r.serie||'BASE'}${r.traccion?' · '+r.traccion.toUpperCase():''}${r.pais?' · '+r.pais:''}`,String(i));o.dataset.idx=String(i);o.dataset.valor=r.valor||0;o.dataset.pais=r.pais||'';s.add(o)});s.disabled=!rows.length}
-function applyCustom(){const m=$('av15-custom-make').value,mod=$('av15-custom-model').value,y=$('av15-custom-year').value,idx=$('av15-custom-trim').value;if(!m||!mod||!y||idx===''){toast('Selecciona marca, modelo, año y serie.');return}$('av15-make').value=m;populateModels();$('av15-model').value=mod;populateYears();$('av15-year').value=y;populateTrims();const hit=[...$('av15-trim').options].find(o=>o.dataset.idx===idx);if(hit)hit.selected=true;syncVehicle();}
-
-function renderDocument(recalcFirst=true){
-  if(recalcFirst)try{window.calcCostos?.();window.nextGBLiveCostUpdate?.()}catch(e){}
-  syncFromLegacy();
-  const inv=N(window.c_landed),sale=N(oldVal('precio_venta_estimado_usd')),profit=sale-inv,roi=inv?profit/inv*100:0;
-  const title=(oldVal('marca')+' '+oldVal('modelo')).trim()||'Vehículo pendiente',year=oldVal('anio')||'—',vin=oldVal('vin')||'—',mileage=oldVal('millaje')||'—',t=N(oldVal('tasa'))||60.60;
-  const sub=N(oldVal('costo_subasta'))+N(oldVal('fees_subasta')),inland=N(oldVal('grua_inland')),docs=N(oldVal('documentacion_origen_usd'))+N(oldVal('reparacion_miami_usd')),broker=N(oldVal('fee_broker_usd')),hon=N(oldVal('derecho_dealer_usd')),originTotal=sub+inland+docs+broker+hon;
-  const freight=N(oldVal('flete_real')),port=N(oldVal('paquete_despacho_usd')),customs=N(oldVal('c_despacho_rds')),plate=N(oldVal('c_placa_rds')),rep=N(oldVal('reparaciones_rds')),localTotal=customs+plate+rep;
-  const dispatchNoPlateUsd=port+customs/t,dispatchNoPlateRd=port*t+customs;
-  const p1=N(oldVal('pago_inicial_usd')),p2=Math.max(0,sub+broker+hon-p1),p3=inland+docs,p4=freight+port+customs/t+rep/t,p5=plate/t;
-  const head=`<div class="dochead"><div><div style="font-weight:900;font-size:14px">NEXT GB AUTO IMPORT</div><div class="muted">${docType}</div></div><div class="muted">06/10/2026</div></div>`;
-  const vehicleBlock=`<div style="font-weight:900;font-size:16px;margin-bottom:4px">${esc(title)} ${esc(year)}</div><div class="muted">VIN / Chasis: ${esc(vin)} · Millage: ${esc(mileage)} mi · Tasa DOP: ${M(t)}</div>`;
-  if(docType==='PROFORMA'){
-    $('av15-document').innerHTML=`${head}${vehicleBlock}<h3 style="margin-top:18px">Desglose de Inversión</h3><div class="line"><span>Subasta y Fees (Origen)</span><strong>US$ ${M(sub)}</strong></div><div class="line"><span>Grúa Inland (USA)</span><strong>US$ ${M(inland)}</strong></div><div class="line"><span>Documentación y Taller Miami</span><strong>US$ ${M(docs)}</strong></div><div class="line"><span>Fee Broker & Honorarios</span><strong>US$ ${M(broker+hon)}</strong></div><div class="line total"><span>Total Gastos en Origen (USD)</span><strong>US$ ${M(originTotal)}</strong></div><div class="line"><span>Flete Marítimo</span><strong>US$ ${M(freight)}</strong></div><div class="line"><span>Despacho Aduanal (Sin Placa)</span><strong>RD$ ${M(customs)}</strong></div><div class="line" style="font-weight:800"><span>Total Despacho (Sin Placa)</span><strong>US$ ${M(dispatchNoPlateUsd)}<br><span class="muted">RD$ ${M(dispatchNoPlateRd)}</span></strong></div><div class="line"><span>Primera Placa y Marbete</span><strong>RD$ ${M(plate)}</strong></div><div class="line"><span>Reparación en RD</span><strong>RD$ ${M(rep)}</strong></div><div class="line total"><span>Total Destino Local (RD$)</span><strong>RD$ ${M(localTotal)}</strong></div><div class="line total" style="margin-top:12px"><span>Costo Total (Landed Cost)</span><strong>US$ ${M(inv)}</strong></div><h3 style="margin-top:22px">Cronograma de Pagos</h3><div class="line"><span><b>Pago 1: Depósito de Seguridad</b><br><small class="muted">Hoy, para iniciar el proceso.</small></span><strong>US$ ${M(p1)}</strong></div><div class="line"><span><b>Pago 2: Balance Subasta</b><br><small class="muted">Facturas, fees de subasta, broker y honorarios.</small></span><strong>US$ ${M(p2)}</strong></div><div class="line"><span><b>Pago 3: Logística Origen</b><br><small class="muted">Grúa inland, taller y documentación.</small></span><strong>US$ ${M(p3)}</strong></div><div class="line"><span><b>Pago 4: Aduanas y Flete</b><br><small class="muted">Flete, agente aduanal, parqueo e impuestos DGA.</small></span><strong>US$ ${M(p4)}</strong></div><div class="line"><span><b>Pago 5: Placa y Endoso</b><br><small class="muted">Impuestos DGII placa y normativa 03-20.</small></span><strong>US$ ${M(p5)}</strong></div><div class="line total"><span>Total Inversión (USD)</span><strong>US$ ${M(inv)}</strong></div><p class="muted" style="margin-top:14px">Todos los montos están expresados en dólares estadounidenses (USD). Presupuesto referencial sujeto a disponibilidad del vehículo y variación del mercado naviero. Válido por 24 horas o hasta la finalización de la puja.</p>`;
-  }else{
-    $('av15-document').innerHTML=`${head}${vehicleBlock}<h3 style="margin-top:18px">Inversión y Rentabilidad</h3><div class="line"><span>Subasta y Fees (Origen)</span><strong>US$ ${M(sub)}</strong></div><div class="line"><span>Grúa Inland (USA)</span><strong>US$ ${M(inland)}</strong></div><div class="line"><span>Documentación y Taller Miami</span><strong>US$ ${M(docs)}</strong></div><div class="line"><span>Fee Broker</span><strong>US$ ${M(broker)}</strong></div><div class="line"><span>Honorarios NEXT GB</span><strong>US$ ${M(hon)}</strong></div><div class="line total"><span>Total Gastos en Origen (USD)</span><strong>US$ ${M(originTotal)}</strong></div><div class="line"><span>Flete Marítimo</span><strong>US$ ${M(freight)}</strong></div><div class="line"><span>Despacho Aduanal (Sin Placa)</span><strong>RD$ ${M(customs)}</strong></div><div class="line" style="font-weight:800"><span>Total Despacho (Sin Placa)</span><strong>US$ ${M(dispatchNoPlateUsd)}<br><span class="muted">RD$ ${M(dispatchNoPlateRd)}</span></strong></div><div class="line"><span>Primera Placa y Marbete</span><strong>RD$ ${M(plate)}</strong></div><div class="line"><span>Reparación en RD</span><strong>RD$ ${M(rep)}</strong></div><div class="line total"><span>Total Destino Local (RD$)</span><strong>RD$ ${M(localTotal)}</strong></div><div class="line total" style="margin-top:12px"><span>LANDED COST TOTAL</span><strong>US$ ${M(inv)}</strong></div><div class="line"><span>PRECIO DE VENTA (ESTIMADO)</span><strong>US$ ${M(sale)}</strong></div><div class="line profit"><span>MARGEN NETO</span><strong>US$ ${M(profit)} · RD$ ${M(profit*t)}</strong></div><div class="line profit"><span>RENTABILIDAD</span><strong>${roi.toFixed(2)}%</strong></div>`;
-  }
-}
-function docLine(label,v){return `<div class="line"><span>${esc(label)}</span><strong>US$ ${M(v)}</strong></div>`}
-async function runAI(){const txt=$('av15-ai-input').value.trim();if(!txt){toast('Escribe una consulta.');return}const legacy=$('nextgb-ai-input');if(!legacy||typeof window.nextGBAduanasAI!=='function'){toast('Motor IA no disponible.');return}legacy.value=txt;legacy.dispatchEvent(new Event('input',{bubbles:true}));$('av15-ai-status').textContent='Analizando…';try{await window.nextGBAduanasAI();setTimeout(()=>{const lr=$('nextgb-ai-result');$('av15-ai-result').innerHTML=lr?.innerHTML||'<div class="av15-status">No se generó resultado.</div>';$('av15-ai-status').textContent='Análisis completado. Puedes editarlo o aplicarlo a la operación.';},120)}catch(e){console.error(e);$('av15-ai-status').textContent='No fue posible completar el análisis.'}}
-function bindAIResult(){const r=$('av15-ai-result');r.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;if((b.textContent||'').toLowerCase().includes('aplicar a cotiz')){ev.preventDefault();ev.stopPropagation();try{const ok=window.nextGBV14ApplyResult?.();if(ok===false)throw new Error('apply false');setTimeout(()=>{loadVehicleFromLegacy();syncFromLegacy();renderCosts();recalc();activate('Costos');toast('IA aplicada y sincronizada en todos los módulos.');},120)}catch(e){console.error(e);toast('No se pudo sincronizar el resultado de la IA.')}}})}
-function pdf(){renderDocument();const d=$('av15-document').outerHTML;const w=window.open('','_blank','width=850,height=1100');if(!w){toast('El navegador bloqueó la ventana. Permite ventanas emergentes.');return}w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${docType} NEXT GB AUTO IMPORT</title><style>@page{size:A4;margin:16mm}body{font-family:Arial,sans-serif;color:#111827}.doc{max-width:760px;margin:auto}.dochead{display:flex;justify-content:space-between;border-bottom:2px solid #111827;padding-bottom:12px;margin-bottom:18px}.muted{color:#6b7280;font-size:11px}.line{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e5e7eb;font-size:12px}.total{font-size:15px;font-weight:900;margin-top:8px}.profit{color:#047857;font-weight:800}</style></head><body><div class="doc">${d}</div><script>setTimeout(()=>window.print(),350)<\/script></body></html>`);w.document.close()}
-function whatsapp(){renderDocument();const title=(oldVal('marca')+' '+oldVal('modelo')+' '+oldVal('anio')).trim()||'vehículo';const inv=N(window.c_landed),sale=N(oldVal('precio_venta_estimado_usd')),profit=sale-inv,roi=inv?profit/inv*100:0;const msg=`NEXT GB AUTO IMPORT\n${docType}: ${title}\nInversión estimada: US$ ${M(inv)}\nPrecio de venta: US$ ${M(sale)}\nGanancia: US$ ${M(profit)}\nRentabilidad: ${roi.toFixed(2)}%`;window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank')}
-async function share(){renderDocument();const title=`${docType} NEXT GB AUTO IMPORT`;const text=`${title}\n${oldVal('marca')} ${oldVal('modelo')} ${oldVal('anio')}\nInversión: US$ ${M(window.c_landed)}\nVenta: US$ ${M(oldVal('precio_venta_estimado_usd'))}\nGanancia: US$ ${M(N(oldVal('precio_venta_estimado_usd'))-N(window.c_landed))}`;if(navigator.share){try{await navigator.share({title,text})}catch(e){}}else{navigator.clipboard?.writeText(text);toast('Resumen copiado para compartir.')}}
-function bind(){document.querySelectorAll('#next-avpro-mobile-v15 [data-av15-nav]').forEach(b=>b.onclick=()=>activate(b.dataset.av15Nav));$('av15-theme').onclick=toggleTheme;$('av15-ai-run').onclick=runAI;document.querySelectorAll('[data-av15-q]').forEach(b=>b.onclick=()=>{$('av15-ai-input').value=b.dataset.av15Q;runAI()});$('av15-make').onchange=populateModels;$('av15-model').onchange=populateYears;$('av15-year').onchange=populateTrims;$('av15-custom-make').onchange=customModels;$('av15-custom-model').onchange=customYears;$('av15-custom-year').onchange=customTrims;$('av15-custom-apply').onclick=applyCustom;$('av15-drive').onchange=populateTrims;$('av15-trim').onchange=()=>{const r=selectedRow();if(r){$('av15-value').value=r.valor||'';$('av15-origin').value=r.pais||''}};$('av15-sync').onclick=syncVehicle;$('av15-buy').oninput=()=>setOld('auction_bid',$('av15-buy').value);$('av15-vin').onclick=()=>{setOld('vin',$('av15-vin-input').value.toUpperCase());try{window.decodeVIN?.()}catch(e){} };$('av15-sale').oninput=()=>setSale($('av15-sale').value);$('av15-quote-type').onclick=()=>{docType='COTIZACIÓN';$('av15-quote-type').classList.add('active');$('av15-proforma-type').classList.remove('active');renderDocument()};$('av15-proforma-type').onclick=()=>{docType='PROFORMA';$('av15-proforma-type').classList.add('active');$('av15-quote-type').classList.remove('active');renderDocument()};$('av15-pdf').onclick=pdf;$('av15-wa').onclick=whatsapp;$('av15-share').onclick=share;bindAIResult()}
-async function init(){bind();syncTheme();try{if(window.nextGBDatabaseReadyPromise)await window.nextGBDatabaseReadyPromise}catch(e){}populateMakes();syncCustomSelectorsFromMain();loadVehicleFromLegacy();syncFromLegacy();renderCosts();syncCustomSelectorsFromMain();renderDocument(false);setInterval(()=>{if(document.getElementById('next-avpro-mobile-v15'))recalc()},1200)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})();
-</script>
 </body>
-
-
-<!-- NEXT-AVPRO-MOBILE V1.1 · TRUE IPHONE APP SHELL -->
-<style id="next-avpro-mobile-v11">
-@media (max-width: 700px), (pointer: coarse) {
-  :root{--mobile-gutter:14px;--mobile-nav-h:72px;}
-  html{width:100%!important;min-width:0!important;overflow-x:hidden!important;scroll-behavior:smooth!important;}
-  body.mobile-app{width:100%!important;min-width:0!important;max-width:100%!important;overflow-x:hidden!important;margin:0!important;padding:0 0 calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 16px)!important;background:var(--bg-body)!important;}
-  body.mobile-app *{box-sizing:border-box!important;max-width:100%;}
-  body.mobile-app .top-bar{position:sticky!important;top:0!important;z-index:9000!important;width:100%!important;min-height:68px!important;margin:0!important;padding:12px var(--mobile-gutter)!important;border-bottom:1px solid var(--border-color)!important;background:rgba(7,10,16,.92)!important;backdrop-filter:blur(18px)!important;}
-  body.mobile-app.light-mode .top-bar{background:rgba(247,250,255,.92)!important;}
-  body.mobile-app .brand-mark{gap:10px!important;min-width:0!important;}
-  body.mobile-app .brand-icon{width:46px!important;height:46px!important;min-width:46px!important;border-radius:15px!important;font-size:17px!important;}
-  body.mobile-app .brand-copy strong{font-size:14px!important;}
-  body.mobile-app .brand-copy span{font-size:8px!important;letter-spacing:1.4px!important;}
-  body.mobile-app .top-actions{width:auto!important;display:flex!important;}
-  body.mobile-app .top-tools-trigger{width:42px!important;height:42px!important;min-width:42px!important;}
-  body.mobile-app #theme-switch{display:none!important;}
-  body.mobile-app .app-shell,.mobile-app .page-heading{display:none!important;}
-
-  /* One screen = one column. The desktop preview is never allowed beside the form. */
-  body.mobile-app #main-container{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0 var(--mobile-gutter)!important;}
-  body.mobile-app #left-panel{width:100%!important;min-width:0!important;max-width:none!important;}
-  body.mobile-app #right-panel{display:none!important;width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:18px 0 0!important;border:0!important;box-shadow:none!important;position:static!important;overflow:visible!important;background:transparent!important;}
-  body.mobile-app #right-panel::before{display:none!important;}
-  body.mobile-app.mobile-cotizacion #right-panel{display:block!important;}
-  body.mobile-app.mobile-cotizacion #left-panel{display:none!important;}
-  body.mobile-app.mobile-ai #main-container{display:none!important;}
-  body.mobile-app.mobile-ai #right-panel{display:none!important;}
-  body.mobile-app.mobile-ai #left-panel{display:none!important;}
-
-  /* Wizard cards */
-  body.mobile-app .tabs-nav{display:flex!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:16px 0 10px!important;margin:0!important;scrollbar-width:none!important;}
-  body.mobile-app .tabs-nav::-webkit-scrollbar{display:none!important;}
-  body.mobile-app .tab-btn{flex:0 0 138px!important;min-height:70px!important;padding:11px 10px 10px 48px!important;border-radius:17px!important;}
-  body.mobile-app .tab-btn::before{left:10px!important;width:30px!important;height:30px!important;}
-  body.mobile-app .tab-btn .step-kicker{font-size:8px!important;}
-  body.mobile-app .tab-btn .step-name{font-size:11px!important;line-height:1.2!important;}
-  body.mobile-app .wizard-meta{margin:0 0 12px!important;}
-  body.mobile-app .card{width:100%!important;margin:0 0 14px!important;padding:18px!important;border-radius:20px!important;overflow:hidden!important;}
-  body.mobile-app .section-intro{margin-bottom:18px!important;}
-  body.mobile-app .section-intro h1{font-size:23px!important;line-height:1.12!important;}
-  body.mobile-app .section-intro p{font-size:12px!important;line-height:1.5!important;}
-  body.mobile-app .field-grid,.mobile-app .field-grid.triple{display:block!important;grid-template-columns:1fr!important;}
-  body.mobile-app .input-group{margin-bottom:14px!important;}
-  body.mobile-app label{font-size:11px!important;margin-bottom:7px!important;}
-  body.mobile-app input,body.mobile-app select,body.mobile-app textarea{width:100%!important;min-width:0!important;min-height:50px!important;font-size:16px!important;border-radius:14px!important;}
-  body.mobile-app .vin-search-container{display:grid!important;grid-template-columns:minmax(0,1fr) 52px!important;gap:8px!important;}
-  body.mobile-app .vin-search-container input{width:100%!important;}
-  body.mobile-app .vin-search-container button{width:52px!important;min-width:52px!important;}
-  body.mobile-app .auction-switch{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  body.mobile-app .auction-switch .btn-action{font-size:13px!important;min-height:52px!important;}
-  body.mobile-app .form-footer{margin-top:20px!important;}
-  body.mobile-app .form-footer .btn-action{min-height:54px!important;font-size:14px!important;}
-
-  /* Live Cost becomes a vertical dashboard. */
-  body.mobile-app #nextgb-live-cost{margin-top:14px!important;padding:16px!important;border-radius:20px!important;}
-  body.mobile-app #nextgb-live-cost > div:nth-child(2),
-  body.mobile-app #nextgb-live-cost > div:nth-child(3){display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
-  body.mobile-app #nextgb-live-cost > div:nth-child(2) > div{min-height:76px!important;padding:13px!important;border-radius:15px!important;}
-  body.mobile-app #nextgb-live-cost strong{font-size:21px!important;}
-
-  /* Preview / quotation is a full-width mobile document. */
-  body.mobile-app #right-panel .preview-toolbar{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;padding:0!important;margin-bottom:12px!important;}
-  body.mobile-app #right-panel .preview-toolbar-right{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  body.mobile-app #right-panel .preview-toolbar-right>*{width:100%!important;min-width:0!important;}
-  body.mobile-app #right-panel .preview-header{display:block!important;padding:16px!important;border-radius:20px!important;}
-  body.mobile-app #right-panel .logo-svg{width:150px!important;height:auto!important;}
-  body.mobile-app #right-panel .quote-info-box{grid-template-columns:1fr!important;gap:8px!important;}
-  body.mobile-app #right-panel .res-line{display:flex!important;justify-content:space-between!important;gap:10px!important;}
-  body.mobile-app #right-panel .final-kpis,.mobile-app #right-panel .final-main-grid{grid-template-columns:1fr!important;}
-
-  /* AI home: app-like, no giant desktop shell. */
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen{position:fixed!important;inset:68px 0 calc(var(--mobile-nav-h) + env(safe-area-inset-bottom)) 0!important;width:auto!important;height:auto!important;min-height:0!important;z-index:8000!important;display:flex!important;overflow-y:auto!important;overflow-x:hidden!important;padding:18px var(--mobile-gutter) 28px!important;align-items:flex-start!important;background:radial-gradient(circle at 50% 0%,rgba(59,130,246,.16),transparent 34%),var(--bg-body)!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-shell{width:100%!important;max-width:none!important;margin:0!important;padding:20px 16px!important;border-radius:24px!important;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012)),var(--bg-card)!important;box-shadow:0 20px 60px rgba(0,0,0,.28)!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-head{align-items:center!important;text-align:center!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-icon{width:62px!important;height:62px!important;border-radius:19px!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-title strong{font-size:24px!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-title span{font-size:9px!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-row{width:100%!important;max-width:none!important;margin:20px 0 0!important;display:flex!important;flex-direction:column!important;padding:9px!important;border-radius:18px!important;gap:8px!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-row textarea{width:100%!important;min-height:132px!important;height:132px!important;padding:14px!important;font-size:16px!important;line-height:1.5!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-btn{width:100%!important;min-height:52px!important;align-self:stretch!important;font-size:14px!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-examples{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;width:100%!important;margin-top:14px!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-result{width:100%!important;max-width:none!important;margin:16px 0 0!important;padding:12px!important;border-radius:18px!important;max-height:none!important;overflow:visible!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-result .nextgb-ai-grid{grid-template-columns:1fr!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .v14-edit-grid,
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .v14-vehicle-summary,
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .v14-profit-grid{grid-template-columns:1fr!important;}
-  body.mobile-app #nextgb-ai-aduanas.nextgb-ai-home-screen .v14-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
-
-  /* Bottom app navigation */
-  body.mobile-app .nextgb-mobile-nav{position:fixed!important;left:10px!important;right:10px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;width:auto!important;height:68px!important;z-index:99999!important;padding:6px 5px!important;gap:2px!important;border-radius:22px!important;background:rgba(17,20,27,.94)!important;border:1px solid rgba(255,255,255,.12)!important;box-shadow:0 15px 45px rgba(0,0,0,.38)!important;backdrop-filter:blur(20px)!important;}
-  body.mobile-app.light-mode .nextgb-mobile-nav{background:rgba(255,255,255,.94)!important;}
-  body.mobile-app .nextgb-mobile-nav button{min-height:56px!important;height:56px!important;border-radius:16px!important;font-size:9px!important;font-weight:700!important;color:var(--text-muted)!important;}
-  body.mobile-app .nextgb-mobile-nav button span{font-size:19px!important;line-height:21px!important;margin-bottom:2px!important;}
-  body.mobile-app .nextgb-mobile-nav button.active{background:rgba(59,130,246,.14)!important;color:var(--accent-2)!important;}
-
-  /* Remove any accidental horizontal overflow from legacy inline grids/tables. */
-  body.mobile-app table{display:block!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;}
-  body.mobile-app [style*="grid-template-columns:repeat(4"],
-  body.mobile-app [style*="grid-template-columns: repeat(4"],
-  body.mobile-app [style*="grid-template-columns:repeat(3"],
-  body.mobile-app [style*="grid-template-columns: repeat(3"]{grid-template-columns:1fr!important;}
-}
-</style>
-<script id="next-avpro-mobile-v11-nav">
-(function(){
-  'use strict';
-  const isMobile=()=>window.matchMedia('(max-width:700px),(pointer:coarse)').matches;
-  const $=id=>document.getElementById(id);
-  function setActive(label){document.querySelectorAll('.nextgb-mobile-nav button').forEach(b=>b.classList.toggle('active',(b.dataset.tab||'')===label));}
-  function hideAll(){
-    const ai=$('nextgb-ai-aduanas'), left=$('left-panel'), right=$('right-panel'), main=$('main-container');
-    document.body.classList.remove('mobile-ai','mobile-cotizacion');
-    if(ai){ai.style.display='none';ai.classList.remove('nextgb-ai-home-screen');}
-    if(main)main.style.display='block';
-    if(left)left.style.display='block';
-    if(right)right.style.display='none';
-  }
-  function showAI(){
-    hideAll(); document.body.classList.add('mobile-ai');
-    const ai=$('nextgb-ai-aduanas');
-    if(ai){ai.classList.add('nextgb-ai-home-screen');ai.style.display='flex';}
-    setActive('AI'); window.scrollTo(0,0);
-  }
-  function showVehicle(){
-    hideAll();
-    const ai=$('nextgb-ai-aduanas'); if(ai)ai.style.display='none';
-    if(typeof window.openTab==='function')window.openTab('tab-subastas');
-    setActive('Vehículo'); window.scrollTo(0,0);
-  }
-  function showCosts(){
-    hideAll();
-    const ai=$('nextgb-ai-aduanas'); if(ai)ai.style.display='none';
-    if(typeof window.openTab==='function')window.openTab('tab-costos');
-    setActive('Costos'); window.scrollTo(0,0);
-  }
-  function showMargin(){
-    hideAll();
-    const ai=$('nextgb-ai-aduanas'); if(ai)ai.style.display='none';
-    if(typeof window.openTab==='function')window.openTab('tab-costos');
-    setActive('Margen');
-    setTimeout(()=>{ $('nextgb-live-cost')?.scrollIntoView({behavior:'smooth',block:'start'}); },80);
-  }
-  function showQuote(){
-    hideAll(); document.body.classList.add('mobile-cotizacion');
-    const right=$('right-panel'); if(right)right.style.display='block';
-    setActive('Cotización'); window.scrollTo(0,0);
-  }
-  window.nextGBMobileNavigate=function(label){
-    if(!isMobile())return;
-    ({AI:showAI,Vehículo:showVehicle,Costos:showCosts,Margen:showMargin,Cotización:showQuote}[label]||showAI)();
-  };
-  function mount(){
-    document.body.classList.add('mobile-app');
-    const nav=document.querySelector('.nextgb-mobile-nav');
-    if(nav){
-      const items=[['AI','🤖'],['Vehículo','🚗'],['Costos','💰'],['Margen','📊'],['Cotización','📄']];
-      nav.innerHTML='';
-      items.forEach(([label,icon])=>{const b=document.createElement('button');b.type='button';b.dataset.tab=label;b.innerHTML='<span>'+icon+'</span><b>'+label+'</b>';b.onclick=()=>window.nextGBMobileNavigate(label);nav.appendChild(b);});
-    }
-    if(isMobile())showAI();
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(mount,50),{once:true});
-  else setTimeout(mount,50);
-  window.addEventListener('load',()=>setTimeout(()=>{if(isMobile())document.body.classList.add('mobile-app');},150));
-})();
-</script>
-
+</html>
 
 <!-- NEXT-AVPRO-BETA.V1.0 · AI SESSION/APPLY PATCH -->
 <script>
@@ -6317,7 +5979,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     'auction_bid','costo_subasta','fees_subasta','grua_inland','flete_real','flete',
     'documentacion_origen_usd','reparacion_miami_usd','derecho_dealer_usd',
     'paquete_despacho_usd','precio_venta_estimado_usd','pago_inicial_usd',
-    'valor','seguro','gastos_adicionales_dga','c_despacho_rds','c_placa_rds',
+    'valor','seguro','gastos_adicionales_dga','c_despacho_rds','placa_pp_rds',
     'vin','cliente','millaje','zip_origen','reparaciones_rds'
   ];
 
@@ -6334,10 +5996,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }
 
   function clearFormForNewQuote(){
-    try{localStorage.removeItem('nextgb_ai_v14_state');localStorage.removeItem('nextgb_mobile_v15_state');}catch(e){}
-    try{if(typeof window.limpiarCaso==='function') window.limpiarCaso();}catch(e){console.warn('V1.75 limpiarCaso',e)}
+    // Use the application's own Nueva cotización routine so the AI reset is
+    // identical to the manual reset, including configured defaults.
+    try{
+      if(typeof window.limpiarCaso==='function') window.limpiarCaso();
+    }catch(e){console.warn('V1.75 limpiarCaso',e)}
     clearAIResultOnly();
-    try{window.nextGBLastOrder={compra:null,fee:null,feeManual:false,feeAuto:false,grua:null,reparacion:null,documentacion:null,flete:null,puerto:null,venta:null,honorarios:null,deposito:null,plataforma:null,tipoPuja:null};window.nextGBCurrentAIQuery='';}catch(e){}
   }
 
   // Wrap the existing manual reset so clicking "Nueva cotización" also clears
@@ -6693,445 +6357,3 @@ body:not(.light-mode) #nextgb-ai-result h3{
   window.addEventListener('load',()=>setTimeout(bind,200));
 })();
 </script>
-
-
-<!-- NEXT-AVPRO-MOBILE V1.3 · TRUE MOBILE-FIRST APP SHELL -->
-<style id="next-avpro-mobile-v13">
-@media (max-width:700px), (pointer:coarse){
-  html,body{margin:0!important;padding:0!important;width:100%!important;min-width:0!important;overflow:hidden!important;background:#070a10!important;}
-  body.light-mode{background:#f4f7fb!important;}
-  /* Hide the desktop/adapted composition completely on phones. */
-  body.mobile-v13 > .top-bar,
-  body.mobile-v13 > .page-heading,
-  body.mobile-v13 > .app-shell,
-  body.mobile-v13 .app-shell,
-  body.mobile-v13 .nextgb-ai-aduanas,
-  body.mobile-v13 .theme-switch,
-  body.mobile-v13 .nextgb-mobile-nav{display:none!important;}
-
-  #next-avpro-mobile-v13{
-    position:fixed!important;inset:0!important;z-index:100000!important;
-    display:flex!important;flex-direction:column!important;
-    width:100vw!important;height:100dvh!important;min-height:100dvh!important;
-    overflow:hidden!important;background:var(--bg-body)!important;color:var(--text-main)!important;
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
-  }
-  .v13-main{flex:1 1 auto;min-height:0;overflow:hidden;position:relative;}
-  .v13-screen{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;padding:14px 16px calc(92px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;}
-  .v13-screen.active{display:block;animation:v13in .22s ease-out;}
-  @keyframes v13in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-  .v13-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px;padding-top:max(4px,env(safe-area-inset-top));}
-  .v13-brand{display:flex;align-items:center;gap:10px;min-width:0;}
-  .v13-logo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#4f46e5);color:#fff;font-weight:900;box-shadow:0 9px 24px rgba(59,130,246,.28);}
-  .v13-brand strong{display:block;font-size:14px;letter-spacing:-.3px;}.v13-brand span{display:block;color:var(--text-muted);font-size:9px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800;margin-top:2px;}
-  .v13-theme{width:42px;height:42px;border:1px solid var(--border-strong);border-radius:13px;background:var(--bg-card);color:var(--text-main);display:grid;place-items:center;font-size:18px;box-shadow:var(--shadow-card);cursor:pointer;flex:0 0 auto;}
-  .v13-hero{padding:18px;border-radius:24px;background:linear-gradient(145deg,rgba(37,99,235,.18),rgba(79,70,229,.07) 48%,var(--bg-card) 100%);border:1px solid rgba(96,165,250,.18);box-shadow:var(--shadow-card);margin-bottom:14px;}
-  .v13-kicker{color:var(--accent-2);font-size:9px;text-transform:uppercase;letter-spacing:2px;font-weight:900;margin-bottom:8px;}.v13-hero h1{margin:0;font-size:30px;line-height:1.04;letter-spacing:-1.4px;}.v13-hero p{margin:9px 0 0;color:var(--text-muted);font-size:13px;line-height:1.5;}
-  .v13-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:16px;box-shadow:var(--shadow-card);margin-bottom:12px;}
-  .v13-card h2{font-size:15px;margin:0 0 12px;letter-spacing:-.3px;}.v13-card h3{font-size:11px;margin:0 0 8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;}
-  .v13-input,.v13-select{width:100%;min-height:50px;border:1px solid var(--border-color);border-radius:14px;background:var(--input-bg);color:var(--text-main);padding:0 14px;font:600 14px Inter,sans-serif;outline:none;box-sizing:border-box;}
-  .v13-textarea{width:100%;min-height:150px;border:1px solid rgba(96,165,250,.24);border-radius:18px;background:var(--input-bg);color:var(--text-main);padding:15px;font:500 16px/1.5 Inter,sans-serif;resize:none;outline:none;box-sizing:border-box;}
-  .v13-input:focus,.v13-select:focus,.v13-textarea:focus{border-color:rgba(59,130,246,.65);box-shadow:0 0 0 4px var(--accent-glow);}
-  .v13-btn{width:100%;min-height:50px;border:0;border-radius:14px;padding:0 16px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font:800 13px Inter,sans-serif;box-shadow:0 12px 26px rgba(37,99,235,.22);cursor:pointer;}
-  .v13-btn.secondary{background:var(--bg-card-2);color:var(--text-main);border:1px solid var(--border-color);box-shadow:none;}.v13-btn.green{background:linear-gradient(135deg,#22c55e,#16a34a);}
-  .v13-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;}.v13-actions.one{grid-template-columns:1fr;}
-  .v13-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-top:10px;scrollbar-width:none;}.v13-chips::-webkit-scrollbar{display:none;}.v13-chip{flex:0 0 auto;border:1px solid var(--border-color);background:var(--bg-card-2);color:var(--text-soft);border-radius:999px;padding:9px 12px;font-size:10px;font-weight:800;cursor:pointer;}
-  .v13-result{margin-top:12px;display:none;}.v13-result.show{display:block;}.v13-result > *{max-width:100%!important;box-sizing:border-box;}
-  .v13-result .nextgb-tax-only-card,.v13-result .nextgb-ai-answer,.v13-result .nextgb-ai-v14-card,.v13-result table{width:100%!important;max-width:100%!important;overflow-wrap:anywhere;}
-  .v13-result .nextgb-ai-grid{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;}.v13-result .nextgb-ai-kpi{min-width:0!important;}
-  .v13-status{margin-top:9px;color:var(--text-muted);font-size:10px;line-height:1.4;}
-  .v13-grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}.v13-grid2>div{min-width:0;}.v13-label{display:block;color:var(--text-soft);font-size:10px;font-weight:800;margin:0 0 6px;}
-  .v13-segment{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}.v13-segment button{min-height:48px;border:1px solid var(--border-color);background:var(--bg-card-2);color:var(--text-soft);border-radius:13px;font-weight:800;}.v13-segment button.active{background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:var(--accent-2);}
-  .v13-metric{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-color);}.v13-metric:last-child{border-bottom:0;}.v13-metric span{font-size:11px;color:var(--text-muted);}.v13-metric strong{font-size:13px;color:var(--text-main);text-align:right;}.v13-total{margin-top:10px;padding:16px;border-radius:16px;background:linear-gradient(145deg,#2563eb,#1e3a8a);color:#fff;}.v13-total small{display:block;opacity:.75;font-size:9px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800;margin-bottom:6px;}.v13-total strong{font-size:27px;letter-spacing:-1px;}
-  .v13-nav{flex:0 0 auto;height:70px;padding:5px 6px calc(5px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:rgba(14,19,29,.96);border-top:1px solid var(--border-strong);backdrop-filter:blur(22px);box-shadow:0 -12px 35px rgba(0,0,0,.24);}
-  .light-mode #next-avpro-mobile-v13 .v13-nav{background:rgba(255,255,255,.96);}
-  .v13-nav button{border:0;background:transparent;color:var(--text-muted);border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 9px Inter,sans-serif;min-width:0;}.v13-nav button span{font-size:21px;line-height:22px;}.v13-nav button.active{background:rgba(59,130,246,.15);color:var(--accent-2);}
-  .v13-empty{padding:24px 8px;color:var(--text-muted);font-size:12px;text-align:center;line-height:1.5;}
-  @media(max-width:380px){.v13-hero h1{font-size:27px}.v13-grid2{grid-template-columns:1fr}.v13-nav button span{font-size:19px}}
-}
-@media(min-width:701px){#next-avpro-mobile-v13{display:none!important;}}
-</style>
-
-<div id="next-avpro-mobile-v13" aria-label="NEXT AVPRO Mobile V1.3">
-  <div class="v13-main">
-    <section class="v13-screen active" data-screen="AI">
-      <div class="v13-header"><div class="v13-brand"><div class="v13-logo">AI</div><div><strong>NEXT GB</strong><span>Asistente de importación</span></div></div><button class="v13-theme" id="v13-theme" aria-label="Cambiar tema">☾</button></div>
-      <div class="v13-hero"><div class="v13-kicker">Copiloto de importación</div><h1>¿Qué vehículo quieres analizar?</h1><p>Escribe el vehículo, VIN o los costos de la operación. La IA construye el escenario y usa el mismo motor de cálculo de NEXT GB.</p></div>
-      <div class="v13-card"><div class="v13-kicker">Consulta</div><textarea id="v13-ai-input" class="v13-textarea" placeholder="Ej.: Tucson SEL AWD 2022, compra 12,000, fee 1,300, grúa 900, taller 1,200, venta 24,000..."></textarea><div class="v13-actions one"><button class="v13-btn" id="v13-ai-run">Analizar operación</button></div><div class="v13-chips"><button class="v13-chip" data-q="Consulta impuestos Tucson SEL AWD 2022 USA">🧾 Impuestos</button><button class="v13-chip" data-q="Tucson SEL AWD 2022, compra 12000">🚙 Vehículo</button><button class="v13-chip" data-q="Tucson SEL AWD 2022, compra 12000, venta 24000">📊 Margen</button></div><div class="v13-status" id="v13-ai-status">IA lista · cálculo en el dispositivo</div><div id="v13-ai-result" class="v13-result"></div></div>
-    </section>
-
-    <section class="v13-screen" data-screen="Vehículo">
-      <div class="v13-header"><div><div class="v13-kicker">Paso 01</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Vehículo & Subasta</h1></div><button class="v13-theme" data-theme>☾</button></div>
-      <div class="v13-card"><h2>Plataforma</h2><div class="v13-segment"><button id="v13-iaai" class="active">IAAI</button><button id="v13-copart">COPART</button></div><div class="v13-grid2"><div><label class="v13-label">Compra / oferta USD</label><input id="v13-compra" class="v13-input" inputmode="decimal" placeholder="0"></div><div><label class="v13-label">VIN</label><input id="v13-vin" class="v13-input" autocapitalize="characters" placeholder="17 caracteres"></div></div><div style="margin-top:10px"><label class="v13-label">Marca</label><input id="v13-marca" class="v13-input" placeholder="Hyundai"></div><div style="margin-top:10px"><label class="v13-label">Modelo / versión</label><input id="v13-modelo" class="v13-input" placeholder="Tucson SEL AWD"></div><div class="v13-grid2" style="margin-top:10px"><div><label class="v13-label">Año</label><input id="v13-anio" class="v13-input" inputmode="numeric" placeholder="2022"></div><div><label class="v13-label">Tracción</label><input id="v13-traccion" class="v13-input" placeholder="AWD / FWD"></div></div><div class="v13-actions"><button class="v13-btn secondary" id="v13-sync-vehicle">Sincronizar</button><button class="v13-btn" id="v13-vin-search">Decodificar VIN</button></div></div>
-    </section>
-
-    <section class="v13-screen" data-screen="Costos">
-      <div class="v13-header"><div><div class="v13-kicker">Paso 02</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Costos de importación</h1></div><button class="v13-theme" data-theme>☾</button></div>
-      <div class="v13-card"><h2>Origen · Miami</h2><div id="v13-cost-origin"></div></div><div class="v13-card"><h2>Destino · RD</h2><div id="v13-cost-dest"></div><div class="v13-total"><small>Live Cost</small><strong id="v13-live-cost">US$ 0.00</strong></div></div>
-    </section>
-
-    <section class="v13-screen" data-screen="Margen">
-      <div class="v13-header"><div><div class="v13-kicker">Paso 03</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Inversión & Margen</h1></div><button class="v13-theme" data-theme>☾</button></div>
-      <div class="v13-card"><h2>Resultado comercial</h2><div class="v13-metric"><span>Live Cost</span><strong id="v13-margin-cost">US$ 0.00</strong></div><div style="margin-top:12px"><label class="v13-label">Precio de venta USD</label><input id="v13-venta" class="v13-input" inputmode="decimal" placeholder="0"></div><div class="v13-metric" style="margin-top:10px"><span>Ganancia</span><strong id="v13-gain">US$ 0.00</strong></div><div class="v13-metric"><span>Margen</span><strong id="v13-margin">0.00%</strong></div><div class="v13-actions one"><button class="v13-btn green" id="v13-calc-margin">Actualizar margen</button></div></div>
-    </section>
-
-    <section class="v13-screen" data-screen="Cotización">
-      <div class="v13-header"><div><div class="v13-kicker">Documento</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Cotización</h1></div><button class="v13-theme" data-theme>☾</button></div>
-      <div class="v13-card"><h2 id="v13-quote-title">NEXT GB AUTO IMPORT</h2><div id="v13-quote-body"></div><div class="v13-actions"><button class="v13-btn secondary" id="v13-refresh-quote">Actualizar</button><button class="v13-btn" id="v13-print">Imprimir / PDF</button></div></div>
-    </section>
-  </div>
-  <nav class="v13-nav" aria-label="Navegación móvil">
-    <button class="active" data-nav="AI"><span>🤖</span>AI</button><button data-nav="Vehículo"><span>🚙</span>Vehículo</button><button data-nav="Costos"><span>💰</span>Costos</button><button data-nav="Margen"><span>📊</span>Margen</button><button data-nav="Cotización"><span>📄</span>Cotización</button>
-  </nav>
-</div>
-
-<script id="next-avpro-mobile-v13-js">
-(function(){
-'use strict';
-const q=s=>document.querySelector(s), qa=s=>Array.from(document.querySelectorAll(s));
-const num=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0};
-const money=v=>new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(num(v));
-const el=id=>document.getElementById(id);
-const screens=()=>qa('#next-avpro-mobile-v13 .v13-screen');
-function mobileField(id){return el(id)}
-function getOld(id){return el(id)}
-function setOld(id,v){const x=getOld(id);if(x&&v!==undefined&&v!==null){x.value=String(v);x.dispatchEvent(new Event('input',{bubbles:true}));x.dispatchEvent(new Event('change',{bubbles:true}));}}
-function getOldVal(id){return getOld(id)?.value??''}
-function activate(name){
-  screens().forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
-  qa('#next-avpro-mobile-v13 [data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===name));
-  if(name==='Costos')renderCosts(); if(name==='Margen')renderMargin(); if(name==='Cotización')renderQuote();
-}
-function theme(){
-  if(typeof window.toggleTheme==='function') window.toggleTheme();
-  else document.body.classList.toggle('light-mode');
-  syncThemeIcons();
-}
-function syncThemeIcons(){const light=document.body.classList.contains('light-mode');qa('#next-avpro-mobile-v13 .v13-theme').forEach(b=>b.textContent=light?'☀':'☾');}
-function runAI(){
-  const input=el('v13-ai-input'), old=el('nextgb-ai-input'), result=el('v13-ai-result'), status=el('v13-ai-status');
-  const text=String(input?.value||'').trim(); if(!text){status.textContent='Escribe una consulta para comenzar.';input?.focus();return;}
-  if(!old||typeof window.nextGBAduanasAI!=='function'){status.textContent='El motor IA no está disponible en esta carga.';return;}
-  old.value=text; old.dispatchEvent(new Event('input',{bubbles:true}));
-  status.textContent='Analizando operación…';
-  result.classList.remove('show');
-  Promise.resolve(window.nextGBAduanasAI()).then(()=>{
-    const legacy=el('nextgb-ai-result');
-    if(legacy&&legacy.innerHTML.trim()){
-      result.innerHTML=legacy.innerHTML;
-      result.classList.add('show');
-      status.textContent='Análisis completado · puedes editar los datos desde Vehículo, Costos y Margen.';
-    }else status.textContent='No se generó un resultado visible. Revisa la consulta.';
-  }).catch(()=>{status.textContent='No fue posible completar el análisis.'});
-}
-function syncVehicle(){
-  setOld('auction_bid',getOldVal('auction_bid')||num(mobileField('v13-compra')?.value));
-  const m=['vin','marca','modelo','anio'];m.forEach(id=>setOld(id,mobileField('v13-'+id)?.value||''));
-  try{window.calcCostos?.();window.calc?.();window.nextGBLiveCostUpdate?.()}catch(e){}
-}
-function loadVehicle(){
-  el('v13-compra').value=getOldVal('auction_bid');el('v13-vin').value=getOldVal('vin');el('v13-marca').value=getOldVal('marca');el('v13-modelo').value=getOldVal('modelo');el('v13-anio').value=getOldVal('anio');
-  const spec=(getOldVal('modelo')||'').match(/\b(AWD|4WD|4X4|FWD|RWD|4X2|2WD)\b/i); if(spec)el('v13-traccion').value=spec[1].toUpperCase();
-}
-function syncCosts(){
-  const pairs=[['v13-fee','fees_subasta'],['v13-tow','grua_inland'],['v13-repair','reparacion_miami_usd'],['v13-doc','documentacion_origen_usd'],['v13-freight','flete_real'],['v13-port','paquete_despacho_usd']];
-  pairs.forEach(([a,b])=>{if(el(a))setOld(b,el(a).value)});try{window.calcCostos?.();window.nextGBLiveCostUpdate?.()}catch(e){}
-}
-function costInput(id,label,oldId,def){const v=getOldVal(oldId)||def;return `<div class="v13-metric"><span>${label}</span><input id="${id}" class="v13-input" style="max-width:145px;text-align:right" inputmode="decimal" value="${String(v).replace(/"/g,'&quot;')}" data-old="${oldId}"></div>`}
-function renderCosts(){
-  const origin=el('v13-cost-origin'),dest=el('v13-cost-dest'); if(!origin||!dest)return;
-  origin.innerHTML=costInput('v13-fee','Auction fee','fees_subasta','0')+costInput('v13-tow','Grúa inland USA','grua_inland','0')+costInput('v13-repair','Reparación / taller Miami','reparacion_miami_usd','950')+costInput('v13-doc','Documentación y logística','documentacion_origen_usd','675')+costInput('v13-freight','Flete marítimo','flete_real','910')+costInput('v13-port','Paquete despacho / puerto','paquete_despacho_usd','465');
-  dest.innerHTML=`<div class="v13-metric"><span>Despacho aduanal</span><strong>RD$ ${money(window.currentSinPlaca||0)}</strong></div><div class="v13-metric"><span>Primera placa / marbete</span><strong>RD$ ${money((getOld('rPlaca')?.innerText||'').replace(/[^0-9.-]/g,''))}</strong></div>`;
-  qa('#v13-cost-origin input').forEach(x=>x.addEventListener('change',syncCosts));
-  const live=num(window.currentLiveCost||window.currentTotalInvestment||0);el('v13-live-cost').textContent='US$ '+money(live);
-}
-function renderMargin(){
-  const cost=num(window.currentLiveCost||window.currentTotalInvestment||0)||num(getOld('c_total')?.value||0);el('v13-margin-cost').textContent='US$ '+money(cost);
-  const sale=getOldVal('precio_venta_estimado_usd');el('v13-venta').value=sale;
-  updateMargin();
-}
-function updateMargin(){const cost=num(window.currentLiveCost||window.currentTotalInvestment||0)||num(getOld('c_total')?.value||0),sale=num(el('v13-venta')?.value);setOld('precio_venta_estimado_usd',sale?sale:'');try{window.calcCostos?.();}catch(e){}const gain=sale-cost,margin=sale?gain/sale*100:0;el('v13-gain').textContent='US$ '+money(gain);el('v13-margin').textContent=margin.toFixed(2)+'%';}
-function renderQuote(){
-  const title=(getOldVal('marca')+' '+getOldVal('modelo')).trim()||'NEXT GB AUTO IMPORT';const cost=num(window.currentLiveCost||window.currentTotalInvestment||0);const sale=num(getOldVal('precio_venta_estimado_usd'));const gain=sale-cost;
-  el('v13-quote-title').textContent=title;
-  el('v13-quote-body').innerHTML=`<div class="v13-metric"><span>Vehículo</span><strong>${title}</strong></div><div class="v13-metric"><span>Compra + costos</span><strong>US$ ${money(cost)}</strong></div><div class="v13-metric"><span>Precio de venta</span><strong>US$ ${money(sale)}</strong></div><div class="v13-metric"><span>Ganancia estimada</span><strong>US$ ${money(gain)}</strong></div>`;
-}
-function vin(){const v=String(el('v13-vin').value||'').trim().toUpperCase();setOld('vin',v);try{if(typeof window.decodeVIN==='function')window.decodeVIN();else if(typeof window.nextGBDecodificarVINParaAI==='function')window.nextGBDecodificarVINParaAI(v);}catch(e){} }
-function init(){
-  document.body.classList.add('mobile-v13');
-  const app=el('next-avpro-mobile-v13');if(!app)return;
-  qa('#next-avpro-mobile-v13 [data-nav]').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.nav)));
-  qa('#next-avpro-mobile-v13 [data-theme]').forEach(b=>b.addEventListener('click',theme));el('v13-theme')?.addEventListener('click',theme);
-  el('v13-ai-run')?.addEventListener('click',runAI);qa('#next-avpro-mobile-v13 [data-q]').forEach(b=>b.addEventListener('click',()=>{el('v13-ai-input').value=b.dataset.q;runAI()}));
-  el('v13-sync-vehicle')?.addEventListener('click',syncVehicle);el('v13-vin-search')?.addEventListener('click',vin);
-  el('v13-calc-margin')?.addEventListener('click',updateMargin);el('v13-refresh-quote')?.addEventListener('click',renderQuote);el('v13-print')?.addEventListener('click',()=>window.print());
-  loadVehicle();syncThemeIcons();
-  setTimeout(()=>activate('AI'),60);
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})();
-</script>
-
-<!-- NEXT-AVPRO-MOBILE V1.4 · DATABASE AUTO-LOAD + APPLY FIX -->
-<style id="next-avpro-mobile-v14-fix">
-@media (max-width:700px),(pointer:coarse){
-  body.mobile-app #nextgb-ai-result .v14-actions{position:relative;z-index:1000;display:grid!important;grid-template-columns:1fr!important;gap:9px!important}
-  body.mobile-app #nextgb-ai-result .v14-actions button{position:relative!important;z-index:1001!important;pointer-events:auto!important;min-height:52px!important;width:100%!important}
-  body.mobile-app #nextgb-ai-result .v14-actions button.primary{display:flex!important}
-  body.mobile-app .v14-ai-result-card{position:relative;z-index:2}
-}
-</style>
-<script id="next-avpro-mobile-v14-fix">
-(function(){
-  'use strict';
-  const $=id=>document.getElementById(id);
-  const DB_URLS=[
-    './Base%20de%20Datos%20Valores%20Vehiculos%202026%20-%202027.csv',
-    './Base de Datos Valores Vehiculos 2026 - 2027.csv',
-    '../Base%20de%20Datos%20Valores%20Vehiculos%202026%20-%202027.csv',
-    '../Base de Datos Valores Vehiculos 2026 - 2027.csv'
-  ];
-  let dbPromise=null;
-  function status(t,c){const e=$('db-status');if(e){e.textContent=t;e.style.color=c||'var(--text-muted)';}}
-  async function fetchCSV(){
-    let last=null;
-    for(const u of DB_URLS){
-      try{
-        const r=await fetch(u+'?v='+Date.now(),{cache:'no-store'});
-        if(!r.ok)throw new Error('HTTP '+r.status);
-        const text=await r.text();
-        if(text.length<1000||!/marca/i.test(text)||!/modelo/i.test(text))throw new Error('CSV inválido');
-        try{await window.__nextGBIdbPut?.(text)}catch(e){}
-        try{localStorage.setItem('nextgb_csv_data',text)}catch(e){}
-        return text;
-      }catch(e){last=e;}
-    }
-    throw last||new Error('CSV no disponible');
-  }
-  async function loadDB(){
-    if(dbPromise)return dbPromise;
-    dbPromise=(async()=>{
-      status('⏳ Cargando base de datos…','var(--text-muted)');
-      let text=null;
-      try{text=await window.__nextGBIdbGet?.()}catch(e){}
-      if(!text){try{text=localStorage.getItem('nextgb_csv_data')}catch(e){}}
-      if(!text){text=await fetchCSV();}
-      if(typeof window.processCSV!=='function')throw new Error('Motor CSV no disponible');
-      await window.processCSV(text);
-      let marcas=0;try{marcas=typeof db!=='undefined'?Object.keys(db||{}).length:0}catch(e){};status('🟢 Base activa · '+marcas+' marcas','var(--success)');
-      window.nextGBDatabaseReady=true;
-      return true;
-    })().catch(e=>{window.nextGBDatabaseReady=false;status('⚠️ Base no cargada — verifica el CSV','var(--warning)');console.warn('NEXT GB DB V1.4',e);return false;});
-    return dbPromise;
-  }
-  window.nextGBDatabaseReadyPromise=loadDB();
-
-  /* Expose the existing IndexedDB helpers when available, without changing their engine. */
-  try{
-    const scripts=[...document.scripts];
-    /* The V15 helpers are lexical in their original IIFE, so the public loader
-       above intentionally falls back to localStorage/fetch. */
-  }catch(e){}
-
-  /* AI must wait for the vehicle database before trying a VIN/model lookup. */
-  const oldAI=window.nextGBAduanasAI;
-  if(typeof oldAI==='function' && !oldAI.__v14db){
-    const wrapped=async function(...args){
-      await window.nextGBDatabaseReadyPromise;
-      return oldAI.apply(this,args);
-    };
-    wrapped.__v14db=true;
-    window.nextGBAduanasAI=wrapped;
-  }
-
-  /* Reliable mobile Apply: delegated click handler survives the successive AI patches. */
-  function bindApply(){
-    const result=$('nextgb-ai-result');
-    if(!result||result.dataset.v14ApplyBound)return;
-    result.dataset.v14ApplyBound='1';
-    result.addEventListener('click',function(ev){
-      const btn=ev.target.closest('button');
-      if(!btn)return;
-      const label=(btn.textContent||'').toLowerCase();
-      if(!label.includes('aplicar a cotiz'))return;
-      ev.preventDefault();ev.stopPropagation();
-      try{
-        if(typeof window.nextGBV14ApplyResult==='function'){
-          const ok=window.nextGBV14ApplyResult();
-          if(ok===false)throw new Error('No se pudo aplicar el resultado');
-        }else if(typeof window.nextGBApplyAIV1==='function'){
-          window.nextGBApplyAIV1();
-        }else{throw new Error('Función Aplicar no disponible');}
-      }catch(e){
-        console.error('NEXT GB Apply V1.4',e);
-        window.showToast?.('No se pudo aplicar. Revisa la consulta y vuelve a intentar.','⚠️');
-      }
-    },true);
-  }
-  bindApply();
-  new MutationObserver(bindApply).observe(document.body,{subtree:true,childList:true});
-
-  /* Rebind the button explicitly after each AI result render and make the
-     final action visibly confirm the transition to Costos/Margen. */
-  const oldRender=window.nextGBRenderAI;
-  if(typeof oldRender==='function'&&!oldRender.__v14db){
-    const render=function(...args){
-      const r=oldRender.apply(this,args);setTimeout(bindApply,0);return r;
-    };render.__v14db=true;window.nextGBRenderAI=render;
-  }
-
-  window.addEventListener('load',()=>setTimeout(loadDB,250));
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!window.nextGBDatabaseReady)loadDB()});
-})();
-</script>
-
-
-
-<!-- NEXT-AVPRO-BETA.V1.5 STABILIZATION PATCH -->
-<style id="next-avpro-v15-stabilization">
-@media(max-width:700px),(pointer:coarse){
-  #av15-new{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border-strong);background:var(--bg-card);color:var(--text-main);border-radius:12px;min-height:38px;padding:0 11px;font-size:10px;font-weight:900}
-  .av15-top-actions{display:flex;align-items:center;gap:7px}
-  .av15-margin-hero{margin-top:12px;padding:20px;border-radius:22px;border:1px solid rgba(34,197,94,.28);background:linear-gradient(145deg,rgba(34,197,94,.16),rgba(16,185,129,.05)),var(--bg-card);box-shadow:0 14px 38px rgba(16,185,129,.12)}
-  .av15-margin-hero.negative{border-color:rgba(239,68,68,.30);background:linear-gradient(145deg,rgba(239,68,68,.14),rgba(239,68,68,.04)),var(--bg-card)}
-  .av15-margin-hero.low{border-color:rgba(234,179,8,.32);background:linear-gradient(145deg,rgba(234,179,8,.13),rgba(234,179,8,.04)),var(--bg-card)}
-  .av15-margin-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:900;color:var(--text-muted)}
-  .av15-margin-value{font-size:34px;line-height:1;margin:7px 0;color:var(--success);font-weight:950;letter-spacing:-1.5px}
-  .av15-margin-hero.negative .av15-margin-value{color:var(--danger)}.av15-margin-hero.low .av15-margin-value{color:#ca8a04}
-  .av15-margin-status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:9px;font-weight:900;background:rgba(34,197,94,.12);color:var(--success)}
-  .av15-margin-hero.negative .av15-margin-status{background:rgba(239,68,68,.12);color:var(--danger)}.av15-margin-hero.low .av15-margin-status{background:rgba(234,179,8,.12);color:#ca8a04}
-  .av15-margin-bar{height:10px;border-radius:999px;background:rgba(148,163,184,.15);overflow:hidden;margin-top:15px}.av15-margin-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#10b981,#22c55e);transition:width .35s ease}.av15-margin-hero.negative .av15-margin-bar i{background:linear-gradient(90deg,#ef4444,#dc2626)}.av15-margin-hero.low .av15-margin-bar i{background:linear-gradient(90deg,#eab308,#f59e0b)}
-  .av15-zip-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:12px}.av15-zip-row .av15-input{height:46px}.av15-zip-dest{font-size:9px;color:var(--text-muted);padding:0 2px 4px;white-space:nowrap}
-  .av15-new-note{font-size:9px;color:var(--text-muted);margin-top:6px}
-}
-</style>
-<script id="next-avpro-v15-stabilization-js">
-(function(){
-'use strict';
-const $=id=>document.getElementById(id);
-const N=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0};
-const M=v=>new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(N(v));
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const oldVal=id=>$(id)?.value||'';
-const setOld=(id,v)=>{const e=$(id);if(e){e.value=v==null?'':String(v);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}))}};
-function toast(t){if(window.showToast)window.showToast(t,'ℹ️');else{const e=$('av15-toast');if(e){e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}}}
-
-function mountTopControls(){
-  const top=$('#next-avpro-mobile-v15 .av15-top'); if(!top||$('#av15-new'))return;
-  const actions=document.createElement('div');actions.className='av15-top-actions';
-  actions.innerHTML='<button id="av15-new" type="button">＋ Nueva operación</button>';
-  const theme=$('#av15-theme');if(theme)actions.appendChild(theme);top.appendChild(actions);
-  $('av15-new').onclick=newOperation;
-}
-function resetMobileFields(){
-  ['av15-buy','av15-vin-input','av15-sale','av15-customs','av15-plate','av15-local-repair','av15-origin','av15-value'].forEach(id=>{const e=$(id);if(e)e.value=''});
-  ['av15-make','av15-model','av15-year','av15-trim','av15-custom-make','av15-custom-model','av15-custom-year','av15-custom-trim'].forEach(id=>{const e=$(id);if(e){e.innerHTML='<option value="">Seleccione...</option>';e.value='';}});
-  if($('av15-model'))$('av15-model').disabled=true;if($('av15-year'))$('av15-year').disabled=true;if($('av15-trim'))$('av15-trim').disabled=true;
-  if($('av15-custom-model'))$('av15-custom-model').disabled=true;if($('av15-custom-year'))$('av15-custom-year').disabled=true;if($('av15-custom-trim'))$('av15-custom-trim').disabled=true;
-  if($('av15-drive'))$('av15-drive').value='';
-  if($('av15-ai-input'))$('av15-ai-input').value='';if($('av15-ai-result'))$('av15-ai-result').innerHTML='';if($('av15-ai-status'))$('av15-ai-status').textContent='IA lista para una nueva operación.';
-}
-function newOperation(){
-  const old=$('av15-new-choice');if(old){old.remove();return;}
-  const sheet=document.createElement('div');sheet.id='av15-new-choice';sheet.className='av15-new-choice';
-  sheet.innerHTML=`<div class="av15-new-choice-backdrop"></div><div class="av15-new-choice-card"><div class="av15-kicker">Nueva operación</div><h2>¿Cómo quieres comenzar?</h2><p class="muted">Se limpiará la operación actual y no se arrastrará ningún dato anterior.</p><button data-start="AI">🤖 Nueva consulta con IA</button><button data-start="COTIZACIÓN">📊 Nueva cotización</button><button data-start="PROFORMA">📄 Nueva proforma</button><button class="secondary" data-start="CANCEL">Cancelar</button></div>`;
-  document.body.appendChild(sheet);const close=()=>sheet.remove();sheet.querySelector('.av15-new-choice-backdrop').onclick=close;
-  sheet.querySelectorAll('button[data-start]').forEach(b=>b.onclick=()=>{const start=b.dataset.start;if(start==='CANCEL'){close();return;}clearFormForNewQuote();resetMobileFields();try{window.nextGBDatabaseReadyPromise?.then(()=>window.populateMakes?.())}catch(e){}if(start==='PROFORMA')$('av15-proforma-type')?.click();else $('av15-quote-type')?.click();if(window.nextGBMobileNavigate)window.nextGBMobileNavigate(start==='AI'?'AI':'Cotización');close();if(start==='AI')setTimeout(()=>$('av15-ai-input')?.focus(),80);toast(start==='AI'?'Nueva consulta IA iniciada.':start==='PROFORMA'?'Nueva proforma iniciada.':'Nueva cotización iniciada.');});
-}
-
-function ensureZip(){
-  const card=$('#next-avpro-mobile-v15 [data-av15-screen="Costos"] .av15-card:nth-of-type(2)');
-  if(!card||$('#av15-zip'))return;
-  const row=document.createElement('div');row.className='av15-zip-row';
-  row.innerHTML='<div><label class="av15-label">ZIP de origen · subasta</label><input id="av15-zip" class="av15-input" inputmode="numeric" maxlength="5" placeholder="Ej. 07032"></div><button id="av15-calc-zip" class="av15-btn secondary" type="button">📍 Calcular</button>';
-  card.appendChild(row);
-  const note=document.createElement('div');note.className='av15-zip-dest';note.textContent='Destino Miami guardado por defecto: 33142';card.appendChild(note);
-  $('av15-calc-zip').onclick=calcZip;
-}
-async function calcZip(){
-  const zip=String($('#av15-zip')?.value||'').trim();if(!/^\d{5}$/.test(zip)){toast('Introduce un ZIP de 5 dígitos.');return}
-  setOld('zip_origen',zip);
-  try{
-    if(typeof window.calcularFleteORS==='function'){await window.calcularFleteORS();const g=N(oldVal('grua_inland'));const el=$('#av15-inland');if(el){el.value=g;el.dispatchEvent(new Event('input',{bubbles:true}))}recalc();toast('Grúa calculada hacia Miami · 33142.');}
-    else toast('Motor de ruta no disponible.');
-  }catch(e){console.error(e);toast('No se pudo calcular la grúa.');}
-}
-
-function ensureMarginHero(){
-  const screen=$('#next-avpro-mobile-v15 [data-av15-screen="Margen"]');if(!screen||$('#av15-margin-hero'))return;
-  const hero=document.createElement('div');hero.id='av15-margin-hero';hero.className='av15-margin-hero';
-  hero.innerHTML='<div class="av15-margin-label">Margen neto de comercialización</div><div id="av15-margin-value" class="av15-margin-value">US$ 0.00</div><div id="av15-margin-status" class="av15-margin-status">● Sin datos</div><div class="av15-margin-bar"><i id="av15-margin-bar-fill"></i></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><div class="av15-kpi"><span>Landed Cost</span><strong id="av15-margin-landed">US$ 0.00</strong></div><div class="av15-kpi"><span>ROI</span><strong id="av15-margin-roi">0.00%</strong></div></div>';
-  const card=screen.querySelector('.av15-card');card?.prepend(hero);
-}
-function updateMarginHero(){
-  const hero=$('#av15-margin-hero');if(!hero)return;
-  const inv=N(window.c_landed),sale=N(oldVal('precio_venta_estimado_usd')),hon=N(oldVal('derecho_dealer_usd'));
-  const net=sale-inv,roi=inv>0?net/inv*100:0;
-  const value=$('#av15-margin-value');if(value)value.textContent='US$ '+M(net);
-  const landed=$('#av15-margin-landed');if(landed)landed.textContent='US$ '+M(inv);
-  const r=$('#av15-margin-roi');if(r)r.textContent=roi.toFixed(2)+'%';
-  const status=$('#av15-margin-status');
-  hero.classList.remove('negative','low');
-  let label='● Margen positivo';if(net<0){hero.classList.add('negative');label='● Margen negativo'}else if(inv>0&&roi<8){hero.classList.add('low');label='● Margen ajustado'}
-  if(status)status.textContent=(!sale||!inv)?'● Completa venta e inversión':label;
-  const fill=$('#av15-margin-bar-fill');if(fill)fill.style.width=Math.min(100,Math.max(0,roi))+'%';
-}
-
-function detailedQuoteWhatsApp(){
-  const vehicle=((oldVal('marca')+' '+oldVal('modelo')).trim()||'Vehículo por especificar')+' '+(oldVal('anio')||'');
-  const trim=oldVal('version')||'';const drive=oldVal('pais_origen')||'';
-  const fullVehicle=(vehicle.trim()+(trim?' ('+trim+')':''));
-  const t=N(oldVal('tasa'))||60.60, sub=N(oldVal('costo_subasta'))+N(oldVal('fees_subasta')), inland=N(oldVal('grua_inland'));
-  const doc=N(oldVal('documentacion_usd'));const repair=N(oldVal('taller_miami_usd'))||0;const broker=N(oldVal('fee_broker_usd'))+N(oldVal('derecho_dealer_usd'));
-  const freight=N(oldVal('flete_real'));const despacho=N(oldVal('c_despacho_rds'));const placa=N(oldVal('c_placa_rds'));const repRD=N(oldVal('reparaciones_rds'));
-  const landed=N(window.c_landed),sale=N(oldVal('precio_venta_estimado_usd')),net=sale-landed;
-  return `📊 *REPORTE INTERNO DE INVERSIÓN*\nNext GB Auto Import\n\n🚘 *Unidad:* ${fullVehicle}${drive?'':' '}${oldVal('vin')?'\n🔖 *VIN:* '+oldVal('vin'):''}${oldVal('millaje')?'\n🛣️ *Millaje:* '+M(oldVal('millaje'))+' mi':''}\n\n*Gastos en Origen (USA):*\n🔨 *Subasta y Fees:* US$ ${M(sub)}\n🚛 *Grúa Inland:* US$ ${M(inland)}\n📄 *Documentación:* US$ ${M(doc)}\n🔧 *Taller Miami:* US$ ${M(repair)}\n💼 *Fee Broker & Honorarios:* US$ ${M(broker)}\n\n*Gastos Destino Local (RD):*\n🚢 *Flete Marítimo:* US$ ${M(freight)}\n🏢 *Despacho Aduanal (Sin Placa):* RD$ ${M(despacho)}\n🏷️ *Primera Placa y Marbete:* RD$ ${M(placa)}\n🇩🇴 *Reparación en RD:* RD$ ${M(repRD)}\n\n📉 *LANDED COST TOTAL:* US$ ${M(landed)}\n💵 *PRECIO DE VENTA (ESTIMADO):* US$ ${M(sale)}\n\n💰 *MARGEN NETO:* US$ ${M(net)}\n(RD$ ${M(net*t)}).`;
-}
-function proformaText(){
-  const vehicle=((oldVal('marca')+' '+oldVal('modelo')).trim()||'Vehículo por definir')+' '+(oldVal('anio')||'');const trim=oldVal('version');const v=vehicle.trim()+(trim?' ('+trim+')':'');
-  const mileage=oldVal('millaje')?`\n🛣️ *Millaje:* ${M(oldVal('millaje'))} mi`:'';
-  const p1=N(oldVal('pago_inicial_usd'));const p2=Math.max(0,N(oldVal('costo_subasta'))+N(oldVal('fees_subasta'))+N(oldVal('fee_broker_usd'))-p1);const p3=N(oldVal('grua_inland'))+N(oldVal('reparacion_miami_usd'))+N(oldVal('documentacion_origen_usd'));const t=N(oldVal('tasa'))||60.60;const p4=N(oldVal('flete_real'))+N(oldVal('paquete_despacho_usd'))+N(oldVal('c_despacho_rds'))/t+N(oldVal('reparaciones_rds'))/t;const p5=N(oldVal('c_placa_rds'))/t;const total=N(window.c_landed);
-  return `¡Hola! 🚗\n\nAdjunto los detalles de su *Factura Proforma* para iniciar el proceso de importación con *Next GB Auto Import*:\n\n🚘 *Vehículo:* ${v}${mileage}\n\n*CRONOGRAMA DE PAGOS ESTABLECIDO:*\n🔹 *Pago 1 (Depósito de Seguridad):* US$ ${M(p1)}\n_Hoy, para iniciar el proceso._\n\n🔹 *Pago 2 (Balance Subasta):* US$ ${M(p2)}\n_Facturas, fees de subasta, broker y honorarios._\n\n🔹 *Pago 3 (Logística Origen):* US$ ${M(p3)}\n_Grúa inland, taller y documentación._\n\n🔹 *Pago 4 (Aduanas y Flete):* US$ ${M(p4)}\n_Flete, agente aduanal, parqueo e impuestos DGA._\n\n🔹 *Pago 5 (Placa y Endoso):* US$ ${M(p5)}\n_Impuestos DGII Placa y normativa 03-20._\n\n🏁 *TOTAL INVERSIÓN (Landed):* US$ ${M(total)}\n\n_Nota: Valores en USD. Presupuesto sujeto a disponibilidad en subasta y variación naviera._\n\nQuedamos a su disposición.`;
-}
-function whatsappV15(){const msg=documentType()==='PROFORMA'?proformaText():detailedQuoteWhatsApp();window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank')}
-function documentType(){return document.getElementById('av15-proforma-type')?.classList.contains('active')?'PROFORMA':'COTIZACIÓN'}
-function pdfV15(){
-  const type=documentType(), title=((oldVal('marca')+' '+oldVal('modelo')).trim()||'Vehículo por definir')+' '+(oldVal('anio')||'');const v=title.trim()+(oldVal('version')?' ('+oldVal('version')+')':'');const t=N(oldVal('tasa'))||60.60;
-  const sub=N(oldVal('costo_subasta'))+N(oldVal('fees_subasta')),landed=N(window.c_landed),sale=N(oldVal('precio_venta_estimado_usd')),net=sale-landed;
-  let body='';
-  if(type==='COTIZACIÓN'){
-    body=`<h1>Inversión y Rentabilidad</h1><p class="muted">NEXT GB AUTO IMPORT SRL · Av. Los Próceres LC5, ABBA Plaza, Santo Domingo</p><h2>${esc(v)}</h2><p class="muted">VIN: ${esc(oldVal('vin')||'—')} · Millaje: ${esc(oldVal('millaje')||'—')} mi · Tasa DOP: ${M(t)}</p><table><tr><th>Concepto</th><th>Valor</th></tr><tr><td>Subasta y Fees (Origen)</td><td>US$ ${M(sub)}</td></tr><tr><td>Grúa Inland (USA)</td><td>US$ ${M(oldVal('grua_inland'))}</td></tr><tr><td>Documentación</td><td>US$ ${M(oldVal('documentacion_usd'))}</td></tr><tr><td>Taller Miami</td><td>US$ ${M(oldVal('taller_miami_usd'))}</td></tr><tr><td>Fee Broker & Honorarios</td><td>US$ ${M(N(oldVal('fee_broker_usd'))+N(oldVal('derecho_dealer_usd')))}</td></tr><tr><td>Flete Marítimo</td><td>US$ ${M(oldVal('flete_real'))}</td></tr><tr><td>Despacho Aduanal (Sin Placa)</td><td>RD$ ${M(oldVal('c_despacho_rds'))}</td></tr><tr><td>Primera Placa y Marbete</td><td>RD$ ${M(oldVal('c_placa_rds'))}</td></tr><tr><td>Reparación en RD</td><td>RD$ ${M(oldVal('reparaciones_rds'))}</td></tr></table><div class="total">LANDED COST TOTAL: US$ ${M(landed)}</div><div class="sale">PRECIO DE VENTA (ESTIMADO): US$ ${M(sale)}</div><div class="profit">MARGEN NETO: US$ ${M(net)} · RD$ ${M(net*t)}</div>`;
-  }else{
-    const p1=N(oldVal('pago_inicial_usd')),p2=Math.max(0,N(oldVal('costo_subasta'))+N(oldVal('fees_subasta'))+N(oldVal('fee_broker_usd'))-p1),p3=N(oldVal('grua_inland'))+N(oldVal('reparacion_miami_usd'))+N(oldVal('documentacion_origen_usd')),p4=N(oldVal('flete_real'))+N(oldVal('paquete_despacho_usd'))+N(oldVal('c_despacho_rds'))/t+N(oldVal('reparaciones_rds'))/t,p5=N(oldVal('c_placa_rds'))/t;
-    body=`<h1>FACTURA PROFORMA</h1><p class="muted">NEXT GB AUTO IMPORT SRL · Av. Los Próceres LC5, ABBA Plaza, Santo Domingo</p><h2>${esc(v)}</h2><p class="muted">VIN: ${esc(oldVal('vin')||'—')} · Millaje: ${esc(oldVal('millaje')||'—')} mi · Tasa DOP: ${M(t)}</p><h3>Desglose de Inversión</h3><table><tr><th>Concepto</th><th>Valor</th></tr><tr><td>Subasta y Fees (Origen)</td><td>US$ ${M(sub)}</td></tr><tr><td>Grúa Inland (USA)</td><td>US$ ${M(oldVal('grua_inland'))}</td></tr><tr><td>Documentación y Taller Miami</td><td>US$ ${M(N(oldVal('documentacion_origen_usd'))+N(oldVal('reparacion_miami_usd')))}</td></tr><tr><td>Fee Broker & Honorarios</td><td>US$ ${M(N(oldVal('fee_broker_usd'))+N(oldVal('derecho_dealer_usd')))}</td></tr><tr><td>Flete Marítimo</td><td>US$ ${M(oldVal('flete_real'))}</td></tr><tr><td>Despacho Aduanal (Sin Placa)</td><td>RD$ ${M(oldVal('c_despacho_rds'))}</td></tr><tr><td>Primera Placa y Marbete</td><td>RD$ ${M(oldVal('c_placa_rds'))}</td></tr></table><h3>CRONOGRAMA DE PAGOS</h3><table><tr><th>Pago</th><th>Valor</th></tr><tr><td>Pago 1 · Depósito de Seguridad</td><td>US$ ${M(p1)}</td></tr><tr><td>Pago 2 · Balance Subasta</td><td>US$ ${M(p2)}</td></tr><tr><td>Pago 3 · Logística Origen</td><td>US$ ${M(p3)}</td></tr><tr><td>Pago 4 · Aduanas y Flete</td><td>US$ ${M(p4)}</td></tr><tr><td>Pago 5 · Placa y Endoso</td><td>US$ ${M(p5)}</td></tr></table><div class="total">TOTAL INVERSIÓN (LANDED): US$ ${M(landed)}</div><p class="muted">Todos los montos están expresados en USD. Presupuesto referencial sujeto a disponibilidad en subasta y variación del mercado naviero.</p>`;
-  }
-  const w=window.open('','_blank','width=900,height=1200');if(!w){toast('Permite ventanas emergentes para generar el PDF.');return}w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>NEXT GB ${type}</title><style>@page{size:A4;margin:14mm}body{font-family:Arial,Helvetica,sans-serif;color:#111827;background:#fff}.doc{max-width:780px;margin:auto}.brand{font-weight:900;font-size:20px;border-bottom:3px solid #2563eb;padding-bottom:10px;margin-bottom:18px}h1{font-size:24px;margin:0 0 8px}h2{font-size:18px;margin:20px 0 6px}h3{font-size:13px;margin:22px 0 8px;text-transform:uppercase;letter-spacing:1px}p.muted{color:#64748b;font-size:11px;line-height:1.5}table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:11px}th,td{text-align:left;padding:8px;border-bottom:1px solid #e5e7eb}th:last-child,td:last-child{text-align:right}.total{margin-top:18px;padding:15px;border-radius:10px;background:#eff6ff;font-size:17px;font-weight:900}.sale{margin-top:10px;font-weight:800}.profit{margin-top:12px;padding:14px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:16px;font-weight:900}</style></head><body><div class="doc"><div class="brand">NEXT GB AUTO IMPORT</div>${body}</div><script>setTimeout(()=>window.print(),400)<\/script></body></html>`);w.document.close()}
-
-function enhanceV15(){
-  mountTopControls();ensureZip();ensureMarginHero();
-  const oldRecalc=window.__v15RecalcBase||window.recalcV15;
-  if(!window.__v15StabilizedWrapped){
-    const originalSetIntervalFns=[];
-    const v15Screen=$('#next-avpro-mobile-v15');
-    // Re-bind current controls after the original V1.5 script has initialized them.
-    const sale=$('av15-sale');if(sale){sale.addEventListener('input',()=>setTimeout(updateMarginHero,0));}
-    ['av15-customs','av15-plate','av15-local-repair'].forEach(id=>$(id)?.addEventListener('input',()=>setTimeout(updateMarginHero,0)));
-    const doc=$('av15-document');
-    $('av15-wa')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();whatsappV15()},true);
-    $('av15-pdf')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();pdfV15()},true);
-    const navButtons=document.querySelectorAll('#next-avpro-mobile-v15 [data-av15-nav]');navButtons.forEach(b=>b.addEventListener('click',()=>{setTimeout(()=>{if(b.dataset.av15Nav==='Margen')updateMarginHero()},30),{capture:true}}));
-    window.__v15StabilizedWrapped=true;
-  }
-  updateMarginHero();
-}
-function watch(){
-  enhanceV15();
-  const obs=new MutationObserver(()=>enhanceV15());obs.observe(document.body,{childList:true,subtree:true});
-  setInterval(updateMarginHero,700);
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(watch,300),{once:true});else setTimeout(watch,300);
-})();
-</script>
-<style id="avpro-v175-css">.av15-new-choice{position:fixed;inset:0;z-index:99999;display:flex;align-items:flex-end;justify-content:center;padding:16px}.av15-new-choice-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}.av15-new-choice-card{position:relative;width:min(430px,100%);background:var(--card-bg,#111827);color:var(--text-main,#fff);border:1px solid var(--border-color,rgba(255,255,255,.1));border-radius:22px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.35)}.av15-new-choice-card h2{margin:4px 0 6px}.av15-new-choice-card p{margin:0 0 14px}.av15-new-choice-card button{width:100%;border:0;border-radius:14px;padding:13px 14px;margin-top:9px;font-weight:800;font-size:14px;background:var(--accent,#2563eb);color:#fff}.av15-new-choice-card button.secondary{background:transparent;color:var(--text-main,#fff);border:1px solid var(--border-color,rgba(255,255,255,.15))}</style>
-<script id="avpro-v175-final">(function(){'use strict';const N=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0};const M=v=>new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(N(v));const oldVal=id=>document.getElementById(id)?.value||'';function D(){const t=N(oldVal('tasa'))||60.60,sub=N(oldVal('costo_subasta'))+N(oldVal('fees_subasta')),inland=N(oldVal('grua_inland')),docs=N(oldVal('documentacion_origen_usd'))+N(oldVal('reparacion_miami_usd')),broker=N(oldVal('fee_broker_usd')),hon=N(oldVal('derecho_dealer_usd')),freight=N(oldVal('flete_real')),port=N(oldVal('paquete_despacho_usd')),customs=N(oldVal('c_despacho_rds')),plate=N(oldVal('c_placa_rds')),rep=N(oldVal('reparaciones_rds')),p1=N(oldVal('pago_inicial_usd')),sale=N(oldVal('precio_venta_estimado_usd')),landed=N(window.c_landed);return{t,sub,inland,docs,broker,hon,freight,port,customs,plate,rep,p1,sale,landed,p2:Math.max(0,sub+broker+hon-p1),p3:inland+docs,p4:freight+port+customs/t+rep/t,p5:plate/t,dispatchUSD:port+customs/t,dispatchRD:port*t+customs};}window.whatsappV15=function(){const d=D(),vehicle=((oldVal('marca')+' '+oldVal('modelo')).trim()||'Vehículo por definir')+' '+(oldVal('anio')||''),v=vehicle.trim()+(oldVal('version')?' ('+oldVal('version')+')':''),mileage=oldVal('millaje')?`\n🛣️ *Millaje:* ${M(oldVal('millaje'))} mi`:'';if(document.getElementById('av15-proforma-type')?.classList.contains('active')){const msg=`¡Hola! 🚗\n\nAdjunto los detalles de su *Factura Proforma* para iniciar el proceso de importación con *Next GB Auto Import*:\n\n🚘 *Vehículo:* ${v}${mileage}\n\n*CRONOGRAMA DE PAGOS ESTABLECIDO:*\n🔹 *Pago 1 (Depósito de Seguridad):* US$ ${M(d.p1)}\n_Hoy, para iniciar el proceso._\n\n🔹 *Pago 2 (Balance Subasta):* US$ ${M(d.p2)}\n_Facturas, fees de subasta, broker y honorarios._\n\n🔹 *Pago 3 (Logística Origen):* US$ ${M(d.p3)}\n_Grúa inland, taller y documentación._\n\n🔹 *Pago 4 (Aduanas y Flete):* US$ ${M(d.p4)}\n_Flete, agente aduanal, parqueo e impuestos DGA._\n\n🔹 *Pago 5 (Placa y Endoso):* US$ ${M(d.p5)}\n_Impuestos DGII Placa y normativa 03-20._\n\n🏁 *TOTAL INVERSIÓN (Landed):* US$ ${M(d.landed)}\n\n_Nota: Valores en USD. Presupuesto sujeto a disponibilidad en subasta y variación naviera._\n\nQuedamos a su disposición.`;window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');return;}const net=d.sale-d.landed;const msg=`📊 *REPORTE INTERNO DE INVERSIÓN*\nNext GB Auto Import\n\n🚘 *Unidad:* ${v}\n\n*Gastos en Origen (USA):*\n🔨 *Subasta y Fees:* US$ ${M(d.sub)}\n🚛 *Grúa Inland:* US$ ${M(d.inland)}\n📄 *Documentación:* US$ ${M(N(oldVal('documentacion_origen_usd')))}\n🔧 *Taller Miami:* US$ ${M(N(oldVal('reparacion_miami_usd')))}\n💼 *Fee Broker:* US$ ${M(d.broker)}\n💼 *Honorarios:* US$ ${M(d.hon)}\n\n*Gastos Destino Local (RD):*\n🚢 *Flete Marítimo:* US$ ${M(d.freight)}\n🏢 *Despacho Aduanal (Sin Placa):* RD$ ${M(d.customs)}\n🏷️ *Primera Placa y Marbete:* RD$ ${M(d.plate)}\n🇩🇴 *Reparación en RD:* RD$ ${M(d.rep)}\n\n📉 *LANDED COST TOTAL:* US$ ${M(d.landed)}\n💵 *PRECIO DE VENTA (ESTIMADO):* US$ ${M(d.sale)}\n\n💰 *MARGEN NETO:* US$ ${M(net)}\n(RD$ ${M(net*d.t)}).`;window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');};window.pdfV15=function(){const pro=document.getElementById('av15-proforma-type'),quote=document.getElementById('av15-quote-type'),isPro=pro?.classList.contains('active');(isPro?pro:quote)?.click();const content=document.getElementById('av15-document')?.outerHTML||'',type=isPro?'PROFORMA':'COTIZACIÓN',w=window.open('','_blank','width=900,height=1200');if(!w){window.showToast?.('Permite ventanas emergentes para generar el PDF.');return}w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>NEXT GB ${type}</title><style>@page{size:A4;margin:14mm}body{font-family:Arial,Helvetica,sans-serif;color:#111827;background:#fff}.doc{max-width:780px;margin:auto}.dochead{display:flex;justify-content:space-between;border-bottom:2px solid #111827;padding-bottom:12px;margin-bottom:18px}.muted{color:#64748b;font-size:11px}.line{display:flex;justify-content:space-between;gap:20px;padding:9px 0;border-bottom:1px solid #e5e7eb;font-size:11px}.total{font-weight:900;background:#eff6ff;padding:10px;margin-top:6px}.profit{color:#047857;font-weight:900}</style></head><body><div class="doc">${content}</div><script>setTimeout(()=>window.print(),400)<\/script></body></html>`);w.document.close();};})();</script>
-</html>
