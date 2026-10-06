@@ -3678,7 +3678,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 }
 </style>
 </body>
-</html>
+
 <style>
 /* NEXT GB V16 · synchronization fixes */
 .v16-sync-note{margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.45}
@@ -5869,7 +5869,7 @@ body:not(.light-mode) #nextgb-ai-result .nextgb-v24-document * { color: inherit 
   window.addEventListener('load',()=>setTimeout(()=>{if(isMobile())document.body.classList.add('mobile-app');},150));
 })();
 </script>
-</html>
+
 
 <!-- NEXT-AVPRO-BETA.V1.0 · AI SESSION/APPLY PATCH -->
 <script>
@@ -6739,3 +6739,118 @@ function init(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+<!-- NEXT-AVPRO-MOBILE V1.4 · DATABASE AUTO-LOAD + APPLY FIX -->
+<style id="next-avpro-mobile-v14-fix">
+@media (max-width:700px),(pointer:coarse){
+  body.mobile-app #nextgb-ai-result .v14-actions{position:relative;z-index:1000;display:grid!important;grid-template-columns:1fr!important;gap:9px!important}
+  body.mobile-app #nextgb-ai-result .v14-actions button{position:relative!important;z-index:1001!important;pointer-events:auto!important;min-height:52px!important;width:100%!important}
+  body.mobile-app #nextgb-ai-result .v14-actions button.primary{display:flex!important}
+  body.mobile-app .v14-ai-result-card{position:relative;z-index:2}
+}
+</style>
+<script id="next-avpro-mobile-v14-fix">
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const DB_URLS=[
+    './Base%20de%20Datos%20Valores%20Vehiculos%202026%20-%202027.csv',
+    './Base de Datos Valores Vehiculos 2026 - 2027.csv',
+    '../Base%20de%20Datos%20Valores%20Vehiculos%202026%20-%202027.csv',
+    '../Base de Datos Valores Vehiculos 2026 - 2027.csv'
+  ];
+  let dbPromise=null;
+  function status(t,c){const e=$('db-status');if(e){e.textContent=t;e.style.color=c||'var(--text-muted)';}}
+  async function fetchCSV(){
+    let last=null;
+    for(const u of DB_URLS){
+      try{
+        const r=await fetch(u+'?v='+Date.now(),{cache:'no-store'});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        const text=await r.text();
+        if(text.length<1000||!/marca/i.test(text)||!/modelo/i.test(text))throw new Error('CSV inválido');
+        try{await window.__nextGBIdbPut?.(text)}catch(e){}
+        try{localStorage.setItem('nextgb_csv_data',text)}catch(e){}
+        return text;
+      }catch(e){last=e;}
+    }
+    throw last||new Error('CSV no disponible');
+  }
+  async function loadDB(){
+    if(dbPromise)return dbPromise;
+    dbPromise=(async()=>{
+      status('⏳ Cargando base de datos…','var(--text-muted)');
+      let text=null;
+      try{text=await window.__nextGBIdbGet?.()}catch(e){}
+      if(!text){try{text=localStorage.getItem('nextgb_csv_data')}catch(e){}}
+      if(!text){text=await fetchCSV();}
+      if(typeof window.processCSV!=='function')throw new Error('Motor CSV no disponible');
+      await window.processCSV(text);
+      let marcas=0;try{marcas=typeof db!=='undefined'?Object.keys(db||{}).length:0}catch(e){};status('🟢 Base activa · '+marcas+' marcas','var(--success)');
+      window.nextGBDatabaseReady=true;
+      return true;
+    })().catch(e=>{window.nextGBDatabaseReady=false;status('⚠️ Base no cargada — verifica el CSV','var(--warning)');console.warn('NEXT GB DB V1.4',e);return false;});
+    return dbPromise;
+  }
+  window.nextGBDatabaseReadyPromise=loadDB();
+
+  /* Expose the existing IndexedDB helpers when available, without changing their engine. */
+  try{
+    const scripts=[...document.scripts];
+    /* The V15 helpers are lexical in their original IIFE, so the public loader
+       above intentionally falls back to localStorage/fetch. */
+  }catch(e){}
+
+  /* AI must wait for the vehicle database before trying a VIN/model lookup. */
+  const oldAI=window.nextGBAduanasAI;
+  if(typeof oldAI==='function' && !oldAI.__v14db){
+    const wrapped=async function(...args){
+      await window.nextGBDatabaseReadyPromise;
+      return oldAI.apply(this,args);
+    };
+    wrapped.__v14db=true;
+    window.nextGBAduanasAI=wrapped;
+  }
+
+  /* Reliable mobile Apply: delegated click handler survives the successive AI patches. */
+  function bindApply(){
+    const result=$('nextgb-ai-result');
+    if(!result||result.dataset.v14ApplyBound)return;
+    result.dataset.v14ApplyBound='1';
+    result.addEventListener('click',function(ev){
+      const btn=ev.target.closest('button');
+      if(!btn)return;
+      const label=(btn.textContent||'').toLowerCase();
+      if(!label.includes('aplicar a cotiz'))return;
+      ev.preventDefault();ev.stopPropagation();
+      try{
+        if(typeof window.nextGBV14ApplyResult==='function'){
+          const ok=window.nextGBV14ApplyResult();
+          if(ok===false)throw new Error('No se pudo aplicar el resultado');
+        }else if(typeof window.nextGBApplyAIV1==='function'){
+          window.nextGBApplyAIV1();
+        }else{throw new Error('Función Aplicar no disponible');}
+      }catch(e){
+        console.error('NEXT GB Apply V1.4',e);
+        window.showToast?.('No se pudo aplicar. Revisa la consulta y vuelve a intentar.','⚠️');
+      }
+    },true);
+  }
+  bindApply();
+  new MutationObserver(bindApply).observe(document.body,{subtree:true,childList:true});
+
+  /* Rebind the button explicitly after each AI result render and make the
+     final action visibly confirm the transition to Costos/Margen. */
+  const oldRender=window.nextGBRenderAI;
+  if(typeof oldRender==='function'&&!oldRender.__v14db){
+    const render=function(...args){
+      const r=oldRender.apply(this,args);setTimeout(bindApply,0);return r;
+    };render.__v14db=true;window.nextGBRenderAI=render;
+  }
+
+  window.addEventListener('load',()=>setTimeout(loadDB,250));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!window.nextGBDatabaseReady)loadDB()});
+})();
+</script>
+
+</html>
