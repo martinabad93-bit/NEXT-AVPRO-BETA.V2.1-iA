@@ -1,109 +1,154 @@
-# NEXT-AVPRO-BETA.V1.5
+# NEXT-AVPRO-BETA.V1.75 — Mobile
 
 ## Versión
-**NEXT-AVPRO-BETA.V1.5 — Mobile**
+**NEXT-AVPRO-BETA.V1.75**
 
-## Última actualización
-2026-10-06
+## Fecha
+**2026-10-06**
 
-## Objetivo de esta versión
-Estabilizar la versión móvil de NEXT GB Auto Import y conectar las principales áreas de trabajo para que una misma operación pueda utilizarse desde IA, Vehículo, Costos, Aduanas, Margen, Cotización y Proforma.
+## Objetivo
+Estabilizar la operación móvil para que cada nueva operación comience realmente desde cero, completar la Proforma con la estructura de la versión web y corregir la lógica de honorarios y cronograma de pagos.
 
-## Mejoras implementadas
+## Cambios implementados
 
-### IA
-- Se conserva la IA existente como punto central de análisis.
-- Los datos generados por la IA se integran con la operación de la aplicación.
+### 1. Nueva operación desde cero
+Se agregó **＋ Nueva operación** como acción visible en la parte superior.
 
-### Operación
-- Nueva cotización / nueva operación para comenzar desde cero.
-- Limpieza de los datos de la operación anterior sin eliminar la base de datos de vehículos.
-- Acceso para regresar rápidamente a la IA.
+Al pulsarlo aparecen tres opciones:
+- 🤖 Nueva consulta con IA
+- 📊 Nueva cotización
+- 📄 Nueva proforma
+- Cancelar
 
-### Vehículo y base de datos
-- Selectores de vehículo conectados a la base de datos.
-- Integración de marca, modelo, año, serie/trim y tracción.
-- Conservación de las reglas de equivalencia de tracción definidas por NEXT GB.
+La nueva operación elimina los datos de la operación anterior y no reutiliza el resultado de la IA anterior.
 
-### Grúa Inland
-- El usuario introduce únicamente el ZIP de origen.
-- El destino permanece guardado internamente como **33142**.
-- El cálculo utiliza el origen para determinar la ruta y estimar el costo de grúa.
+### 2. Limpieza de operación
+Se limpian los datos de:
+- Vehículo
+- VIN
+- Millaje
+- Compra/subasta
+- Auction fees
+- Grúa Inland
+- Documentación
+- Taller Miami
+- Broker
+- Honorarios
+- Flete
+- Despacho
+- Placa
+- Reparación RD
+- Precio de venta
+- Depósito de seguridad
+- Resultado IA
+- Consulta IA anterior
 
-### Costos
-- Valores editables.
-- Actualización del costo total en tiempo real.
-- Sincronización de los costos con el resto de la operación.
+No se elimina:
+- Base de datos de vehículos
+- Configuración de valores predeterminados
+- Tema Dark/Light
+- Configuración de la aplicación
 
-### Aduanas
-- Área preparada para trabajar de forma interactiva.
-- Los resultados se integran con el costo total de la operación.
+También se elimina el estado persistido de la operación para evitar que una operación nueva recupere valores de la anterior.
 
-### Margen
-- Margen neto dinámico.
-- Precio de venta editable.
-- ROI actualizado automáticamente.
-- Resultado visual por estado:
-  - Verde: margen positivo.
-  - Amarillo: margen ajustado.
-  - Rojo: margen negativo.
-  - Gris: información incompleta.
-- Visualización orientada a la experiencia de la versión Desktop.
+### 3. Honorarios
+Los **Honorarios NEXT GB** pasan a formar parte real del costo de inversión/Landed Cost, siguiendo la estructura de la Proforma web.
 
-### Cotización
-- Documento de inversión y rentabilidad.
-- Incluye Landed Cost, precio de venta y margen.
-- Formato de WhatsApp separado de la Proforma.
+El valor es manual y editable.
 
-### Proforma
-- Documento independiente de la Cotización.
-- Incluye cronograma de cinco pagos:
-  1. Depósito de Seguridad
-  2. Balance Subasta
-  3. Logística Origen
-  4. Aduanas y Flete
-  5. Placa y Endoso
-- El cronograma se utiliza también en el mensaje de WhatsApp.
+Se sincroniza con:
+- Costos
+- Margen
+- Cotización
+- Proforma
+- Cronograma de pagos
+- WhatsApp
+- PDF
 
-### PDF
-- Generación orientada a documento real, no a captura de la pantalla.
+### 4. Proforma completa
+La Proforma móvil fue alineada con la estructura de la referencia web e incluye:
 
-### WhatsApp y compartir
-- WhatsApp para Cotización con formato de reporte interno de inversión.
-- WhatsApp para Proforma con cronograma de pagos.
-- Opción de compartir mediante las funciones nativas disponibles en el dispositivo.
+- Vehículo
+- VIN / Chasis
+- Millaje
+- Tasa DOP
+- Subasta y Fees
+- Grúa Inland
+- Documentación y Taller Miami
+- Fee Broker & Honorarios
+- Total Gastos en Origen
+- Flete Marítimo
+- Despacho Aduanal (Sin Placa)
+- Total Despacho (Sin Placa)
+- Primera Placa y Marbete
+- Reparación en RD
+- Total Destino Local
+- Costo Total (Landed Cost)
+- Cronograma completo de 5 pagos
+- Total Inversión
+- Nota de presupuesto referencial
 
-### Diseño móvil
-- Interfaz optimizada para móvil.
-- Navegación por las áreas principales:
-  **IA | Vehículo | Costos | Margen | Cotización**
-- Se conserva el selector Dark/Light existente.
+### 5. Cronograma de pagos
+Los cinco pagos quedan sincronizados con el cálculo real:
 
-## Funciones que NO forman parte de V1.5
-Estas funciones quedan para futuras versiones y no deben agregarse durante la estabilización de V1.5:
+1. Depósito de Seguridad
+2. Balance Subasta — incluye compra, fees, broker y honorarios, menos el depósito
+3. Logística Origen — grúa, taller y documentación
+4. Aduanas y Flete
+5. Placa y Endoso
 
-- Base completa de ubicaciones IAAI.
-- Base completa de ubicaciones Copart.
-- Selección automática de sucursal de subasta.
-- OCR de facturas.
-- Escáner VIN mediante cámara.
-- Decoder VIN premium.
-- Max Bidder.
-- Inteligencia de mercado.
-- Historial/CRM avanzado de clientes y operaciones.
-- Automatización avanzada de WhatsApp y correo.
-- Dashboard administrativo avanzado.
+El total de los pagos debe corresponder al Landed Cost de la operación.
 
-## Próxima etapa
-Una vez estabilizada V1.5, el siguiente bloque previsto es la creación de la base de ubicaciones de IAAI/Copart y su integración con el cálculo de transporte Inland.
+### 6. Total Despacho (Sin Placa)
+Se agregó un subtotal/total específico para el despacho sin placa.
+
+Se muestra:
+- Equivalente en USD
+- Equivalente en RD$
+
+La cifra agrupa el paquete de despacho/puerto RD y el despacho aduanal sin incluir primera placa.
+
+### 7. Margen
+El margen neto ahora se calcula sobre el Landed Cost real, incluyendo Honorarios cuando fueron introducidos.
+
+**Margen = Precio de Venta − Landed Cost**
+
+### 8. PDF y WhatsApp
+La Proforma PDF y el mensaje de WhatsApp utilizan el cronograma corregido y los valores de honorarios/depósito correspondientes.
+
+## Pendiente / Roadmap
+No forma parte de V1.75:
+- Base completa de ubicaciones IAAI/Copart
+- Selección automática de sucursal
+- OCR de facturas
+- Escáner VIN por cámara
+- Decoder VIN premium
+- Max Bidder
+- Inteligencia de mercado
+- CRM avanzado
+- Automatización avanzada de WhatsApp/correo
+- Dashboard administrativo
+
+## Estructura GitHub
+```text
+NEXT-AVPRO-BETA.V1.75-iA/
+├── index.html                 # Desktop V2.1, fuera de esta actualización
+└── mobile/
+    ├── index.html             # NEXT-AVPRO-BETA.V1.75 Mobile
+    ├── README.md
+    └── Base de Datos Valores Vehiculos 2026 - 2027.csv
+```
+
+## Nota de compatibilidad
+La versión Desktop **NEXT-AVPRO-BETA.V2.1** no se modifica en esta actualización.
 
 ## Regla de versiones
-Cada nueva mejora deberá:
-1. Incrementar la versión correspondiente.
-2. Actualizar este README.
-3. Registrar los cambios realizados.
-4. Mantener separada la versión Desktop **NEXT-AVPRO-BETA.V2.1**.
-5. Mantener el historial de funciones pendientes.
-
-## Nota
-Esta versión móvil debe probarse antes de incorporar nuevas funciones del roadmap.
+Cada nueva mejora debe generar un README actualizado con:
+- versión
+- fecha
+- cambios
+- correcciones
+- nuevas funciones
+- pendientes
+- estructura de archivos
+- notas de uso
