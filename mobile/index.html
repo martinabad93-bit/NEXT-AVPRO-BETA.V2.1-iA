@@ -6561,3 +6561,181 @@ body:not(.light-mode) #nextgb-ai-result h3{
   window.addEventListener('load',()=>setTimeout(bind,200));
 })();
 </script>
+
+
+<!-- NEXT-AVPRO-MOBILE V1.3 · TRUE MOBILE-FIRST APP SHELL -->
+<style id="next-avpro-mobile-v13">
+@media (max-width:700px), (pointer:coarse){
+  html,body{margin:0!important;padding:0!important;width:100%!important;min-width:0!important;overflow:hidden!important;background:#070a10!important;}
+  body.light-mode{background:#f4f7fb!important;}
+  /* Hide the desktop/adapted composition completely on phones. */
+  body.mobile-v13 > .top-bar,
+  body.mobile-v13 > .page-heading,
+  body.mobile-v13 > .app-shell,
+  body.mobile-v13 .app-shell,
+  body.mobile-v13 .nextgb-ai-aduanas,
+  body.mobile-v13 .theme-switch,
+  body.mobile-v13 .nextgb-mobile-nav{display:none!important;}
+
+  #next-avpro-mobile-v13{
+    position:fixed!important;inset:0!important;z-index:100000!important;
+    display:flex!important;flex-direction:column!important;
+    width:100vw!important;height:100dvh!important;min-height:100dvh!important;
+    overflow:hidden!important;background:var(--bg-body)!important;color:var(--text-main)!important;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  }
+  .v13-main{flex:1 1 auto;min-height:0;overflow:hidden;position:relative;}
+  .v13-screen{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;padding:14px 16px calc(92px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;}
+  .v13-screen.active{display:block;animation:v13in .22s ease-out;}
+  @keyframes v13in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .v13-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px;padding-top:max(4px,env(safe-area-inset-top));}
+  .v13-brand{display:flex;align-items:center;gap:10px;min-width:0;}
+  .v13-logo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#4f46e5);color:#fff;font-weight:900;box-shadow:0 9px 24px rgba(59,130,246,.28);}
+  .v13-brand strong{display:block;font-size:14px;letter-spacing:-.3px;}.v13-brand span{display:block;color:var(--text-muted);font-size:9px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800;margin-top:2px;}
+  .v13-theme{width:42px;height:42px;border:1px solid var(--border-strong);border-radius:13px;background:var(--bg-card);color:var(--text-main);display:grid;place-items:center;font-size:18px;box-shadow:var(--shadow-card);cursor:pointer;flex:0 0 auto;}
+  .v13-hero{padding:18px;border-radius:24px;background:linear-gradient(145deg,rgba(37,99,235,.18),rgba(79,70,229,.07) 48%,var(--bg-card) 100%);border:1px solid rgba(96,165,250,.18);box-shadow:var(--shadow-card);margin-bottom:14px;}
+  .v13-kicker{color:var(--accent-2);font-size:9px;text-transform:uppercase;letter-spacing:2px;font-weight:900;margin-bottom:8px;}.v13-hero h1{margin:0;font-size:30px;line-height:1.04;letter-spacing:-1.4px;}.v13-hero p{margin:9px 0 0;color:var(--text-muted);font-size:13px;line-height:1.5;}
+  .v13-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:16px;box-shadow:var(--shadow-card);margin-bottom:12px;}
+  .v13-card h2{font-size:15px;margin:0 0 12px;letter-spacing:-.3px;}.v13-card h3{font-size:11px;margin:0 0 8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;}
+  .v13-input,.v13-select{width:100%;min-height:50px;border:1px solid var(--border-color);border-radius:14px;background:var(--input-bg);color:var(--text-main);padding:0 14px;font:600 14px Inter,sans-serif;outline:none;box-sizing:border-box;}
+  .v13-textarea{width:100%;min-height:150px;border:1px solid rgba(96,165,250,.24);border-radius:18px;background:var(--input-bg);color:var(--text-main);padding:15px;font:500 16px/1.5 Inter,sans-serif;resize:none;outline:none;box-sizing:border-box;}
+  .v13-input:focus,.v13-select:focus,.v13-textarea:focus{border-color:rgba(59,130,246,.65);box-shadow:0 0 0 4px var(--accent-glow);}
+  .v13-btn{width:100%;min-height:50px;border:0;border-radius:14px;padding:0 16px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font:800 13px Inter,sans-serif;box-shadow:0 12px 26px rgba(37,99,235,.22);cursor:pointer;}
+  .v13-btn.secondary{background:var(--bg-card-2);color:var(--text-main);border:1px solid var(--border-color);box-shadow:none;}.v13-btn.green{background:linear-gradient(135deg,#22c55e,#16a34a);}
+  .v13-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;}.v13-actions.one{grid-template-columns:1fr;}
+  .v13-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-top:10px;scrollbar-width:none;}.v13-chips::-webkit-scrollbar{display:none;}.v13-chip{flex:0 0 auto;border:1px solid var(--border-color);background:var(--bg-card-2);color:var(--text-soft);border-radius:999px;padding:9px 12px;font-size:10px;font-weight:800;cursor:pointer;}
+  .v13-result{margin-top:12px;display:none;}.v13-result.show{display:block;}.v13-result > *{max-width:100%!important;box-sizing:border-box;}
+  .v13-result .nextgb-tax-only-card,.v13-result .nextgb-ai-answer,.v13-result .nextgb-ai-v14-card,.v13-result table{width:100%!important;max-width:100%!important;overflow-wrap:anywhere;}
+  .v13-result .nextgb-ai-grid{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;}.v13-result .nextgb-ai-kpi{min-width:0!important;}
+  .v13-status{margin-top:9px;color:var(--text-muted);font-size:10px;line-height:1.4;}
+  .v13-grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}.v13-grid2>div{min-width:0;}.v13-label{display:block;color:var(--text-soft);font-size:10px;font-weight:800;margin:0 0 6px;}
+  .v13-segment{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}.v13-segment button{min-height:48px;border:1px solid var(--border-color);background:var(--bg-card-2);color:var(--text-soft);border-radius:13px;font-weight:800;}.v13-segment button.active{background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:var(--accent-2);}
+  .v13-metric{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-color);}.v13-metric:last-child{border-bottom:0;}.v13-metric span{font-size:11px;color:var(--text-muted);}.v13-metric strong{font-size:13px;color:var(--text-main);text-align:right;}.v13-total{margin-top:10px;padding:16px;border-radius:16px;background:linear-gradient(145deg,#2563eb,#1e3a8a);color:#fff;}.v13-total small{display:block;opacity:.75;font-size:9px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800;margin-bottom:6px;}.v13-total strong{font-size:27px;letter-spacing:-1px;}
+  .v13-nav{flex:0 0 auto;height:70px;padding:5px 6px calc(5px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:rgba(14,19,29,.96);border-top:1px solid var(--border-strong);backdrop-filter:blur(22px);box-shadow:0 -12px 35px rgba(0,0,0,.24);}
+  .light-mode #next-avpro-mobile-v13 .v13-nav{background:rgba(255,255,255,.96);}
+  .v13-nav button{border:0;background:transparent;color:var(--text-muted);border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 9px Inter,sans-serif;min-width:0;}.v13-nav button span{font-size:21px;line-height:22px;}.v13-nav button.active{background:rgba(59,130,246,.15);color:var(--accent-2);}
+  .v13-empty{padding:24px 8px;color:var(--text-muted);font-size:12px;text-align:center;line-height:1.5;}
+  @media(max-width:380px){.v13-hero h1{font-size:27px}.v13-grid2{grid-template-columns:1fr}.v13-nav button span{font-size:19px}}
+}
+@media(min-width:701px){#next-avpro-mobile-v13{display:none!important;}}
+</style>
+
+<div id="next-avpro-mobile-v13" aria-label="NEXT AVPRO Mobile V1.3">
+  <div class="v13-main">
+    <section class="v13-screen active" data-screen="AI">
+      <div class="v13-header"><div class="v13-brand"><div class="v13-logo">AI</div><div><strong>NEXT GB</strong><span>Asistente de importación</span></div></div><button class="v13-theme" id="v13-theme" aria-label="Cambiar tema">☾</button></div>
+      <div class="v13-hero"><div class="v13-kicker">Copiloto de importación</div><h1>¿Qué vehículo quieres analizar?</h1><p>Escribe el vehículo, VIN o los costos de la operación. La IA construye el escenario y usa el mismo motor de cálculo de NEXT GB.</p></div>
+      <div class="v13-card"><div class="v13-kicker">Consulta</div><textarea id="v13-ai-input" class="v13-textarea" placeholder="Ej.: Tucson SEL AWD 2022, compra 12,000, fee 1,300, grúa 900, taller 1,200, venta 24,000..."></textarea><div class="v13-actions one"><button class="v13-btn" id="v13-ai-run">Analizar operación</button></div><div class="v13-chips"><button class="v13-chip" data-q="Consulta impuestos Tucson SEL AWD 2022 USA">🧾 Impuestos</button><button class="v13-chip" data-q="Tucson SEL AWD 2022, compra 12000">🚙 Vehículo</button><button class="v13-chip" data-q="Tucson SEL AWD 2022, compra 12000, venta 24000">📊 Margen</button></div><div class="v13-status" id="v13-ai-status">IA lista · cálculo en el dispositivo</div><div id="v13-ai-result" class="v13-result"></div></div>
+    </section>
+
+    <section class="v13-screen" data-screen="Vehículo">
+      <div class="v13-header"><div><div class="v13-kicker">Paso 01</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Vehículo & Subasta</h1></div><button class="v13-theme" data-theme>☾</button></div>
+      <div class="v13-card"><h2>Plataforma</h2><div class="v13-segment"><button id="v13-iaai" class="active">IAAI</button><button id="v13-copart">COPART</button></div><div class="v13-grid2"><div><label class="v13-label">Compra / oferta USD</label><input id="v13-compra" class="v13-input" inputmode="decimal" placeholder="0"></div><div><label class="v13-label">VIN</label><input id="v13-vin" class="v13-input" autocapitalize="characters" placeholder="17 caracteres"></div></div><div style="margin-top:10px"><label class="v13-label">Marca</label><input id="v13-marca" class="v13-input" placeholder="Hyundai"></div><div style="margin-top:10px"><label class="v13-label">Modelo / versión</label><input id="v13-modelo" class="v13-input" placeholder="Tucson SEL AWD"></div><div class="v13-grid2" style="margin-top:10px"><div><label class="v13-label">Año</label><input id="v13-anio" class="v13-input" inputmode="numeric" placeholder="2022"></div><div><label class="v13-label">Tracción</label><input id="v13-traccion" class="v13-input" placeholder="AWD / FWD"></div></div><div class="v13-actions"><button class="v13-btn secondary" id="v13-sync-vehicle">Sincronizar</button><button class="v13-btn" id="v13-vin-search">Decodificar VIN</button></div></div>
+    </section>
+
+    <section class="v13-screen" data-screen="Costos">
+      <div class="v13-header"><div><div class="v13-kicker">Paso 02</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Costos de importación</h1></div><button class="v13-theme" data-theme>☾</button></div>
+      <div class="v13-card"><h2>Origen · Miami</h2><div id="v13-cost-origin"></div></div><div class="v13-card"><h2>Destino · RD</h2><div id="v13-cost-dest"></div><div class="v13-total"><small>Live Cost</small><strong id="v13-live-cost">US$ 0.00</strong></div></div>
+    </section>
+
+    <section class="v13-screen" data-screen="Margen">
+      <div class="v13-header"><div><div class="v13-kicker">Paso 03</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Inversión & Margen</h1></div><button class="v13-theme" data-theme>☾</button></div>
+      <div class="v13-card"><h2>Resultado comercial</h2><div class="v13-metric"><span>Live Cost</span><strong id="v13-margin-cost">US$ 0.00</strong></div><div style="margin-top:12px"><label class="v13-label">Precio de venta USD</label><input id="v13-venta" class="v13-input" inputmode="decimal" placeholder="0"></div><div class="v13-metric" style="margin-top:10px"><span>Ganancia</span><strong id="v13-gain">US$ 0.00</strong></div><div class="v13-metric"><span>Margen</span><strong id="v13-margin">0.00%</strong></div><div class="v13-actions one"><button class="v13-btn green" id="v13-calc-margin">Actualizar margen</button></div></div>
+    </section>
+
+    <section class="v13-screen" data-screen="Cotización">
+      <div class="v13-header"><div><div class="v13-kicker">Documento</div><h1 style="margin:0;font-size:25px;letter-spacing:-1px">Cotización</h1></div><button class="v13-theme" data-theme>☾</button></div>
+      <div class="v13-card"><h2 id="v13-quote-title">NEXT GB AUTO IMPORT</h2><div id="v13-quote-body"></div><div class="v13-actions"><button class="v13-btn secondary" id="v13-refresh-quote">Actualizar</button><button class="v13-btn" id="v13-print">Imprimir / PDF</button></div></div>
+    </section>
+  </div>
+  <nav class="v13-nav" aria-label="Navegación móvil">
+    <button class="active" data-nav="AI"><span>🤖</span>AI</button><button data-nav="Vehículo"><span>🚙</span>Vehículo</button><button data-nav="Costos"><span>💰</span>Costos</button><button data-nav="Margen"><span>📊</span>Margen</button><button data-nav="Cotización"><span>📄</span>Cotización</button>
+  </nav>
+</div>
+
+<script id="next-avpro-mobile-v13-js">
+(function(){
+'use strict';
+const q=s=>document.querySelector(s), qa=s=>Array.from(document.querySelectorAll(s));
+const num=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0};
+const money=v=>new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(num(v));
+const el=id=>document.getElementById(id);
+const screens=()=>qa('#next-avpro-mobile-v13 .v13-screen');
+function mobileField(id){return el(id)}
+function getOld(id){return el(id)}
+function setOld(id,v){const x=getOld(id);if(x&&v!==undefined&&v!==null){x.value=String(v);x.dispatchEvent(new Event('input',{bubbles:true}));x.dispatchEvent(new Event('change',{bubbles:true}));}}
+function getOldVal(id){return getOld(id)?.value??''}
+function activate(name){
+  screens().forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  qa('#next-avpro-mobile-v13 [data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===name));
+  if(name==='Costos')renderCosts(); if(name==='Margen')renderMargin(); if(name==='Cotización')renderQuote();
+}
+function theme(){
+  if(typeof window.toggleTheme==='function') window.toggleTheme();
+  else document.body.classList.toggle('light-mode');
+  syncThemeIcons();
+}
+function syncThemeIcons(){const light=document.body.classList.contains('light-mode');qa('#next-avpro-mobile-v13 .v13-theme').forEach(b=>b.textContent=light?'☀':'☾');}
+function runAI(){
+  const input=el('v13-ai-input'), old=el('nextgb-ai-input'), result=el('v13-ai-result'), status=el('v13-ai-status');
+  const text=String(input?.value||'').trim(); if(!text){status.textContent='Escribe una consulta para comenzar.';input?.focus();return;}
+  if(!old||typeof window.nextGBAduanasAI!=='function'){status.textContent='El motor IA no está disponible en esta carga.';return;}
+  old.value=text; old.dispatchEvent(new Event('input',{bubbles:true}));
+  status.textContent='Analizando operación…';
+  result.classList.remove('show');
+  Promise.resolve(window.nextGBAduanasAI()).then(()=>{
+    const legacy=el('nextgb-ai-result');
+    if(legacy&&legacy.innerHTML.trim()){
+      result.innerHTML=legacy.innerHTML;
+      result.classList.add('show');
+      status.textContent='Análisis completado · puedes editar los datos desde Vehículo, Costos y Margen.';
+    }else status.textContent='No se generó un resultado visible. Revisa la consulta.';
+  }).catch(()=>{status.textContent='No fue posible completar el análisis.'});
+}
+function syncVehicle(){
+  setOld('auction_bid',getOldVal('auction_bid')||num(mobileField('v13-compra')?.value));
+  const m=['vin','marca','modelo','anio'];m.forEach(id=>setOld(id,mobileField('v13-'+id)?.value||''));
+  try{window.calcCostos?.();window.calc?.();window.nextGBLiveCostUpdate?.()}catch(e){}
+}
+function loadVehicle(){
+  el('v13-compra').value=getOldVal('auction_bid');el('v13-vin').value=getOldVal('vin');el('v13-marca').value=getOldVal('marca');el('v13-modelo').value=getOldVal('modelo');el('v13-anio').value=getOldVal('anio');
+  const spec=(getOldVal('modelo')||'').match(/\b(AWD|4WD|4X4|FWD|RWD|4X2|2WD)\b/i); if(spec)el('v13-traccion').value=spec[1].toUpperCase();
+}
+function syncCosts(){
+  const pairs=[['v13-fee','fees_subasta'],['v13-tow','grua_inland'],['v13-repair','reparacion_miami_usd'],['v13-doc','documentacion_origen_usd'],['v13-freight','flete_real'],['v13-port','paquete_despacho_usd']];
+  pairs.forEach(([a,b])=>{if(el(a))setOld(b,el(a).value)});try{window.calcCostos?.();window.nextGBLiveCostUpdate?.()}catch(e){}
+}
+function costInput(id,label,oldId,def){const v=getOldVal(oldId)||def;return `<div class="v13-metric"><span>${label}</span><input id="${id}" class="v13-input" style="max-width:145px;text-align:right" inputmode="decimal" value="${String(v).replace(/"/g,'&quot;')}" data-old="${oldId}"></div>`}
+function renderCosts(){
+  const origin=el('v13-cost-origin'),dest=el('v13-cost-dest'); if(!origin||!dest)return;
+  origin.innerHTML=costInput('v13-fee','Auction fee','fees_subasta','0')+costInput('v13-tow','Grúa inland USA','grua_inland','0')+costInput('v13-repair','Reparación / taller Miami','reparacion_miami_usd','950')+costInput('v13-doc','Documentación y logística','documentacion_origen_usd','675')+costInput('v13-freight','Flete marítimo','flete_real','910')+costInput('v13-port','Paquete despacho / puerto','paquete_despacho_usd','465');
+  dest.innerHTML=`<div class="v13-metric"><span>Despacho aduanal</span><strong>RD$ ${money(window.currentSinPlaca||0)}</strong></div><div class="v13-metric"><span>Primera placa / marbete</span><strong>RD$ ${money((getOld('rPlaca')?.innerText||'').replace(/[^0-9.-]/g,''))}</strong></div>`;
+  qa('#v13-cost-origin input').forEach(x=>x.addEventListener('change',syncCosts));
+  const live=num(window.currentLiveCost||window.currentTotalInvestment||0);el('v13-live-cost').textContent='US$ '+money(live);
+}
+function renderMargin(){
+  const cost=num(window.currentLiveCost||window.currentTotalInvestment||0)||num(getOld('c_total')?.value||0);el('v13-margin-cost').textContent='US$ '+money(cost);
+  const sale=getOldVal('precio_venta_estimado_usd');el('v13-venta').value=sale;
+  updateMargin();
+}
+function updateMargin(){const cost=num(window.currentLiveCost||window.currentTotalInvestment||0)||num(getOld('c_total')?.value||0),sale=num(el('v13-venta')?.value);setOld('precio_venta_estimado_usd',sale?sale:'');try{window.calcCostos?.();}catch(e){}const gain=sale-cost,margin=sale?gain/sale*100:0;el('v13-gain').textContent='US$ '+money(gain);el('v13-margin').textContent=margin.toFixed(2)+'%';}
+function renderQuote(){
+  const title=(getOldVal('marca')+' '+getOldVal('modelo')).trim()||'NEXT GB AUTO IMPORT';const cost=num(window.currentLiveCost||window.currentTotalInvestment||0);const sale=num(getOldVal('precio_venta_estimado_usd'));const gain=sale-cost;
+  el('v13-quote-title').textContent=title;
+  el('v13-quote-body').innerHTML=`<div class="v13-metric"><span>Vehículo</span><strong>${title}</strong></div><div class="v13-metric"><span>Compra + costos</span><strong>US$ ${money(cost)}</strong></div><div class="v13-metric"><span>Precio de venta</span><strong>US$ ${money(sale)}</strong></div><div class="v13-metric"><span>Ganancia estimada</span><strong>US$ ${money(gain)}</strong></div>`;
+}
+function vin(){const v=String(el('v13-vin').value||'').trim().toUpperCase();setOld('vin',v);try{if(typeof window.decodeVIN==='function')window.decodeVIN();else if(typeof window.nextGBDecodificarVINParaAI==='function')window.nextGBDecodificarVINParaAI(v);}catch(e){} }
+function init(){
+  document.body.classList.add('mobile-v13');
+  const app=el('next-avpro-mobile-v13');if(!app)return;
+  qa('#next-avpro-mobile-v13 [data-nav]').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.nav)));
+  qa('#next-avpro-mobile-v13 [data-theme]').forEach(b=>b.addEventListener('click',theme));el('v13-theme')?.addEventListener('click',theme);
+  el('v13-ai-run')?.addEventListener('click',runAI);qa('#next-avpro-mobile-v13 [data-q]').forEach(b=>b.addEventListener('click',()=>{el('v13-ai-input').value=b.dataset.q;runAI()}));
+  el('v13-sync-vehicle')?.addEventListener('click',syncVehicle);el('v13-vin-search')?.addEventListener('click',vin);
+  el('v13-calc-margin')?.addEventListener('click',updateMargin);el('v13-refresh-quote')?.addEventListener('click',renderQuote);el('v13-print')?.addEventListener('click',()=>window.print());
+  loadVehicle();syncThemeIcons();
+  setTimeout(()=>activate('AI'),60);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
