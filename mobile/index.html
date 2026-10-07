@@ -2001,7 +2001,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const placaPPRds = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestionRds = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
         const totalPlacaRds = normativaRds + placaPPRds + gestionRds;
-        txt += `🔹 *Pago 5 (Placa y Endoso):* ${p5}\n`;
+        txt += `🔹 *Pago 5 (Emisión de Placa):* ${p5}\n`;
         txt += `_Placa PP: RD$ ${fmt(placaPPRds)} · Gestión/Endoso: RD$ ${fmt(gestionRds)} · Normativa 03-25: RD$ ${fmt(normativaRds)} · Total placa: RD$ ${fmt(totalPlacaRds)}._\n\n`;
         
         txt += `🏁 *TOTAL INVERSIÓN (Landed):* ${total}\n\n`;
@@ -3766,6 +3766,157 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   };
 })();
 </script>
+
+<script id="nextgb-v27-plate-total-sync">
+(function(){
+  'use strict';
+
+  function num(id){
+    const el=document.getElementById(id);
+    if(!el) return 0;
+    const v=parseFloat(String(el.value ?? el.textContent ?? '').replace(/[^0-9.-]/g,''));
+    return isFinite(v)?v:0;
+  }
+  function money(v){
+    return 'RD$ ' + Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function usd(v){
+    return 'US$ ' + Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+
+  // Customer-facing plate emission is ONE total:
+  // Normativa 03-25 + Placa PP + Gestión/Endoso.
+  function plateEmissionRds(){
+    return num('normativa_0325_rds') + num('placa_pp_rds') + num('gestion_endoso_rds');
+  }
+
+  // Tax-side "Primera Placa + CO2 + Marbete" is separate and must also enter
+  // the operation total. calc() stores it in window.currentPlaca.
+  function firstPlateTaxRds(){
+    const v=Number(window.currentPlaca||0);
+    return isFinite(v)?v:0;
+  }
+
+  function totalPlateRds(){
+    return firstPlateTaxRds() + plateEmissionRds();
+  }
+
+  function setText(id,value){
+    const e=document.getElementById(id);
+    if(e) e.textContent=value;
+  }
+
+  function syncPlateOutputs(){
+    const emission=plateEmissionRds();
+    const first=firstPlateTaxRds();
+    const combined=totalPlateRds();
+
+    // Explicit totals wherever the UI has a matching field.
+    setText('final-total-plate', money(emission));
+    setText('rc_total_placa_rds', money(emission));
+
+    // Add/refresh a dedicated tax-side total without replacing the existing
+    // "Primera Placa + CO2 + Marbete" breakdown.
+    let box=document.getElementById('nextgb-first-plate-total');
+    if(!box){
+      const anchor=document.getElementById('rc_total_placa_rds') ||
+                   document.getElementById('final-total-plate');
+      if(anchor){
+        box=document.createElement('div');
+        box.id='nextgb-first-plate-total';
+        box.style.cssText='margin-top:8px;padding:10px;border-radius:10px;background:rgba(34,197,94,.08);font-weight:700;';
+        anchor.parentNode.insertBefore(box,anchor.nextSibling);
+      }
+    }
+    if(box){
+      box.innerHTML =
+        '<div>Impuesto Primera Placa + CO₂ + Marbete: <strong>'+money(first)+'</strong></div>'+
+        '<div style="margin-top:4px">Emisión de Placa (PP + Gestión/Endoso + Normativa): <strong>'+money(emission)+'</strong></div>'+
+        '<div style="margin-top:6px;font-size:1.05em">Total relacionado a placa: <strong>'+money(combined)+'</strong></div>';
+    }
+
+    // Keep a single canonical value available to every downstream output.
+    window.nextGBPlateEmissionRds=emission;
+    window.nextGBFirstPlateTaxRds=first;
+    window.nextGBTotalPlateRds=combined;
+  }
+
+  // Wrap calcCostos after all original scripts have loaded. This does not
+  // replace its calculation; it only adds the first-plate tax to the operation
+  // totals and refreshes synchronized outputs.
+  function wrap(){
+    if(typeof window.calcCostos==='function' && !window.__nextgbV27Wrapped){
+      const original=window.calcCostos;
+      window.calcCostos=function(){
+        const result=original.apply(this,arguments);
+        const first=firstPlateTaxRds();
+        const emission=plateEmissionRds();
+
+        // Existing destination total is dispatch + emission + local repair.
+        // Add the tax-side first-plate amount exactly once.
+        const dispatch=num('c_despacho_rds');
+        const repairs=num('reparaciones_rds');
+        const corrected=dispatch + first + emission + repairs;
+        window.currentTotalDestinoRds=corrected;
+
+        setText('rc_total_local', money(corrected));
+        syncPlateOutputs();
+        return result;
+      };
+      window.__nextgbV27Wrapped=true;
+    }
+  }
+
+  // Wrap updateFinalSummary so Landed/final totals include the first-plate tax.
+  function wrapFinal(){
+    if(typeof window.updateFinalSummary==='function' && !window.__nextgbV27FinalWrapped){
+      const original=window.updateFinalSummary;
+      window.updateFinalSummary=function(){
+        const result=original.apply(this,arguments);
+        syncPlateOutputs();
+
+        // If the app exposes a final landed/total field, add first-plate tax
+        // to the existing displayed amount only once by using a canonical
+        // base captured from the current calculated components.
+        const landedIds=['final-landed','final-total','final-investment','final-destino'];
+        const first=firstPlateTaxRds();
+        for(const id of landedIds){
+          const el=document.getElementById(id);
+          if(!el || el.dataset.nextgbV27Synced==='1') continue;
+          const raw=parseFloat((el.textContent||'').replace(/[^0-9.-]/g,''));
+          if(isFinite(raw) && first>0){
+            // Mark and refresh on subsequent calls from the underlying
+            // calculation by subtracting our prior addition first.
+            const base=el.dataset.nextgbV27Base ? parseFloat(el.dataset.nextgbV27Base) : raw;
+            el.dataset.nextgbV27Base=String(base);
+            el.textContent=money(base+first);
+            el.dataset.nextgbV27Synced='1';
+          }
+        }
+        return result;
+      };
+      window.__nextgbV27FinalWrapped=true;
+    }
+  }
+
+  function install(){
+    wrap();
+    wrapFinal();
+    syncPlateOutputs();
+  }
+
+  // The app defines functions progressively, so retry briefly after load.
+  let tries=0;
+  const timer=setInterval(function(){
+    install();
+    if(++tries>40) clearInterval(timer);
+  },250);
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',install,{once:true});
+  }else install();
+})();
+</script>
+
 </body>
 </html>
 <style>

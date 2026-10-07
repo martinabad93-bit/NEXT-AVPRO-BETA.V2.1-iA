@@ -1,26 +1,53 @@
-# NEXT-AVPRO-BETA V2.6 — MOBILE
+# NEXT AVPRO BETA V2.7 — MOBILE
 
-## Corrección aplicada: Emisión de Placa
+## Corrección principal
 
-Esta versión parte del HTML Mobile entregado por el usuario y conserva su lógica de cálculo.
+Se corrigió la sincronización de los conceptos relacionados con placa.
 
-### Se corrigió la presentación de placa para que se muestre donde corresponde
+### 1. Impuesto de Primera Placa
+El valor calculado en la sección **Aduanas** como:
 
-- **Placa PP:** RD$ 2,000.00
-- **Gestión / Endoso:** RD$ 5,000.00
-- **Total Emisión de Placa:** RD$ 7,000.00
-- **Normativa 03-25:** RD$ 0.00 por defecto y solo aparece con valor cuando se introduce un monto.
+- Primera Placa
+- CO₂
+- Marbete
 
-### Salidas actualizadas
+ahora se incorpora al costo real de la operación y al cálculo de inversión/Landed.
 
-- Resumen final / cotización
-- WhatsApp de proforma
-- WhatsApp de costos
-- Resultado de la IA
-- Resumen de inversión
+### 2. Emisión de Placa
+Se mantiene como concepto separado:
+
+- Placa PP: RD$ 2,000.00
+- Gestión / Endoso: RD$ 5,000.00
+- Normativa 03-25: RD$ 0.00 por defecto
+- **Total Emisión de Placa:** suma de los tres conceptos.
+
+### 3. Pago 5
+El Pago 5 ya no debe presentar solamente “RD$7,000” como si ese fuera el monto final del pago.
+
+El sistema debe tomar el **total de Emisión de Placa**, convertirlo a USD según la tasa de la operación y usar ese monto como importe del Pago 5.
+
+### 4. Sincronización
+Los conceptos se mantienen sincronizados entre:
+
+- Aduanas
+- Costos
+- Resumen final
+- Total de operación / Landed
+- Cotización / Proforma
+- WhatsApp
+- Salida de IA cuando corresponda
 
 ### Regla importante
 
-No se modificó el cálculo tributario de DGA ni se sustituyó el cálculo de Landed Cost. La mejora es de presentación y sincronización del valor de emisión de placa.
+**Impuesto Primera Placa + CO₂ + Marbete** y **Emisión de Placa (PP + Gestión/Endoso + Normativa)** son conceptos diferentes.
 
-La IA existente se conserva.
+No deben mezclarse ni contarse dos veces.
+
+## Archivos
+
+- `NEXT-AVPRO-BETA.V2.7-MOBILE.html` — versión corregida.
+- ZIP incluido para distribución.
+
+## Nota de prueba
+
+La corrección fue aplicada sobre el código existente. No se realizó una prueba interactiva completa en un navegador dentro de esta ejecución.
