@@ -455,48 +455,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 .top-tools-menu .select-memory, .top-tools-menu .btn-outline, .top-tools-menu .btn-reset { width: 100%; min-height: 42px; }
 .top-tools-menu .menu-title { padding: 4px 4px 7px; color: var(--text-muted); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.3px; }
 
-@media print {
-    :root {
-        --bg-body:#fff !important; --bg-card:#fff !important; --bg-card-2:#f8fafc !important;
-        --text-main:#000 !important; --text-soft:#334155 !important; --text-muted:#475569 !important;
-        --primary:#0f172a !important; --accent:#2563eb !important;
-        --accent-glow:rgba(37,99,235,.10) !important; --border-color:#e2e8f0 !important; --border-strong:#cbd5e1 !important;
-        --input-bg:#f8fafc !important; --shadow-soft:none !important; --shadow-card:none !important; --shadow-glow:none !important;
-    }
-    @page { size:auto; margin:15mm auto; }
-    body { background:#fff !important; color:#000 !important; margin:0 !important; padding:0 !important; }
-    body > * { display:none !important; }
-    .app-container { display:block !important; width:90% !important; max-width:800px !important; margin:0 auto !important; padding:0 !important; zoom:.85; }
-    .no-print, .theme-switch, #left-panel, .top-bar, #toast-container, .btn-action, #btn-volver-editar, .page-heading { display:none !important; }
-    #tab-subastas, #tab-aduanas, #tab-costos { display:none !important; }
-    #right-panel { display:block !important; border:none !important; box-shadow:none !important; width:100% !important; padding:0 !important; margin:0 auto !important; position:static !important; }
-    #right-panel::before { display:none !important; }
-    .preview-toolbar, .preview-header .preview-caption, .metric-strip { display:none !important; }
-    .logo-container { margin-bottom:10mm !important; display:block !important; }
-    .logo-svg { width:180px !important; }
-    .print-header { display:block !important; text-align:center; margin-bottom:25px; border-bottom:2px solid #e2e8f0; padding-bottom:15px; }
-    .print-header h2 { margin:0; font-size:22px; font-weight:900; color:#0f172a; text-transform:uppercase; }
-    .print-header p { margin:3px 0; font-size:12px; font-weight:700; color:#334155; }
-    .tab-content { display:none !important; }
-    .tab-content.active { display:block !important; opacity:1 !important; transform:none !important; animation:none !important; }
-    * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
-    .quote-info-box { background:#f8fafc !important; border:1px solid #cbd5e1 !important; }
-    .info-item span { color:#475569 !important; }
-    .info-item strong { color:#000 !important; }
-    .res-line { border-bottom:1px solid #e2e8f0 !important; color:#334155 !important; }
-    .res-line span:last-child { color:#000 !important; }
-    .subtotal-line { border-bottom:2px solid #cbd5e1 !important; color:#0f172a !important; }
-    .highlight-subtotal { background:#eff6ff !important; border-left:4px solid #2563eb !important; }
-    .total-box { background:#f8fafc !important; border:2px solid #cbd5e1 !important; color:#0f172a !important; box-shadow:none !important; }
-    .total-box h2 { color:#0f172a !important; }
-    .total-box.success-box { background:#ecfdf5 !important; border-color:#10b981 !important; }
-    .total-box.success-box h2 { color:#047857 !important; }
-    #elite-splash { display:none !important; }
-    body.final-report-print #final-summary { display:block !important; }
-    body.final-report-print .final-action-card,
-    body.final-report-print .final-footnote { display:none !important; }
-    body.final-report-print #final-summary { max-width:100% !important; }
-}
+/* V3.75: legacy app-page print block removed. Dedicated #nextgb-print-stage is authoritative. */
+
 
 /* Final presentation tweaks */
 #right-panel.final-mode { background: radial-gradient(circle at 100% 0%, rgba(59,130,246,.07), transparent 28%), var(--bg-card); border-color:rgba(59,130,246,.16); }
@@ -512,6 +472,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 .final-summary { display:none; }
 #right-panel.final-mode .preview-header, #right-panel.final-mode .quote-info-box, #right-panel.final-mode #res-subastas, #right-panel.final-mode #res-aduanas, #right-panel.final-mode #res-costos { display:none !important; }
 #right-panel.final-mode #final-summary { display:block; animation:finalReveal .65s cubic-bezier(.16,1,.3,1) both; }
+#right-panel.final-mode #final-summary .final-main-grid, #right-panel.final-mode #final-summary .final-footnote { display:none !important; }
+#right-panel.final-mode #final-summary .final-action-card { margin-top:22px; }
 #right-panel.final-mode { max-width:980px; margin:0 auto; padding:34px; }
 #right-panel.final-mode::before { width:180px; height:4px; margin-bottom:28px; }
 @keyframes finalReveal { from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none} }
@@ -528,7 +490,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 .final-vin { display:block; margin-top:3px; font-size:9px; color:var(--text-muted); font-family:monospace; letter-spacing:.8px; }
 .final-vehicle-meta { display:grid; grid-template-columns:repeat(3,minmax(80px,1fr)); gap:18px; text-align:right; }
 .final-vehicle-meta strong { display:block; margin-top:4px; font-size:10px; }
-.final-kpis { display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:11px; margin-bottom:14px; }
+.final-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:11px; margin-bottom:14px; }
 .final-kpi { min-height:125px; padding:18px; border-radius:17px; border:1px solid var(--border-color); background:var(--bg-card-2); }
 .final-kpi span { display:block; color:var(--text-muted); font-size:8px; font-weight:900; letter-spacing:1.5px; }
 .final-kpi strong { display:block; margin:11px 0 5px; font-size:25px; letter-spacing:-1px; font-weight:900; }
@@ -560,7 +522,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 .margin-note span { color:var(--success); font-weight:900; }
 .margin-note p { margin:0; color:var(--text-muted); font-size:9px; line-height:1.55; }
 .final-action-card { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-top:14px; padding:20px; border-radius:18px; background:linear-gradient(145deg,#0e1624,#0b111a); border:1px solid var(--border-strong); }
-.final-action-card h3 { margin:7px 0 5px; font-size:15px; letter-spacing:-.35px; }
+.final-action-card h3 { margin:7px 0 5px; font-size:15px; letter-spacing:-.35px; color:#fff; }
 .final-action-card p { margin:0; color:#8190a6; font-size:10px; line-height:1.55; }
 .final-actions { display:flex; gap:9px; flex-wrap:wrap; }
 .final-btn { min-height:44px; padding:0 15px; border-radius:11px; border:1px solid transparent; font-weight:800; font-size:10px; cursor:pointer; transition:transform .2s,box-shadow .2s,opacity .2s; white-space:nowrap; }
@@ -752,47 +714,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 </style>
 
 <style id="nextgb-v26-print-center">
-@media print {
-  @page { size: A4 portrait; margin: 10mm; }
-  html, body { width:100% !important; min-width:0 !important; background:#fff !important; }
-  body { margin:0 !important; padding:0 !important; }
-  .app-container {
-    display:block !important; width:100% !important; max-width:none !important;
-    margin:0 !important; padding:0 !important; zoom:1 !important;
-  }
-  #right-panel {
-    display:block !important; width:170mm !important; max-width:170mm !important;
-    margin:0 auto !important; padding:0 !important;
-    border:0 !important; box-shadow:none !important;
-    position:static !important; left:auto !important; right:auto !important;
-  }
-  #right-panel > .print-header,
-  #right-panel > .quote-info-box,
-  #right-panel > #res-costos,
-  #right-panel > #res-subastas,
-  #right-panel > #res-aduanas {
-    width:100% !important; max-width:100% !important;
-    margin-left:auto !important; margin-right:auto !important;
-    box-sizing:border-box !important;
-  }
-  .print-header { text-align:center !important; }
-  .quote-info-box {
-    display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    width:100% !important; margin:0 auto 12mm !important;
-  }
-  #res-costos.tab-content.active,
-  #res-subastas.tab-content.active,
-  #res-aduanas.tab-content.active {
-    display:block !important; opacity:1 !important; transform:none !important;
-  }
-  .result-title { width:100% !important; }
-  .res-line, .subtotal-line, .highlight-subtotal, .total-box, #proforma-cronograma {
-    width:100% !important; box-sizing:border-box !important; margin-left:auto !important; margin-right:auto !important;
-  }
-  #proforma-cronograma { page-break-inside:avoid !important; }
-  .total-box, .highlight-subtotal { page-break-inside:avoid !important; }
-  .metric-strip, .preview-toolbar, .preview-header, .no-print { display:none !important; }
-}
+/* V3.75: legacy app-page print block removed. Dedicated #nextgb-print-stage is authoritative. */
+
 </style>
 </head>
 <body>
@@ -1198,12 +1121,16 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="res-line" style="margin-top: 10px;"><span>Flete Marítimo</span><span id="rc_flete_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Paquete despacho / puerto RD</span><span id="rc_paquete_despacho_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Despacho Aduanal / Impuestos (RD$)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
-            <div class="res-line highlight-subtotal"><span>🏁 Total Despacho Sin Placa</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
-            <div class="res-line" style="margin-top:10px;"><span>Normativa 03-25</span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
-            <div class="res-line"><span>Placa PP</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
-            <div class="res-line"><span>Gastos de Endoso / Gestión</span><span id="rc_gestion_endoso_rds">RD$ 5,000.00</span></div>
-            <div class="res-line subtotal-line"><span>Total Emisión de Placa</span><span id="rc_total_placa_rds">RD$ 7,000.00</span></div>
+            <div class="res-line"><span>Despacho Aduanal (Sin Placa)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
             <div class="res-line"><span>Reparación en RD</span><span id="rc_reparacion_local">RD$ 0.00</span></div>
+            <div class="res-line highlight-subtotal"><span>🏁 Total Despacho Sin Placa</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
+            <div class="res-line" style="margin-top:10px;font-weight:900;color:var(--accent);"><span>Emisión de Placa & Endoso</span><span></span></div>
+            <div class="res-line"><span>Normativa 03-25</span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Placa Provisional</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
+            <div class="res-line"><span>Gestión de Endoso</span><span id="rc_gestion_endoso_rds">RD$ 5,000.00</span></div>
+            <div class="res-line"><span>Primera Placa (17%)</span><span id="rc_primera_placa_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>CO₂ (2%) & Marbete</span><span id="rc_co2_marbete_rds">RD$ 0.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Emisión de Placa</span><span id="rc_total_placa_rds">RD$ 7,000.00</span></div>
             <div class="res-line subtotal-line"><span>Total Destino Local (RD$)</span><span id="rc_total_local">RD$ 7,000.00</span></div>
             
             <div class="res-line" style="font-size:11px"><span>Margen después de honorarios</span><span id="rc_margen_despues_honorarios_usd">US$ 0.00</span></div><div class="res-line highlight-subtotal" style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); border-left-color: var(--danger);">
@@ -1282,77 +1209,62 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <!-- FIN CRONOGRAMA -->
         </div>
 
-        <!-- FINAL EXECUTIVE PRESENTATION -->
+        <!-- FINAL RESULT · V3.75 CORRECCIÓN TOTAL -->
         <section id="final-summary" class="final-summary" aria-hidden="true">
-            <div class="final-hero">
+            <div class="final-hero final-result-hero">
                 <div>
-                    <div class="final-eyebrow">NEXT GB AUTO IMPORT · INVESTMENT REPORT</div>
-                    <h2>Tu importación está lista para presentar.</h2>
-                    <p>Una vista ejecutiva de la inversión, el costo real estimado, el retorno y la oportunidad comercial de la unidad.</p>
+                    <div class="final-eyebrow">NEXT GB AUTO IMPORT · RESULTADO DE LA OPERACIÓN</div>
+                    <h2>Tu importación está lista</h2>
+                    <p>Este es el resultado real de la cotización con los valores finales calculados por Live Cost.</p>
                 </div>
-                <div class="final-status-badge"><span></span> Cotización preparada</div>
+                <div class="final-status-badge"><span></span> Operación calculada</div>
             </div>
 
-            <div class="final-vehicle-card">
-                <div class="final-vehicle-icon">🚘</div>
-                <div class="final-vehicle-main">
-                    <span class="final-label">Vehículo</span>
-                    <strong id="final-vehicle">POR ESPECIFICAR</strong>
-                    <span id="final-vin" class="final-vin">VIN no especificado</span>
-                    <span id="final-millaje" class="final-vin" style="margin-top:3px; color: var(--accent-2);"></span>
-                </div>
-                <div class="final-vehicle-meta">
-                    <div><span>Cliente</span><strong id="final-client">—</strong></div>
-                    <div><span>Subasta</span><strong id="final-auction">IAAI</strong></div>
-                    <div><span>Tasa DOP</span><strong id="final-rate">60.60</strong></div>
-                </div>
-            </div>
-
-            <div class="final-kpis">
-                <div class="final-kpi final-kpi-primary"><span>LANDED COST</span><strong id="final-landed">US$ 0.00</strong><small>Costo total estimado</small></div>
-                <div class="final-kpi"><span>PRECIO DE VENTA</span><strong id="final-sale">US$ 0.00</strong><small>Objetivo comercial</small></div>
-                <div class="final-kpi final-kpi-success"><span>GANANCIA ESTIMADA · DESPUÉS DE HONORARIOS</span><strong id="final-margin">US$ 0.00</strong><small id="final-margin-pct">0.0% sobre costo</small></div>
-                <div class="final-kpi final-kpi-roi"><span>ROI / RETORNO</span><strong id="final-roi">0.0%</strong><small>Retorno sobre la inversión</small></div>
-            </div>
-
-            <div class="final-main-grid">
-                <div class="final-panel">
-                    <div class="final-panel-head"><div><span>01</span><h3>Resumen de inversión</h3></div><small>USD · RD$</small></div>
-                    <div class="final-breakdown">
-                        <div><span>Subasta + Fees</span><strong id="final-auction-cost">US$ 0.00</strong></div>
-                        <div><span>Logística en USA</span><strong id="final-inland">US$ 0.00</strong></div>
-                        <div><span>Documentación / Taller</span><strong id="final-docs">US$ 0.00</strong></div>
-                        <div><span>Fee Broker & Honorarios</span><strong id="final-broker">US$ 0.00</strong></div>
-                        <div><span>Flete marítimo</span><strong id="final-freight">US$ 0.00</strong></div>
-                        <div><span>FOB Miami</span><strong id="final-fob-miami">US$ 0.00</strong></div>
-                        <div><span>Total Despacho Sin Placa</span><strong id="final-dispatch-no-plate">US$ 0.00</strong></div>
-                        <div><span>Impuesto Primera Placa + CO₂ + Marbete</span><strong id="final-first-plate-tax">RD$ 0.00</strong></div>
-                        <div><span>Normativa 03-25</span><strong id="final-normativa">RD$ 0.00</strong></div>
-                        <div><span>Placa PP</span><strong id="final-plate-pp">RD$ 2,000.00</strong></div>
-                        <div><span>Endoso / Gestión</span><strong id="final-gestion">RD$ 5,000.00</strong></div>
-                        <div><span>Total Emisión de Placa</span><strong id="final-total-plate">RD$ 7,000.00</strong></div>
-                        <div class="final-plate-total-visible"><span>EMISIÓN DE PRIMERA PLACA · PAGO 5</span><strong id="final-first-plate-usd">US$ 0.00</strong></div>
-                        <div><span>Destino local</span><strong id="final-local">RD$ 0.00</strong></div>
+            <div class="final-result-card">
+                <div class="final-result-vehicle">
+                    <div class="final-vehicle-icon">🚘</div>
+                    <div>
+                        <span class="final-label">VEHÍCULO</span>
+                        <strong id="final-vehicle">POR ESPECIFICAR</strong>
+                        <span id="final-vin" class="final-vin">VIN no especificado</span>
                     </div>
-                    <div class="final-total-line"><span>Costo total Landed</span><strong id="final-total-emphasis">US$ 0.00</strong></div>
                 </div>
+                <div class="final-result-client" id="final-client">Cliente no especificado</div>
+            </div>
 
-                <div class="final-panel final-margin-panel">
-                    <div class="final-panel-head"><div><span>02</span><h3>Lectura comercial</h3></div><small>Rentabilidad</small></div>
-                    <div class="margin-visual"><div class="margin-circle"><span id="final-ring-pct">0%</span><small>margen</small></div><div class="margin-copy"><span>Ganancia estimada después de honorarios</span><strong id="final-margin-copy">US$ 0.00</strong><small>mismo valor mostrado en Live Cost</small></div></div>
-                    <div class="investment-score">
-                        <div><span class="final-label">Índice de operación</span><strong id="final-score">—</strong><small id="final-score-label">Pendiente de cálculo</small></div>
-                        <div class="score-track"><div id="final-score-fill"></div></div>
-                    </div>
-                    <div class="margin-note"><span>✓</span><p id="final-commercial-note">Usa este resultado como referencia para decidir tu precio objetivo y validar la operación antes de comprometer la compra.</p></div>
+            <div class="final-kpis final-result-kpis">
+                <div class="final-kpi final-kpi-primary">
+                    <span>INVERSIÓN TOTAL · LANDED COST</span>
+                    <strong id="final-landed">US$ 0.00</strong>
+                    <small>Costo total real estimado</small>
+                </div>
+                <div class="final-kpi">
+                    <span>PRECIO DE VENTA</span>
+                    <strong id="final-sale">US$ 0.00</strong>
+                    <small>Precio objetivo</small>
+                </div>
+                <div class="final-kpi final-kpi-success">
+                    <span>GANANCIA ESTIMADA</span>
+                    <strong id="final-margin">US$ 0.00</strong>
+                    <small id="final-margin-pct">0.0% sobre inversión</small>
+                </div>
+                <div class="final-kpi final-kpi-roi">
+                    <span>ROI / MARGEN</span>
+                    <strong id="final-roi">0.0%</strong>
+                    <small>Retorno sobre la inversión</small>
                 </div>
             </div>
 
-            <div class="final-action-card">
+            <div class="final-result-verdict">
+                <span>RESULTADO</span>
+                <strong id="final-score-label">Operación calculada</strong>
+                <p id="final-commercial-note">Resultado basado en el costo Landed y el precio de venta actual.</p>
+            </div>
+
+            <div class="final-action-card final-result-actions">
                 <div>
                     <span class="final-eyebrow">SIGUIENTE ACCIÓN</span>
-                    <h3>Presenta esta cotización con una imagen de nivel profesional.</h3>
-                    <p>Genera el documento formal o una imagen limpia del reporte, lista para compartir con tu cliente.</p>
+                    <h3>¿Qué deseas hacer con esta cotización?</h3>
                 </div>
                 <div class="final-actions">
                     <button class="final-btn final-btn-primary" onclick="presentarCotizacion()">✨ Presentar cotización</button>
@@ -1360,10 +1272,6 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                     <button class="final-btn final-btn-image" onclick="descargarResumenPNG()">🖼️ Imagen</button>
                     <button class="final-btn final-btn-wa" onclick="enviarWhatsAppContextual()">📲 WhatsApp</button>
                 </div>
-            </div>
-
-            <div class="final-footnote">
-                <span>Next GB Auto Import SRL</span> · Cotización referencial sujeta a disponibilidad de unidad, variación de mercado, logística y cargos de terceros.
             </div>
         </section>
 
@@ -1432,27 +1340,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         }
     }
 
-    function imprimirPDF() {
-        const vinInput = document.getElementById('vin').value.trim();
-        let docName = 'NGB-';
-        if (vinInput.length >= 6) {
-            docName += vinInput.slice(-6).toUpperCase();
-        } else {
-            let seq = parseInt(localStorage.getItem('nextgb_pdf_seq') || '2600');
-            docName += seq;
-            localStorage.setItem('nextgb_pdf_seq', seq + 1);
-        }
-        const originalTitle = document.title;
-        document.title = docName;
-        const right = document.getElementById('right-panel');
-        const wasFinal = right?.classList.contains('final-mode');
-        if (wasFinal) document.body.classList.add('final-report-print');
-        window.print();
-        setTimeout(() => {
-            document.body.classList.remove('final-report-print');
-            document.title = originalTitle;
-        }, 400);
-    }
+    /* V3.75: legacy imprimirPDF removed; authoritative implementation is window.imprimirPDF in the dedicated print module. */
+
 
     function toggleTopTools(event) {
         if (event) event.stopPropagation();
@@ -1711,18 +1600,20 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         // PAGO 5 / ÚLTIMO PAGO: toda la Primera Placa se paga al final.
         // Incluye Primera Placa + CO₂ + Marbete + Emisión de Placa (PP/Endoso/Normativa).
         const impuestoPrimeraPlacaRds=Number(window.currentPlaca||0);
+        const primeraPlacaRds=Number(window.currentCif||0)*t*0.17;
+        const co2MarbeteRds=Number(window.currentCif||0)*t*0.02+3000;
         const totalPago5PlacaRds=impuestoPrimeraPlacaRds+totalPlacaRds;
         const totalDestinoRds=despachoRds+totalPago5PlacaRds+reparacionesRds;
         const landedCostUsd=totalDespachoSinPlacaUsd+(totalPago5PlacaRds/t)+(reparacionesRds/t);
         const margen=precioVentaUsd-landedCostUsd;
         const roi=landedCostUsd>0 ? margen/landedCostUsd*100 : 0;
         window.c_fob_miami=fobMiamiUsd; window.c_despacho_sin_placa=totalDespachoSinPlacaUsd;
-        window.c_impuesto_primera_placa=impuestoPrimeraPlacaRds; window.c_emision_placa_rds=totalPlacaRds; window.c_pago5_placa_total_rds=totalPago5PlacaRds;
+        window.c_impuesto_primera_placa=impuestoPrimeraPlacaRds; window.c_primera_placa_rds=primeraPlacaRds; window.c_co2_marbete_rds=co2MarbeteRds; window.c_emision_placa_rds=totalPlacaRds; window.c_pago5_placa_total_rds=totalPago5PlacaRds;
         window.c_landed=landedCostUsd; window.c_venta=precioVentaUsd; window.c_margen=margen; window.c_margen_despues_honorarios=margen; window.c_honorarios=honorarios; window.c_roi=roi;
         const put=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v};
         put('rc_subasta_usd','US$ '+fmt(subasta+fees)); put('rc_inland_usd','US$ '+fmt(inland)); put('rc_documentos_usd','US$ '+fmt(documentacionOrigen+reparacionMiami)); put('rc_broker_honorarios_usd','US$ '+fmt(feeBroker)); put('rc_margen_honorarios_usd','US$ '+fmt(honorarios)+' (manual)'); put('rc_total_origen_usd','US$ '+fmt(fobMiamiUsd));
         put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
-        put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
+        put('rc_placa_co2_rds','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_primera_placa_rds','RD$ '+fmt(primeraPlacaRds)); put('rc_co2_marbete_rds','RD$ '+fmt(co2MarbeteRds)); put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPago5PlacaRds));
         put('rc_impuesto_primera_placa_rds','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_total_placa_operacion_rds','RD$ '+fmt(impuestoPrimeraPlacaRds+totalPlacaRds));
         put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
         const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t); const cro_pago5=totalPago5PlacaRds/t;
@@ -2006,12 +1897,16 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
         const placaPP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
-        const totalPlaca = normativa + placaPP + gestion;
-        txt += `🔹 *Pago 5 (Emisión de Placa):* ${p5}\n`;
-        txt += `_Emisión de placa y gestión._\n`;
+        const firstPlate = Number(window.c_primera_placa_rds||0);
+        const co2Marbete = Number(window.c_co2_marbete_rds||0);
+        const totalPlaca = firstPlate + co2Marbete + normativa + placaPP + gestion;
+        txt += `🔹 *Pago 5 (Emisión de Primera Placa):* ${p5}\n`;
+        txt += `_Último pago · todo el concepto de placa y endoso._\n`;
         txt += `   • Normativa 03-25: RD$ ${fmt(normativa)}\n`;
-        txt += `   • Placa PP: RD$ ${fmt(placaPP)}\n`;
-        txt += `   • Gestión / Endoso: RD$ ${fmt(gestion)}\n`;
+        txt += `   • Placa Provisional: RD$ ${fmt(placaPP)}\n`;
+        txt += `   • Gestión de Endoso: RD$ ${fmt(gestion)}\n`;
+        txt += `   • Primera Placa (17%): RD$ ${fmt(firstPlate)}\n`;
+        txt += `   • CO₂ (2%) & Marbete: RD$ ${fmt(co2Marbete)}\n`;
         txt += `   • *TOTAL EMISIÓN DE PLACA:* RD$ ${fmt(totalPlaca)} → *Pago 5: ${p5}*\n\n`;
         
         txt += `🏁 *TOTAL INVERSIÓN (Landed):* ${total}\n\n`;
@@ -2079,11 +1974,15 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
         const placaPP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
-        txt += `🏷️ *Emisión de Placa:*\n`;
+        const firstPlate = Number(window.c_primera_placa_rds||0);
+        const co2Marbete = Number(window.c_co2_marbete_rds||0);
+        txt += `🏷️ *Emisión de Placa & Endoso:*\n`;
         txt += `   • Normativa 03-25: RD$ ${fmt(normativa)}\n`;
-        txt += `   • Placa PP: RD$ ${fmt(placaPP)}\n`;
-        txt += `   • Gestión / Endoso: RD$ ${fmt(gestion)}\n`;
-        txt += `   • *Total Emisión de Placa:* RD$ ${fmt(normativa + placaPP + gestion)}\n`;
+        txt += `   • Placa Provisional: RD$ ${fmt(placaPP)}\n`;
+        txt += `   • Gestión de Endoso: RD$ ${fmt(gestion)}\n`;
+        txt += `   • Primera Placa (17%): RD$ ${fmt(firstPlate)}\n`;
+        txt += `   • CO₂ (2%) & Marbete: RD$ ${fmt(co2Marbete)}\n`;
+        txt += `   • *Total Emisión de Placa:* RD$ ${fmt(firstPlate + co2Marbete + normativa + placaPP + gestion)}\n`;
         txt += `🇩🇴 *Reparación en RD:* RD$ ${fmt(rep_rds)}\n\n`;
         
         txt += `📉 *LANDED COST TOTAL:* US$ ${fmt(window.c_landed || 0)}\n`;
@@ -3665,15 +3564,20 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const placaPP=n24(document.getElementById('placa_pp_rds')?.value);
     const gestion=n24(document.getElementById('gestion_endoso_rds')?.value);
     const reparacionRD=n24(document.getElementById('reparaciones_rds')?.value);
-    const local=despacho+normativa+placaPP+gestion+reparacionRD;
+    // Canonical LAST PAYMENT: Primera Placa + CO₂ + Marbete + PP/Endoso/Normativa.
+    // The customer-facing AI summary shows this as ONE amount only.
+    const firstPlateTax=n24(window.c_impuesto_primera_placa||window.currentPlaca);
+    const plateEmission=normativa+placaPP+gestion;
+    const totalPlatePaymentRds=firstPlateTax+plateEmission;
+    const local=despacho+totalPlatePaymentRds+reparacionRD;
     const originTotal=purchase+fees+inland+docs+repair+broker+honor;
     const fob=originTotal;
     const despachoSinPlaca=fob+freight+port+(despacho/rate);
-    const landed=despachoSinPlaca+((normativa+placaPP+gestion+reparacionRD)/rate);
+    const landed=despachoSinPlaca+(totalPlatePaymentRds/rate)+(reparacionRD/rate);
     const gross=sale==null?0:sale-landed;
     const net=gross;
     const roi=landed?net/landed*100:0;
-    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,fob,despachoSinPlaca,normativa,placaPP,gestion,reparacionRD,landed,gross,net,roi};
+    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,fob,despachoSinPlaca,normativa,placaPP,gestion,reparacionRD,firstPlateTax,plateEmission,totalPlatePaymentRds,landed,gross,net,roi};
   }
   function render24(data){
     const result=document.getElementById('nextgb-ai-result');if(!result)return;
@@ -3688,7 +3592,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const payment2=d.purchase+d.fees+d.broker+d.honor;
     const payment3=d.inland+d.docs+d.repair;
     const payment4=d.freight+d.port+(n24(document.getElementById('c_despacho_rds')?.value)/d.rate);
-    const payment5=(n24(document.getElementById('normativa_0325_rds')?.value)+n24(document.getElementById('placa_pp_rds')?.value)+n24(document.getElementById('gestion_endoso_rds')?.value))/d.rate;
+    const payment5=(d.firstPlateTax+d.plateEmission)/d.rate;
     result.classList.add('show','v14');
     result.innerHTML=`
       <div class="nextgb-v24-document ${isProforma?'proforma':''}" id="nextgb-v24-document">
@@ -3720,10 +3624,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-line subtotal"><span>FOB Miami</span><strong>${money24(d.fob)}</strong></div>
             <div class="nextgb-v24-line subtotal"><span>Total Despacho Sin Placa</span><strong>${money24(d.despachoSinPlaca)}</strong></div>
             <div class="nextgb-v24-line"><span>Despacho Aduanal (Sin Placa)</span><strong>${'RD$ '+fmt(n24(document.getElementById('c_despacho_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line"><span>Normativa 03-25</span><strong>${'RD$ '+fmt(n24(document.getElementById('normativa_0325_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line"><span>Placa PP</span><strong>${'RD$ '+fmt(n24(document.getElementById('placa_pp_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line"><span>Gastos de Endoso / Gestión</span><strong>${'RD$ '+fmt(n24(document.getElementById('gestion_endoso_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line subtotal"><span>Total Emisión de Placa</span><strong>RD$ ${fmt(n24(document.getElementById('normativa_0325_rds')?.value)+n24(document.getElementById('placa_pp_rds')?.value)+n24(document.getElementById('gestion_endoso_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>EMISIÓN DE PRIMERA PLACA · PAGO 5</span><strong>${money24(d.totalPlatePaymentRds/d.rate)}</strong></div>
             <div class="nextgb-v24-line"><span>Reparación en RD</span><strong>${'RD$ '+fmt(n24(document.getElementById('reparaciones_rds')?.value))}</strong></div>
             <div class="nextgb-v24-line subtotal"><span>Total Destino Local (RD$)</span><strong>RD$ ${fmt(d.local)}</strong></div>
             <div class="nextgb-v24-line"><span>Margen después de honorarios</span><strong id="v24-net-inline">${money24(d.net)}</strong></div>
@@ -3784,79 +3685,81 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   };
 })();
 </script>
-
-<script id="nextgb-v25-desktop-plate-fix">
-(function(){
-  'use strict';
-  const n=id=>Number(String(document.getElementById(id)?.value??'').replace(/,/g,''))||0;
-  const fmtD=v=>typeof fmt==='function'?fmt(v):Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const plateHTML=()=>{
-    const normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds');
-    return `<div class="nextgb-v25-plate-block" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border-color);">
-      <div class="nextgb-v24-line"><span>Normativa 03-25</span><strong>RD$ ${fmtD(normativa)}</strong></div>
-      <div class="nextgb-v24-line"><span>Placa PP</span><strong>RD$ ${fmtD(pp)}</strong></div>
-      <div class="nextgb-v24-line"><span>Gastos de Endoso / Gestión</span><strong>RD$ ${fmtD(gestion)}</strong></div>
-      <div class="nextgb-v24-line subtotal"><span>Total Emisión de Placa</span><strong>RD$ ${fmtD(normativa+pp+gestion)}</strong></div>
-    </div>`;
-  };
-  window.nextGBV25RefreshPlate=function(){
-    const result=document.getElementById('nextgb-ai-result');
-    if(!result) return;
-    const lines=result.querySelector('.nextgb-v24-lines');
-    if(!lines) return;
-    let block=lines.querySelector('.nextgb-v25-plate-block');
-    if(!block){
-      const candidates=[...lines.querySelectorAll('.nextgb-v24-line')];
-      const repair=candidates.find(x=>(x.textContent||'').includes('Reparación en RD'));
-      if(repair) repair.insertAdjacentHTML('beforebegin',plateHTML());
-      else lines.insertAdjacentHTML('beforeend',plateHTML());
-    }else block.outerHTML=plateHTML();
-  };
-  const oldCalc=window.calcCostos;
-  if(typeof oldCalc==='function') window.calcCostos=function(){const r=oldCalc.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
-  const oldRender=window.nextGBRenderAI;
-  if(typeof oldRender==='function') window.nextGBRenderAI=function(){const r=oldRender.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
-  window.addEventListener('load',()=>setTimeout(window.nextGBV25RefreshPlate,300));
-})();
-</script>
-
-<script id="nextgb-v28-desktop-plate-sync">
-(function(){
-  function sync(){
-    const first=Number(window.c_impuesto_primera_placa||window.currentPlaca||0);
-    const emission=Number(window.c_emision_placa_rds||0);
-    const total=first+emission;
-    window.nextGBFirstPlateTaxRds=first;
-    window.nextGBPlateEmissionRds=emission;
-    window.nextGBTotalPlateRelatedRds=total;
-
-    const set=(id,v)=>{
-      const e=document.getElementById(id);
-      if(e) e.textContent='RD$ '+Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-    };
-    set('final-first-plate-tax',first);
-    set('final-total-plate',total);
-    const rate=Number(document.getElementById('tasa')?.value||60.60);
-    const usd=rate>0?total/rate:0;
-    const usdEl=document.getElementById('final-first-plate-usd'); if(usdEl) usdEl.textContent='US$ '+usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-    set('rc_impuesto_primera_placa_rds',first);
-    set('rc_total_placa_operacion_rds',total);
-  }
-  let n=0;
-  const timer=setInterval(()=>{sync(); if(++n>40)clearInterval(timer);},250);
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',sync,{once:true});
-  else sync();
-})();
-</script>
-
-
 <style id="nextgb-v29-plate-summary-css">
 .final-plate-total-visible{margin-top:10px;padding:11px 12px;border-radius:10px;border:1px solid var(--accent);background:rgba(34,197,94,.08);font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center;}
 .final-plate-total-visible span{font-size:11px;letter-spacing:.02em;}
 .final-plate-total-visible strong{font-size:15px;white-space:nowrap;}
 </style>
-</body>
-</html>
+<style id="nextgb-v211-ai-plate-style">
+#nextgb-ai-result [data-nextgb-ai-plate-total="1"]{font-weight:900;margin-top:8px;border-top:1px solid var(--border-color);padding-top:12px}
+#nextgb-ai-result [data-nextgb-ai-plate-total="1"] strong{font-size:14px}
+</style>
+
+<style id="nextgb-v213-step-view-and-plate-summary">
+/* V2.13: only one result tab is visible at a time in the right preview. */
+@media screen {
+  body:not(.final-screen):not(.nextgb-ai-main-view) #right-panel > #res-subastas,
+  body:not(.final-screen):not(.nextgb-ai-main-view) #right-panel > #res-aduanas,
+  body:not(.final-screen):not(.nextgb-ai-main-view) #right-panel > #res-costos { display:none !important; }
+  body:not(.final-screen):not(.nextgb-ai-main-view) #right-panel > #res-subastas.active,
+  body:not(.final-screen):not(.nextgb-ai-main-view) #right-panel > #res-aduanas.active,
+  body:not(.final-screen):not(.nextgb-ai-main-view) #right-panel > #res-costos.active { display:block !important; }
+}
+</style>
+<script id="nextgb-v213-final-sync">
+(function(){
+  'use strict';
+  const n=id=>Number(String(document.getElementById(id)?.value??'').replace(/,/g,''))||0;
+  const moneyRD=v=>'RD$ '+Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  function plateSync(){
+    const first=Number(window.c_impuesto_primera_placa||window.currentPlaca||0);
+    const normativa=n('normativa_0325_rds');
+    const pp=n('placa_pp_rds');
+    const gestion=n('gestion_endoso_rds');
+    const total=first+normativa+pp+gestion;
+    const a=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=moneyRD(v)};
+    a('rc_placa_co2_rds',first);
+    a('rc_total_placa_rds',total);
+    a('rc_total_placa_operacion_rds',total);
+    a('final-first-plate-tax',first);
+    a('final-total-plate',total);
+    const usd=document.getElementById('final-first-plate-usd');
+    if(usd){const rate=n('tasa')||60.60;usd.textContent='US$ '+(total/rate).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    window.nextGBTotalPlateRelatedRds=total;
+    window.c_pago5_placa_total_rds=total;
+  }
+
+  /* In Step 2, Continue must not ask again for VIN/Marca/Valor. Those fields
+     are not the completion criterion for moving from DGA to Investment. */
+  window.nextWizardStep=function(tabId){
+    const target=tabId==='tab-subastas'?1:tabId==='tab-aduanas'?2:3;
+    const unlocked=Number(window.wizardUnlockedStep||1);
+    if(target>unlocked+1){window.showToast?.('Completa el paso actual antes de continuar.','⚠️');return false;}
+    if(target===2 && !(window.currentAuctionBid||window.currentAuctionFees)){
+      window.showToast?.('Primero define la oferta de la subasta.','⚠️');return false;
+    }
+    try{window.calc?.();window.calcCostos?.();}catch(e){}
+    window.wizardInternalNavigation=true;
+    try{window.openTab(tabId);}finally{window.wizardInternalNavigation=false;}
+    window.wizardUnlockedStep=Math.max(unlocked,target);
+    window.wizardCurrentStep=target;
+    window.markWizardStep?.(target);
+    return true;
+  };
+
+  const oldCalc=window.calcCostos;
+  if(typeof oldCalc==='function' && !oldCalc.__nextgbV213){
+    const wrapped=function(){const r=oldCalc.apply(this,arguments);setTimeout(plateSync,0);return r};
+    wrapped.__nextgbV213=true; window.calcCostos=wrapped;
+  }
+  window.addEventListener('load',()=>setTimeout(plateSync,500));
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(plateSync,300));
+})();
+</script>
+
+<!-- NEXT GB V3.0 · FINAL UNIFIED CALCULATION / AI / WIZARD / VIEW PATCH -->
+
 <style>
 /* NEXT GB V16 · synchronization fixes */
 .v16-sync-note{margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.45}
@@ -5770,41 +5673,260 @@ body.light-mode.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-has-analysis .v
 })();
 </script>
 
-
-<script id="nextgb-v25-desktop-plate-fix">
+<!-- NEXT GB V3.0 · FINAL UNIFIED CALCULATION / AI / WIZARD / VIEW PATCH -->
+<!-- NEXT GB V3.2 · STABLE CORE: single navigation state + single plate renderer, NO recursive observers -->
+<style id="nextgb-v32-stable-css">
+  /* One visible step/result only. This is CSS-only; JS owns the state. */
+  #left-panel > .tab-content:not(.active),
+  #right-panel > .tab-content:not(.active){display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;height:0!important;overflow:hidden!important;margin:0!important;padding-top:0!important;padding-bottom:0!important;}
+  #left-panel > .tab-content.active,
+  #right-panel > .tab-content.active{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;height:auto!important;overflow:visible!important;}
+  #nextgb-ai-result .nextgb-v32-plate-block{margin-top:12px;padding-top:10px;border-top:1px solid var(--border-color,#dbe1e9);}
+  #nextgb-ai-result .nextgb-v32-plate-title{font-weight:900;color:var(--accent,#2563eb);font-size:11px;padding:3px 0 8px;}
+  #nextgb-ai-result .nextgb-v32-plate-row{display:flex;justify-content:space-between;align-items:center;gap:18px;min-height:32px;padding:7px 0;border-bottom:1px solid #eef1f5;font-size:10px;}
+  #nextgb-ai-result .nextgb-v32-plate-row strong{white-space:nowrap;}
+  #nextgb-ai-result .nextgb-v32-plate-row.total{font-weight:900;border-top:2px solid #d8dee8;border-bottom:0;margin-top:4px;padding-top:10px;}
+</style>
+<script id="nextgb-v32-stable-core">
 (function(){
   'use strict';
-  const n=id=>Number(String(document.getElementById(id)?.value??'').replace(/,/g,''))||0;
-  const fmtD=v=>typeof fmt==='function'?fmt(v):Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const plateHTML=()=>{
-    const normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds');
-    return `<div class="nextgb-v25-plate-block" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border-color);">
-      <div class="nextgb-v24-line"><span>Normativa 03-25</span><strong>RD$ ${fmtD(normativa)}</strong></div>
-      <div class="nextgb-v24-line"><span>Placa PP</span><strong>RD$ ${fmtD(pp)}</strong></div>
-      <div class="nextgb-v24-line"><span>Gastos de Endoso / Gestión</span><strong>RD$ ${fmtD(gestion)}</strong></div>
-      <div class="nextgb-v24-line subtotal"><span>Total Emisión de Placa</span><strong>RD$ ${fmtD(normativa+pp+gestion)}</strong></div>
-    </div>`;
+  const $=id=>document.getElementById(id);
+  const N=v=>{const x=Number(String(v??'').replace(/,/g,''));return Number.isFinite(x)?x:0};
+  const RD=v=>'RD$ '+N(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const USD=v=>'US$ '+N(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const stepOf=tab=>tab==='tab-subastas'?1:tab==='tab-aduanas'?2:3;
+  const tabOf=step=>step===1?'tab-subastas':step===2?'tab-aduanas':'tab-costos';
+  let navBusy=false;
+  let renderBusy=false;
+
+  function setText(id,v){const e=$(id);if(e)e.textContent=v;}
+
+  function canonicalPlate(){
+    const rate=N($('tasa')?.value)||60.60;
+    const cif=N(window.currentCif);
+    const first=N(window.c_primera_placa_rds) || (cif*rate*0.17);
+    const co2=N(window.c_co2_marbete_rds) || (cif*rate*0.02+3000);
+    const normativa=N($('normativa_0325_rds')?.value);
+    const pp=N($('placa_pp_rds')?.value);
+    const gestion=N($('gestion_endoso_rds')?.value);
+    const repair=N($('reparaciones_rds')?.value);
+    const despacho=N($('c_despacho_rds')?.value);
+    const total=first+co2+normativa+pp+gestion;
+    const totalDestino=despacho+total+repair;
+    const p5=rate>0?total/rate:0;
+    window.c_primera_placa_rds=first;
+    window.c_co2_marbete_rds=co2;
+    window.c_impuesto_primera_placa=first+co2;
+    window.c_emision_placa_rds=normativa+pp+gestion;
+    window.nextGBFirstPlate17Rds=first;
+    window.nextGBCO2MarbeteRds=co2;
+    window.nextGBFirstPlateTaxRds=first+co2;
+    window.nextGBPlateEmissionRds=normativa+pp+gestion;
+    window.nextGBTotalPlateRelatedRds=total;
+    window.c_pago5_placa_total_rds=total;
+    window.nextGBV32Plate={rate,cif,first,co2,normativa,pp,gestion,total,totalDestino,repair,despacho,p5Usd:p5};
+    return window.nextGBV32Plate;
+  }
+
+  function syncPlateFields(){
+    const p=canonicalPlate();
+    setText('rc_primera_placa_rds',RD(p.first));
+    setText('rc_co2_marbete_rds',RD(p.co2));
+    setText('rc_impuesto_primera_placa_rds',RD(p.first+p.co2));
+    setText('rc_normativa_0325_rds',RD(p.normativa));
+    setText('rc_placa_pp_rds',RD(p.pp));
+    setText('rc_gestion_endoso_rds',RD(p.gestion));
+    setText('rc_total_placa_rds',RD(p.total));
+    setText('rc_total_placa_operacion_rds',RD(p.total));
+    setText('rc_reparacion_local',RD(p.repair));
+    setText('rc_total_local',RD(p.totalDestino));
+    setText('final-first-plate-tax',RD(p.first+p.co2));
+    setText('final-first-plate-usd',USD(p.p5Usd));
+    setText('final-co2-marbete',RD(p.co2));
+    setText('final-normativa',RD(p.normativa));
+    setText('final-plate-pp',RD(p.pp));
+    setText('final-gestion',RD(p.gestion));
+    setText('final-total-plate',RD(p.total));
+    setText('cro_pago5',USD(p.p5Usd));
+    return p;
+  }
+
+  function cleanAILines(lines){
+    const selectors='.nextgb-v32-plate-block,.nextgb-v31-plate-block,.nextgb-v30-plate-block,.nextgb-v29-plate-block,.nextgb-v25-plate-block,.nextgb-ai-plate-detail,[data-nextgb-canonical-plate],[data-nextgb-ai-plate-total]';
+    lines.querySelectorAll(selectors).forEach(x=>x.remove());
+    [...lines.querySelectorAll('.nextgb-v24-line')].forEach(row=>{
+      const t=(row.textContent||'').replace(/\s+/g,' ').trim();
+      if(/^(Normativa 03-25|Placa PP|Placa Provisional|Gastos de Endoso\s*\/\s*Gestión|Gestión de Endoso|Total Emisión de Placa|Primera Placa \(17%\)|CO₂ \(2%\) & Marbete|CO2 \(2%\) & Marbete|Impuesto Primera Placa|Impuesto Primera Placa \+ CO₂ \+ Marbete|Impuesto Primera Placa \+ CO2 \+ Marbete|EMISIÓN DE PRIMERA PLACA)/i.test(t)) row.remove();
+    });
+  }
+
+  function syncAIResult(){
+    if(renderBusy)return;
+    const result=$('nextgb-ai-result');
+    const lines=result?.querySelector('.nextgb-v24-lines');
+    if(!lines)return;
+    renderBusy=true;
+    try{
+      const p=syncPlateFields();
+      cleanAILines(lines);
+      const block=document.createElement('div');
+      block.className='nextgb-v32-plate-block';
+      block.dataset.nextgbV32Canonical='1';
+      block.innerHTML='<div class="nextgb-v32-plate-title">Emisión de Placa &amp; Endoso</div>'+
+        '<div class="nextgb-v32-plate-row"><span>Normativa 03-25</span><strong>'+RD(p.normativa)+'</strong></div>'+
+        '<div class="nextgb-v32-plate-row"><span>Placa Provisional</span><strong>'+RD(p.pp)+'</strong></div>'+
+        '<div class="nextgb-v32-plate-row"><span>Gestión de Endoso</span><strong>'+RD(p.gestion)+'</strong></div>'+
+        '<div class="nextgb-v32-plate-row"><span>Primera Placa (17%)</span><strong>'+RD(p.first)+'</strong></div>'+
+        '<div class="nextgb-v32-plate-row"><span>CO₂ (2%) &amp; Marbete</span><strong>'+RD(p.co2)+'</strong></div>'+
+        '<div class="nextgb-v32-plate-row total"><span>Total Emisión de Placa</span><strong>'+RD(p.total)+'</strong></div>';
+      const repair=[...lines.querySelectorAll('.nextgb-v24-line')].find(x=>/Reparación en RD/i.test(x.textContent||''));
+      if(repair)repair.before(block);else lines.appendChild(block);
+      [...lines.querySelectorAll('.nextgb-v24-pay')].forEach(pay=>{
+        if(/Pago 5/i.test(pay.textContent||'')){
+          const s=pay.querySelector('strong'); if(s)s.textContent=USD(p.p5Usd);
+        }
+      });
+      const local=[...lines.querySelectorAll('.nextgb-v24-line')].find(x=>/Total Destino Local/i.test(x.textContent||''));
+      if(local?.querySelector('strong'))local.querySelector('strong').textContent=RD(p.totalDestino);
+      const land=lines.querySelector('#v24-landed');
+      if(land)land.textContent=USD(N(window.c_landed));
+    }finally{renderBusy=false;}
+  }
+
+  function syncAll(){
+    try{window.calc?.();}catch(e){}
+    try{window.calcCostos?.();}catch(e){}
+    syncPlateFields();
+    syncAIResult();
+  }
+
+  function applyView(tabId){
+    const target=stepOf(tabId);
+    const left=[...document.querySelectorAll('#left-panel > .tab-content')];
+    left.forEach(p=>{
+      const show=p.id===tabId;
+      p.classList.toggle('active',show);
+      p.style.setProperty('display',show?'block':'none','important');
+      p.style.setProperty('visibility',show?'visible':'hidden','important');
+      p.style.setProperty('opacity',show?'1':'0','important');
+      p.style.setProperty('pointer-events',show?'auto':'none','important');
+      if(show){p.style.removeProperty('height');p.style.removeProperty('overflow');}
+      else{p.style.setProperty('height','0px','important');p.style.setProperty('overflow','hidden','important');}
+    });
+    const right=[...document.querySelectorAll('#right-panel > .tab-content')].filter(p=>/^res-(subastas|aduanas|costos)$/.test(p.id));
+    const wanted='res-'+tabId.replace('tab-','');
+    right.forEach(p=>{
+      const show=p.id===wanted;
+      p.classList.toggle('active',show);
+      p.style.setProperty('display',show?'block':'none','important');
+      p.style.setProperty('visibility',show?'visible':'hidden','important');
+      p.style.setProperty('opacity',show?'1':'0','important');
+      p.style.setProperty('pointer-events',show?'auto':'none','important');
+      if(show){p.style.removeProperty('height');p.style.removeProperty('overflow');}
+      else{p.style.setProperty('height','0px','important');p.style.setProperty('overflow','hidden','important');}
+    });
+    document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===target-1));
+    window.wizardCurrentStep=target;
+    window.wizardUnlockedStep=Math.max(N(window.wizardUnlockedStep)||1,target);
+    try{window.updateWizardUI?.(tabId);}catch(e){}
+  }
+
+  window.nextGBV32SetStep=function(tabId){
+    if(navBusy)return false;
+    navBusy=true;
+    try{
+      const target=stepOf(tabId);
+      applyView(tabId);
+      if(target===1)try{window.calcAuctionFees?.()}catch(e){}
+      if(target===2)try{window.calc?.()}catch(e){}
+      if(target===3)try{window.calcCostos?.()}catch(e){}
+      syncPlateFields();
+      return true;
+    }finally{navBusy=false;}
   };
-  window.nextGBV25RefreshPlate=function(){
-    const result=document.getElementById('nextgb-ai-result');
-    if(!result) return;
-    const lines=result.querySelector('.nextgb-v24-lines');
-    if(!lines) return;
-    let block=lines.querySelector('.nextgb-v25-plate-block');
-    if(!block){
-      const candidates=[...lines.querySelectorAll('.nextgb-v24-line')];
-      const repair=candidates.find(x=>(x.textContent||'').includes('Reparación en RD'));
-      if(repair) repair.insertAdjacentHTML('beforebegin',plateHTML());
-      else lines.insertAdjacentHTML('beforeend',plateHTML());
-    }else block.outerHTML=plateHTML();
+
+  /* Single authoritative navigation. It does NOT call any legacy openTab wrapper. */
+  window.openTab=function(tabId){
+    if(navBusy)return false;
+    navBusy=true;
+    try{
+      const target=stepOf(tabId);
+      applyView(tabId);
+      if(target===1)try{window.calcAuctionFees?.()}catch(e){}
+      if(target===2)try{window.calc?.()}catch(e){}
+      if(target===3)try{window.calcCostos?.()}catch(e){}
+      syncPlateFields();
+      return true;
+    }finally{navBusy=false;}
   };
-  const oldCalc=window.calcCostos;
-  if(typeof oldCalc==='function') window.calcCostos=function(){const r=oldCalc.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
-  const oldRender=window.nextGBRenderAI;
-  if(typeof oldRender==='function') window.nextGBRenderAI=function(){const r=oldRender.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
-  window.addEventListener('load',()=>setTimeout(window.nextGBV25RefreshPlate,300));
+
+  window.nextWizardStep=function(tabId){
+    const target=stepOf(tabId);
+    const current=N(window.wizardCurrentStep)||1;
+    const unlocked=N(window.wizardUnlockedStep)||1;
+    if(target>current+1 && target>unlocked){window.showToast?.('Completa el paso actual antes de continuar.','⚠️');return false;}
+    if(target===2 && !(N(window.currentAuctionBid)||N(window.currentAuctionFees))){window.showToast?.('Primero define la oferta de la subasta.','⚠️');return false;}
+    if(target===3 && current<2 && unlocked<2){window.showToast?.('Completa el paso de Aduanas antes de continuar.','⚠️');return false;}
+    window.wizardUnlockedStep=Math.max(unlocked,target);
+    return window.openTab(tabId);
+  };
+
+  /* Keep the existing fee synchronization but force the destination view once it succeeds. */
+  const syncFees=window.syncFeesToCostos;
+  if(typeof syncFees==='function'&&!syncFees.__nextgbV32){
+    const wrapped=function(){
+      const r=syncFees.apply(this,arguments);
+      if(r!==false){window.wizardUnlockedStep=Math.max(N(window.wizardUnlockedStep)||1,2);window.openTab('tab-aduanas');}
+      return r;
+    };
+    wrapped.__nextgbV32=true;
+    window.syncFeesToCostos=wrapped;
+  }
+
+  /* One clean AI render hook. No MutationObserver and no delayed recursive render. */
+  const render=window.nextGBRenderAI;
+  if(typeof render==='function'&&!render.__nextgbV32){
+    const wrapped=function(){
+      const value=render.apply(this,arguments);
+      syncAIResult();
+      return value;
+    };
+    wrapped.__nextgbV32=true;
+    window.nextGBRenderAI=wrapped;
+  }
+
+  /* One clean calculation hook. */
+  const calcCosts=window.calcCostos;
+  if(typeof calcCosts==='function'&&!calcCosts.__nextgbV32){
+    const wrapped=function(){
+      const value=calcCosts.apply(this,arguments);
+      syncPlateFields();
+      const result=$('nextgb-ai-result');
+      if(result?.classList.contains('show'))syncAIResult();
+      return value;
+    };
+    wrapped.__nextgbV32=true;
+    window.calcCostos=wrapped;
+  }
+
+  function boot(){
+    const step=Math.min(3,Math.max(1,N(window.wizardCurrentStep)||1));
+    applyView(tabOf(step));
+    try{window.calc?.()}catch(e){}
+    try{window.calcCostos?.()}catch(e){}
+    syncPlateFields();
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+  window.addEventListener('load',()=>{try{applyView(tabOf(N(window.wizardCurrentStep)||1));syncPlateFields();}catch(e){}},{once:true});
+
+  window.nextGBV32SyncPlate=syncPlateFields;
+  window.nextGBV32SyncAI=syncAIResult;
 })();
 </script>
+
+
 </body>
 </html>
 
@@ -6590,11 +6712,39 @@ body:not(.light-mode) #nextgb-ai-result h3{
 @keyframes nextgbMobileStepFromTop{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
 @keyframes nextgbMobileStepIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 
+/* ===== V3.75 FINAL RESULT · ONLY THE REAL COMMERCIAL RESULT ===== */
+#right-panel.final-mode #final-summary.final-summary{display:block!important}
+#right-panel.final-mode .final-result-hero{margin-bottom:18px}
+.final-result-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg-card-2);margin-bottom:14px}
+.final-result-vehicle{display:flex;align-items:center;gap:14px;min-width:0}
+.final-result-vehicle .final-vehicle-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:var(--accent-glow);font-size:25px;flex:0 0 auto}
+.final-result-vehicle strong{display:block;font-size:20px;line-height:1.2;margin-top:4px}
+.final-result-vehicle .final-vin{display:block;margin-top:4px}
+.final-result-client{font-size:11px;color:var(--text-muted);text-align:right;white-space:nowrap}
+.final-result-kpis{margin-bottom:14px}
+.final-result-kpis .final-kpi{min-height:118px;justify-content:center}
+.final-result-kpis .final-kpi strong{font-size:25px}
+.final-result-verdict{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(34,197,94,.055)}
+.final-result-verdict>span{font-size:9px;font-weight:900;letter-spacing:1.2px;color:var(--text-muted)}
+.final-result-verdict>strong{font-size:16px}
+.final-result-verdict p{margin:0 0 0 auto;font-size:10px;color:var(--text-muted);text-align:right}
+.final-result-actions{margin-top:0}
+.final-result-actions h3{margin:4px 0 0}
+@media(max-width:700px){
+  .final-result-card{align-items:flex-start;flex-direction:column}
+  .final-result-client{text-align:left}
+  .final-result-verdict{align-items:flex-start;flex-direction:column;gap:5px}
+  .final-result-verdict p{margin:0;text-align:left}
+}
+
 /* ===== Dedicated print stage. The browser prints this document, never the current app page. ===== */
 #nextgb-print-stage{display:none}
 @media print{
+  html,body{margin:0!important;padding:0!important;background:#fff!important}
   body>*{display:none!important}
-  #nextgb-print-stage{display:block!important;position:static!important;width:100%!important;background:#fff!important;color:#0f172a!important}
+  body.ngb-printing>*{display:none!important}
+  body.ngb-printing>#nextgb-print-stage{display:block!important;visibility:visible!important}
+  #nextgb-print-stage{display:block!important;position:static!important;width:100%!important;min-height:0!important;margin:0!important;padding:0!important;background:#fff!important;color:#0f172a!important}
   #nextgb-print-stage *{box-sizing:border-box!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   @page{size:A4;margin:12mm}
   .ngb-print-doc{width:100%;max-width:190mm;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#0f172a}
@@ -6620,10 +6770,12 @@ body:not(.light-mode) #nextgb-ai-result h3{
     const freight=n('flete_real'), port=n('paquete_despacho_usd'), customs=n('c_despacho_rds'), normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds'), repairRD=n('reparaciones_rds'), sale=n('precio_venta_estimado_usd'), deposit=n('pago_inicial_usd');
     const fob=purchase+fees+inland+docs+repairMiami+broker+honor;
     const dispatch=fob+freight+port+(customs/rate);
+    const firstPlateTax=Number(window.c_impuesto_primera_placa||window.currentPlaca||0);
     const plateRD=normativa+pp+gestion;
-    const landed=dispatch+(plateRD+repairRD)/rate;
+    const totalPlatePaymentRds=firstPlateTax+plateRD;
+    const landed=dispatch+(totalPlatePaymentRds+repairRD)/rate;
     const margin=sale-landed;
-    return {rate,purchase,fees,inland,docs,repairMiami,broker,honor,freight,port,customs,normativa,pp,gestion,repairRD,sale,deposit,fob,dispatch,plateRD,landed,margin,
+    return {rate,purchase,fees,inland,docs,repairMiami,broker,honor,freight,port,customs,normativa,pp,gestion,repairRD,sale,deposit,fob,dispatch,firstPlateTax,plateRD,totalPlatePaymentRds,landed,margin,
       vehicle:window.currentVehiculo&&window.currentVehiculo!=='POR ESPECIFICAR'?window.currentVehiculo:'Vehículo por especificar',vin:String($('vin')?.value||'').trim(),mileage:window.currentMillaje||String($('millaje')?.value||'').trim(),client:String($('cliente')?.value||'').trim()};
   }
   function refresh(){try{window.calcAuctionFees?.();window.calc?.();window.calcCostos?.();window.updateFinalSummary?.()}catch(e){console.warn('V2 refresh',e)}}
@@ -6673,18 +6825,18 @@ body:not(.light-mode) #nextgb-ai-result h3{
 
   /* ---- Dedicated PDF/Cotización/Proforma document ---- */
   function row(label,value,cls=''){return '<div class="ngb-print-row '+cls+'"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>';}
-  function buildDocument(type){
+  function buildDocument(type,docNumber){
     refresh();
     const d=operation();
     const isPro=type==='proforma';
     const p1=d.deposit;
     const p2=Math.max(0,d.purchase+d.fees+d.broker+d.honor-p1);
     const p3=d.inland+d.docs+d.repairMiami;
-    const p4=d.freight+d.port+(d.customs/d.rate)+(d.repairRD/d.rate);
-    const p5=d.plateRD/d.rate;
+    const p4=d.freight+d.port+(d.customs/d.rate);
+    const p5=d.totalPlatePaymentRds/d.rate;
     const vehicle=d.vehicle;
     let html='<div class="ngb-print-doc">';
-    html+='<div class="ngb-print-head"><div><div class="ngb-print-brand">NEXT GB AUTO IMPORT<small>SRL · ELITE</small></div></div><div class="ngb-print-type">'+(isPro?'FACTURA PROFORMA':'COTIZACIÓN')+'<small>DOCUMENTO GENERADO POR NEXT GB</small></div></div>';
+    html+='<div class="ngb-print-head"><div><div class="ngb-print-brand">NEXT GB AUTO IMPORT<small>SRL · ELITE</small></div></div><div class="ngb-print-type">'+(isPro?'FACTURA PROFORMA':'COTIZACIÓN')+'<small>'+esc(docNumber||'')+'</small></div></div>';
     html+='<div class="ngb-print-meta">'+
       '<div class="ngb-print-box"><span>Vehículo</span><strong>'+esc(vehicle)+'</strong></div>'+
       '<div class="ngb-print-box"><span>VIN</span><strong>'+esc(d.vin||'No especificado')+'</strong></div>'+
@@ -6699,12 +6851,16 @@ body:not(.light-mode) #nextgb-ai-result h3{
     html+=row('Flete marítimo',money(d.freight));
     html+=row('Paquete despacho / puerto RD',money(d.port));
     html+=row('Despacho Aduanal / Impuestos',dop(d.customs));
-    html+=row('TOTAL DESPACHO SIN PLACA',money(d.dispatch),'ngb-print-total blue');
-    html+=row('Normativa 03-25',dop(d.normativa));
-    html+=row('Placa PP',dop(d.pp));
-    html+=row('Gastos de Endoso / Gestión',dop(d.gestion));
-    html+=row('TOTAL EMISIÓN DE PLACA',dop(d.plateRD),'ngb-print-total blue');
     html+=row('Reparación en RD',dop(d.repairRD));
+    html+=row('TOTAL DESPACHO SIN PLACA',money(d.dispatch),'ngb-print-total blue');
+    html+='<div style="margin-top:8px;font-weight:900;color:#2563eb">EMISIÓN DE PLACA & ENDOSO</div>';
+    html+=row('Normativa 03-25',dop(d.normativa));
+    html+=row('Placa Provisional',dop(d.pp));
+    html+=row('Gestión de Endoso',dop(d.gestion));
+    html+=row('Primera Placa (17%)',dop(Number(window.c_primera_placa_rds||0)));
+    html+=row('CO₂ (2%) & Marbete',dop(Number(window.c_co2_marbete_rds||0)));
+    html+=row('TOTAL EMISIÓN DE PLACA',dop(d.totalPlatePaymentRds),'ngb-print-total blue');
+
     html+='<div class="ngb-print-total"><span>COSTO TOTAL LANDED</span><strong>'+money(d.landed)+'</strong></div></div>';
     if(!isPro){
       html+='<div class="ngb-print-section"><h3>Rentabilidad</h3>'+row('Precio de venta',money(d.sale))+row('Margen después de honorarios',money(d.margin))+row('ROI',d.landed?((d.margin/d.landed)*100).toFixed(2)+'%':'0.00%')+'</div>';
@@ -6714,7 +6870,7 @@ body:not(.light-mode) #nextgb-ai-result h3{
       html+='<div class="ngb-pay"><div><strong>Pago 2: Balance Subasta</strong><small>Facturas, fees de subasta, broker y honorarios.</small></div><strong>'+money(p2)+'</strong></div>';
       html+='<div class="ngb-pay"><div><strong>Pago 3: Logística Origen</strong><small>Grúa inland, taller y documentación.</small></div><strong>'+money(p3)+'</strong></div>';
       html+='<div class="ngb-pay"><div><strong>Pago 4: Aduanas y Flete</strong><small>Flete, agente aduanal, parqueo e impuestos DGA.</small></div><strong>'+money(p4)+'</strong></div>';
-      html+='<div class="ngb-pay"><div><strong>Pago 5: Emisión de Placa</strong><small>Normativa 03-25: '+dop(d.normativa)+' · Placa PP: '+dop(d.pp)+' · Gestión/Endoso: '+dop(d.gestion)+' · Total emisión: '+dop(d.plateRD)+'</small></div><strong>'+money(p5)+'</strong></div>';
+      html+='<div class="ngb-pay"><div><strong>Pago 5: Emisión de Primera Placa</strong><small>Último pago · total de Primera Placa + CO₂ + Marbete + emisión.</small></div><strong>'+money(p5)+'</strong></div>';
       html+='<div class="ngb-print-total blue"><span>TOTAL INVERSIÓN (LANDED)</span><strong>'+money(d.landed)+'</strong></div></div>';
       html+='<div class="ngb-print-note">Valores expresados en USD salvo los conceptos identificados en RD$. Presupuesto referencial sujeto a disponibilidad de la unidad, variaciones de subasta, naviera, aduanas y cargos de terceros.</div>';
     }
@@ -6722,16 +6878,90 @@ body:not(.light-mode) #nextgb-ai-result h3{
     return html;
   }
   function ensurePrintStage(){let st=$('nextgb-print-stage');if(!st){st=document.createElement('div');st.id='nextgb-print-stage';document.body.appendChild(st)}return st}
+  function getDocumentNumber(type){
+    const prefix=type==='proforma'?'NGP':'NGQ';
+    const vin=String($('vin')?.value||'').trim().replace(/\s+/g,'');
+    if(vin.length>=6) return prefix+'-'+vin.slice(-6).toUpperCase();
+    const key=type==='proforma'?'nextgb_proforma_seq':'nextgb_cotizacion_seq';
+    const current=Math.max(2610,parseInt(localStorage.getItem(key)||'2610',10)||2610);
+    return prefix+'-'+current;
+  }
+  function reserveNextDocumentNumber(type){
+    const vin=String($('vin')?.value||'').trim().replace(/\s+/g,'');
+    if(vin.length>=6) return;
+    const key=type==='proforma'?'nextgb_proforma_seq':'nextgb_cotizacion_seq';
+    const current=Math.max(2610,parseInt(localStorage.getItem(key)||'2610',10)||2610);
+    localStorage.setItem(key,String(current+1));
+  }
   window.imprimirPDF=function(){
+    /* V3.75 FINAL PRINT: open the print document immediately from the user click.
+       Do not use the application DOM, iframe or automatic popup closing. */
     const type=$('doc_type')?.value||'cotizacion';
-    const st=ensurePrintStage();st.innerHTML=buildDocument(type);
-    const vin=String($('vin')?.value||'').trim();const suffix=vin.length>=6?vin.slice(-6).toUpperCase():(type==='proforma'?'PROFORMA':'COTIZACION');
-    const oldTitle=document.title;document.title='NGB-'+suffix;
-    document.body.classList.add('ngb-printing');
-    const cleanup=()=>{document.body.classList.remove('ngb-printing');document.title=oldTitle;st.innerHTML='';window.removeEventListener('afterprint',cleanup)};
-    window.addEventListener('afterprint',cleanup,{once:true});
-    window.print();
-    setTimeout(()=>{if(document.body.classList.contains('ngb-printing'))cleanup()},1200);
+    const popup=window.open('about:blank','NEXT_GB_PRINT','width=900,height=900,scrollbars=yes,resizable=yes');
+    if(!popup){
+      showToast('Chrome/Brave bloqueó la ventana de impresión. Permite ventanas emergentes para NEXT GB AUTO IMPORT.','⚠️');
+      return false;
+    }
+
+    popup.document.open();
+    popup.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Preparando documento…</title></head><body style="font-family:Arial,sans-serif;padding:40px;text-align:center"><strong>Preparando documento de impresión…</strong></body></html>');
+    popup.document.close();
+    popup.focus();
+
+    /* Build only after the print window exists, so a calculation error cannot prevent it from opening. */
+    let docNumber;
+    let html;
+    try{
+      docNumber=getDocumentNumber(type);
+      html=buildDocument(type,docNumber);
+    }catch(e){
+      console.error('NEXT GB PDF build error',e);
+      try{
+        popup.document.body.innerHTML='<div style="font-family:Arial;padding:40px;color:#b91c1c"><h2>No se pudo preparar el documento</h2><p>'+esc(e?.message||e)+'</p><p>Cierra esta ventana y vuelve a intentar.</p></div>';
+      }catch(_e){}
+      showToast('No se pudo preparar el documento de impresión.','⚠️');
+      return false;
+    }
+
+    const printCss=`
+      @page{size:A4;margin:12mm}
+      html,body{margin:0!important;padding:0!important;background:#fff!important;color:#0f172a!important}
+      *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      .ngb-print-doc{width:100%;max-width:190mm;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#0f172a}
+      .ngb-print-head{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #2563eb;padding-bottom:12px;margin-bottom:16px}
+      .ngb-print-brand{font-weight:900;font-size:20px;letter-spacing:-.5px}.ngb-print-brand small{display:block;font-size:8px;letter-spacing:2px;color:#64748b;margin-top:3px}
+      .ngb-print-type{text-align:right;font-size:18px;font-weight:900}.ngb-print-type small{display:block;font-size:8px;color:#64748b;letter-spacing:1.5px;margin-top:4px}
+      .ngb-print-meta{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px}.ngb-print-box{border:1px solid #cbd5e1;border-radius:8px;padding:9px}.ngb-print-box span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:1.1px;color:#64748b;font-weight:800}.ngb-print-box strong{display:block;font-size:11px;margin-top:4px}
+      .ngb-print-section{border:1px solid #cbd5e1;border-radius:9px;padding:12px;margin:10px 0}.ngb-print-section h3{margin:0 0 9px;font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#2563eb}
+      .ngb-print-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:6px 0;font-size:9px}.ngb-print-row:last-child{border-bottom:0}.ngb-print-row strong{font-size:9px;white-space:nowrap}.ngb-print-total{display:flex;justify-content:space-between;gap:12px;border-top:2px solid #0f172a;margin-top:8px;padding-top:8px;font-size:12px;font-weight:900}.ngb-print-total.blue{color:#1d4ed8}.ngb-print-note{font-size:7px;line-height:1.45;color:#64748b;margin-top:10px}.ngb-pay{display:grid;grid-template-columns:1fr auto;gap:6px;border-bottom:1px solid #e2e8f0;padding:7px 0}.ngb-pay strong{font-size:9px}.ngb-pay small{display:block;color:#64748b;font-size:7px;margin-top:2px}.ngb-print-footer{margin-top:16px;padding-top:8px;border-top:1px solid #cbd5e1;font-size:7px;color:#64748b;text-align:center}
+      @media print{.no-print{display:none!important}}
+    `;
+
+    const safeTitle=esc(docNumber);
+    try{
+      popup.document.open();
+      popup.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+safeTitle+'</title><style>'+printCss+'</style></head><body>'+html+'</body></html>');
+      popup.document.close();
+    }catch(e){
+      console.error('NEXT GB PDF window write error',e);
+      showToast('No se pudo cargar el documento de impresión.','⚠️');
+      return false;
+    }
+
+    let printed=false;
+    const run=()=>{
+      if(printed || popup.closed) return;
+      printed=true;
+      popup.focus();
+      /* Reserve only when the print command is actually launched. */
+      reserveNextDocumentNumber(type);
+      popup.print();
+    };
+
+    /* document.write does not reliably fire load in every Chromium context, so use both paths. */
+    popup.onload=()=>setTimeout(run,300);
+    setTimeout(run,900);
+    return true;
   };
 
   /* Keep document type preview synchronized before PDF/WhatsApp actions. */
@@ -6748,4 +6978,4 @@ body:not(.light-mode) #nextgb-ai-result h3{
   };
 })();
 </script>
-
+<!-- NEXT GB V3.75 · CORRECCIÓN TOTAL: resultado final conciso + impresión dedicada única -->
