@@ -827,7 +827,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                     <option value="">📂 Cargar guardada</option>
                 </select>
                 <button class="btn-outline" onclick="guardarCotizacion(); closeTopTools();">💾 Guardar cotización</button>
-                <button class="btn-reset" onclick="limpiarCaso(); closeTopTools();">↻ Nueva cotización</button>
+                <button class="btn-reset" onclick="abrirNuevaOperacion(); closeTopTools();">＋ Nueva Operación</button>
                 
                 <!-- NUEVA CARGA DE CSV -->
                 <div style="border-top: 1px solid var(--border-strong); margin: 4px 0;"></div>
@@ -840,7 +840,19 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     </div>
 </div>
 
-<div id="nextgb-config-modal" class="nextgb-config-modal no-print" aria-hidden="true"><div class="nextgb-config-box"><div class="nextgb-config-head"><div><h3>⚙️ Valores predeterminados NEXT GB</h3><p>Se usan automáticamente hasta que los cambies manualmente.</p></div><button type="button" class="btn-reset" onclick="nextGBCerrarConfiguracion()">✕</button></div><div class="field-grid"><div class="input-group"><label>Flete marítimo USD</label><input id="cfg_flete" type="number" step="0.01"></div><div class="input-group"><label>Broker USD</label><input id="cfg_broker" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Límite broker USD</label><input id="cfg_broker_limite" type="number" step="0.01"></div><div class="input-group"><label>Inspección rebuilt USD</label><input id="cfg_inspeccion" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Transporte inspección → puerto USD</label><input id="cfg_transporte_puerto" type="number" step="0.01"></div><div class="input-group"><label>Exportación USD</label><input id="cfg_exportacion" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Documentación y logística origen USD</label><input id="cfg_documentacion_origen" type="number" step="0.01"></div><div class="input-group"><label>Paquete despacho RD USD</label><input id="cfg_despacho_usd" type="number" step="0.01"></div><div class="input-group"><label>Reparación Miami sugerida USD</label><input id="cfg_reparacion_miami" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Depósito formalización USD</label><input id="cfg_deposito" type="number" step="0.01"></div><div class="input-group"><label>Tasa DOP inicial</label><input id="cfg_tasa" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>ZIP destino predeterminado (USA)</label><input id="cfg_zip_destino" type="text" inputmode="numeric" maxlength="5" placeholder="33132"></div><div class="input-group"><label>Referencia destino</label><input id="cfg_zip_destino_ref" type="text" placeholder="PortMiami"></div></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button type="button" class="btn-outline" onclick="nextGBRestaurarPredeterminados()">Restaurar valores</button><button type="button" class="btn-action btn-primary" onclick="nextGBGuardarConfiguracion()">Guardar</button></div></div></div>
+<div id="nextgb-new-operation-modal" class="nextgb-config-modal no-print" aria-hidden="true">
+  <div class="nextgb-config-box" style="max-width:520px;">
+    <div class="nextgb-config-head"><div><h3>＋ Nueva Operación</h3><p>Inicia una operación completamente limpia sin borrar la base de datos ni la configuración.</p></div><button type="button" class="btn-reset" onclick="cerrarNuevaOperacion()">✕</button></div>
+    <div style="display:grid;gap:10px;margin-top:12px;">
+      <button type="button" class="btn-action btn-primary" onclick="confirmarNuevaOperacion('ia')">🤖 Nueva consulta con IA</button>
+      <button type="button" class="btn-action" onclick="confirmarNuevaOperacion('cotizacion')">📊 Nueva Cotización</button>
+      <button type="button" class="btn-action" onclick="confirmarNuevaOperacion('proforma')">📄 Nueva Proforma</button>
+      <button type="button" class="btn-outline" onclick="cerrarNuevaOperacion()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="nextgb-config-modal" class="nextgb-config-modal no-print" aria-hidden="true"><div class="nextgb-config-box"><div class="nextgb-config-head"><div><h3>⚙️ Valores predeterminados NEXT GB</h3><p>Se usan automáticamente hasta que los cambies manualmente.</p></div><button type="button" class="btn-reset" onclick="nextGBCerrarConfiguracion()">✕</button></div><div class="field-grid"><div class="input-group"><label>Flete marítimo USD</label><input id="cfg_flete" type="number" step="0.01"></div><div class="input-group"><label>Broker USD</label><input id="cfg_broker" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Límite broker USD</label><input id="cfg_broker_limite" type="number" step="0.01"></div><div class="input-group"><label>Inspección rebuilt USD</label><input id="cfg_inspeccion" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Transporte inspección → puerto USD</label><input id="cfg_transporte_puerto" type="number" step="0.01"></div><div class="input-group"><label>Exportación USD</label><input id="cfg_exportacion" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Documentación y logística origen USD</label><input id="cfg_documentacion_origen" type="number" step="0.01"></div><div class="input-group"><label>Paquete despacho RD USD</label><input id="cfg_despacho_usd" type="number" step="0.01"></div><div class="input-group"><label>Reparación Miami sugerida USD</label><input id="cfg_reparacion_miami" type="number" step="0.01"></div></div><div class="field-grid"><div class="input-group"><label>Depósito formalización USD</label><input id="cfg_deposito" type="number" step="0.01"></div><div class="input-group"><label>Tasa DOP inicial</label><input id="cfg_tasa" type="number" step="0.01"></div></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button type="button" class="btn-outline" onclick="nextGBRestaurarPredeterminados()">Restaurar valores</button><button type="button" class="btn-action btn-primary" onclick="nextGBGuardarConfiguracion()">Guardar</button></div></div></div>
 
 <div class="app-shell">
     <div class="page-heading no-print">
@@ -1045,18 +1057,19 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="field-grid">
                 <div class="input-group"><label>Paquete despacho / puerto (USD$)</label><input type="number" id="paquete_despacho_usd" value="465" oninput="calcCostos()" class="reset-target default-despacho-usd"></div>
                 <div class="input-group">
-                    <label>Despacho DGA (Sin Placa) (RD$)</label>
+                    <label>Despacho Aduanal / Impuestos (RD$)</label>
                     <input type="number" id="c_despacho_rds" value="0" oninput="calcCostos()" class="reset-target default-zero">
                 </div>
-                <div class="input-group">
-                    <label>EMISIÓN DE PLACA</label>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-                        <div><small style="font-size:9px;color:var(--text-muted);">03-25 RD$</small><input type="number" id="normativa_0325_rds" value="0" oninput="calcCostos()" class="reset-target default-zero" title="Normativa 03-25: manual, no automática"></div>
-                        <div><small style="font-size:9px;color:var(--text-muted);">Placa PP RD$</small><input type="number" id="placa_pp_rds" value="2000" oninput="calcCostos()" class="reset-target default-placa-pp"></div>
-                        <div><small style="font-size:9px;color:var(--text-muted);">Endoso/Gestión RD$</small><input type="number" id="endoso_gestion_rds" value="5000" oninput="calcCostos()" class="reset-target default-endoso"></div>
-                    </div>
-                    <input type="hidden" id="c_placa_rds" value="7000">
+            </div>
+
+            <div style="margin-top:18px;padding:16px;border:1px solid var(--border-color);border-radius:16px;background:rgba(59,130,246,.035);">
+                <div style="font-size:12px;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">🏷️ EMISIÓN DE PLACA</div>
+                <div class="field-grid">
+                    <div class="input-group"><label>Normativa 03-25 (RD$) · Manual</label><input type="number" id="normativa_0325_rds" value="0" oninput="calcCostos()" class="reset-target default-zero" min="0"></div>
+                    <div class="input-group"><label>Placa PP (RD$)</label><input type="number" id="placa_pp_rds" value="2000" oninput="calcCostos()" class="reset-target default-placa-pp" min="0"></div>
+                    <div class="input-group"><label>Gastos de Endoso / Gestión (RD$)</label><input type="number" id="gestion_endoso_rds" value="5000" oninput="calcCostos()" class="reset-target default-gestion-endoso" min="0"></div>
                 </div>
+                <small style="color:var(--text-muted);font-size:10px;display:block;margin-top:4px;">La Normativa 03-25 queda en RD$0 por defecto y se ingresa manualmente cuando se conozca el monto.</small>
             </div>
             <div class="field-grid">
                 <div class="input-group"><label>Reparación en RD (RD$)</label><input type="number" id="reparaciones_rds" value="0" oninput="calcCostos()" class="reset-target default-zero"></div>
@@ -1083,6 +1096,10 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                     <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.03);"><small style="color:var(--text-muted);">Precio venta</small><strong id="live-sale" style="display:block;font-size:20px;margin-top:4px;">US$ 0.00</strong></div>
                     <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.03);"><small style="color:var(--text-muted);">Margen bruto</small><strong id="live-margin" style="display:block;font-size:20px;margin-top:4px;">US$ 0.00</strong></div>
                     <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.03);"><small style="color:var(--text-muted);">Margen después honorarios</small><strong id="live-net-margin" style="display:block;font-size:20px;margin-top:4px;">US$ 0.00</strong></div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px;font-size:11px;">
+                    <div><span style="color:var(--text-muted);">FOB Miami</span><b id="live-fob-miami" style="float:right;">US$ 0.00</b></div>
+                    <div><span style="color:var(--text-muted);">Total Despacho Sin Placa</span><b id="live-despacho-sin-placa" style="float:right;">US$ 0.00</b></div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px;font-size:11px;">
                     <div><span style="color:var(--text-muted);">Costo origen + flete</span><b id="live-origin-freight" style="float:right;">US$ 0.00</b></div>
@@ -1164,7 +1181,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             
             <div class="res-line" style="margin-top: 10px;"><span>Primera Placa (17%)</span><span id="rPlaca">0.00</span></div>
             <div class="res-line"><span>CO2 (2%) & Marbete</span><span id="rCo2Marbete">0.00</span></div>
-            <div class="res-line subtotal-line"><span>Total Placa</span><span id="rSubPlaca">0.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Impuesto Primera Placa + CO₂ + Marbete</span><span id="rSubPlaca">0.00</span></div>
             
             <div class="total-box"><small>🏁 Gran Total DGA Estimado</small><h2 id="rTotal">0.00</h2><div class="total-meta">Impuestos, despacho y matrícula estimados</div></div>
         </div>
@@ -1180,10 +1197,14 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             
             <div class="res-line" style="margin-top: 10px;"><span>Flete Marítimo</span><span id="rc_flete_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Paquete despacho / puerto RD</span><span id="rc_paquete_despacho_usd">US$ 0.00</span></div>
-            <div class="res-line"><span>Despacho Aduanal (Sin Placa)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
-            <div class="res-line"><span>Primera Placa y Marbete</span><span id="rc_placa_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Despacho Aduanal / Impuestos (RD$)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
+            <div class="res-line highlight-subtotal"><span>🏁 Total Despacho Sin Placa</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
+            <div class="res-line" style="margin-top:10px;"><span>Normativa 03-25</span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Placa PP</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
+            <div class="res-line"><span>Gastos de Endoso / Gestión</span><span id="rc_gestion_endoso_rds">RD$ 5,000.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Emisión de Placa</span><span id="rc_total_placa_rds">RD$ 7,000.00</span></div>
             <div class="res-line"><span>Reparación en RD</span><span id="rc_reparacion_local">RD$ 0.00</span></div>
-            <div class="res-line subtotal-line"><span>Total Destino Local (RD$)</span><span id="rc_total_local">RD$ 0.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Destino Local (RD$)</span><span id="rc_total_local">RD$ 7,000.00</span></div>
             
             <div class="res-line" style="font-size:11px"><span>Margen después de honorarios</span><span id="rc_margen_despues_honorarios_usd">US$ 0.00</span></div><div class="res-line highlight-subtotal" style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); border-left-color: var(--danger);">
                 <span>Costo Total (Landed Cost)</span><span id="rc_landed_usd" style="color: var(--danger); font-weight: 900; font-size: 15px;">US$ 0.00</span>
@@ -1243,8 +1264,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                 
                 <div class="res-line" style="padding: 10px 0;">
                     <div style="display: flex; flex-direction: column;">
-                        <span style="color: var(--text-main); font-weight: 700;">Pago 5: Placa y Endoso</span>
-                        <span style="font-size: 9px; opacity: 0.7; text-transform: uppercase;">Impuestos DGII Placa y Normativa 03-20</span>
+                        <span style="color: var(--text-main); font-weight: 700;">Pago 5: Emisión de Placa</span>
+                        <span style="font-size: 9px; opacity: 0.7; text-transform: uppercase;">Impuestos DGII Placa y Normativa 03-25</span>
                     </div>
                     <span id="cro_pago5">US$ 0.00</span>
                 </div>
@@ -1303,6 +1324,13 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                         <div><span>Documentación / Taller</span><strong id="final-docs">US$ 0.00</strong></div>
                         <div><span>Fee Broker & Honorarios</span><strong id="final-broker">US$ 0.00</strong></div>
                         <div><span>Flete marítimo</span><strong id="final-freight">US$ 0.00</strong></div>
+                        <div><span>FOB Miami</span><strong id="final-fob-miami">US$ 0.00</strong></div>
+                        <div><span>Total Despacho Sin Placa</span><strong id="final-dispatch-no-plate">US$ 0.00</strong></div>
+                        <div><span>Impuesto Primera Placa + CO₂ + Marbete</span><strong id="final-first-plate-tax">RD$ 0.00</strong></div>
+                        <div><span>Normativa 03-25</span><strong id="final-normativa">RD$ 0.00</strong></div>
+                        <div><span>Placa PP</span><strong id="final-plate-pp">RD$ 2,000.00</strong></div>
+                        <div><span>Endoso / Gestión</span><strong id="final-gestion">RD$ 5,000.00</strong></div>
+                        <div><span>Total Emisión de Placa</span><strong id="final-total-plate">RD$ 7,000.00</strong></div>
                         <div><span>Destino local</span><strong id="final-local">RD$ 0.00</strong></div>
                     </div>
                     <div class="final-total-line"><span>Costo total Landed</span><strong id="final-total-emphasis">US$ 0.00</strong></div>
@@ -1481,6 +1509,32 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         showToast(`Cotización "${val}" Cargada`, '📂');
     }
 
+    function abrirNuevaOperacion(){
+        const m=document.getElementById('nextgb-new-operation-modal'); if(m){m.classList.add('open');m.setAttribute('aria-hidden','false');}
+    }
+    function cerrarNuevaOperacion(){
+        const m=document.getElementById('nextgb-new-operation-modal'); if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');}
+    }
+    function confirmarNuevaOperacion(tipo){
+        if(!confirm('¿Deseas borrar los datos de la operación actual y comenzar desde cero?')) return;
+        limpiarCaso();
+        cerrarNuevaOperacion();
+        const result=document.getElementById('nextgb-ai-result'); if(result){result.classList.remove('show','v14');result.innerHTML='';}
+        const home=document.getElementById('nextgb-ai-aduanas'); if(home) home.classList.remove('nextgb-ai-has-analysis');
+        if(tipo==='ia'){
+            try{startNewQuery();}catch(e){try{nextGBV21StartNewQuery?.();}catch(_){}}
+            showToast('Nueva consulta con IA iniciada.','🤖');
+        }else if(tipo==='proforma'){
+            const dt=document.getElementById('doc_type'); if(dt){dt.value='proforma';toggleDocType();}
+            openTab('tab-costos');markWizardStep(3);
+            showToast('Nueva Proforma iniciada.','📄');
+        }else{
+            const dt=document.getElementById('doc_type'); if(dt){dt.value='cotizacion';toggleDocType();}
+            openTab('tab-subastas');markWizardStep(1);
+            showToast('Nueva Cotización iniciada.','📊');
+        }
+    }
+
     function limpiarCaso() {
         document.querySelectorAll('.reset-target').forEach(input => {
             if(input.classList.contains('default-zero')) input.value = 0;
@@ -1492,6 +1546,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             else if(input.classList.contains('default-broker')) input.value = nextGBConfig.broker;
             else if(input.classList.contains('default-reparacion-miami')) input.value = nextGBConfig.reparacionMiami;
             else if(input.classList.contains('default-despacho-usd')) input.value = nextGBConfig.despachoUSD;
+            else if(input.classList.contains('default-placa-pp')) input.value = 2000;
+            else if(input.classList.contains('default-gestion-endoso')) input.value = 5000;
             else input.value = '';
         });
         document.querySelectorAll('.reset-select').forEach(select => { select.innerHTML = '<option value="">Seleccione...</option>'; });
@@ -1642,22 +1698,35 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     }
 
     function calcCostos() {
-        const subasta=parseFloat(document.getElementById('costo_subasta').value)||0, fees=parseFloat(document.getElementById('fees_subasta').value)||0, inland=parseFloat(document.getElementById('grua_inland').value)||0;
-        const flete=parseFloat(document.getElementById('flete_real').value)||0, documentacionOrigen=parseFloat(document.getElementById('documentacion_origen_usd').value)||0;
-        const exportacion=0, inspeccion=0, transportePuerto=0, reparacionMiami=parseFloat(document.getElementById('reparacion_miami_usd').value)||0, feeBroker=parseFloat(document.getElementById('fee_broker_usd').value)||0;
-        const dealerUsd=parseFloat(document.getElementById('derecho_dealer_usd').value)||0, paqueteDespachoUSD=parseFloat(document.getElementById('paquete_despacho_usd').value)||0;
-        const despachoRds=parseFloat(document.getElementById('c_despacho_rds').value)||0, placaRds=parseFloat(document.getElementById('c_placa_rds').value)||0, reparacionesRds=parseFloat(document.getElementById('reparaciones_rds').value)||0;
-        const precioVentaUsd=parseFloat(document.getElementById('precio_venta_estimado_usd').value)||0, depositoUsd=parseFloat(document.getElementById('pago_inicial_usd').value)||0, t=parseFloat(document.getElementById('tasa').value)||60.60;
-        const costosOrigenUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker;
-        const totalDestinoRds=despachoRds+placaRds+reparacionesRds;
-        const landedCostUsd=costosOrigenUsd+paqueteDespachoUSD+flete+(totalDestinoRds/t);
-        const margenAntesHonorarios=precioVentaUsd-landedCostUsd, margenDespuesHonorarios=margenAntesHonorarios-dealerUsd;
-        window.c_landed=landedCostUsd;window.c_venta=precioVentaUsd;window.c_margen=margenAntesHonorarios;window.c_margen_despues_honorarios=margenDespuesHonorarios;window.c_honorarios=dealerUsd;
-        document.getElementById('rc_subasta_usd').innerText='US$ '+fmt(subasta+fees);document.getElementById('rc_inland_usd').innerText='US$ '+fmt(inland);document.getElementById('rc_documentos_usd').innerText='US$ '+fmt(documentacionOrigen);document.getElementById('rc_broker_honorarios_usd').innerText='US$ '+fmt(feeBroker);document.getElementById('rc_total_origen_usd').innerText='US$ '+fmt(costosOrigenUsd);document.getElementById('rc_flete_usd').innerText='US$ '+fmt(flete);if(document.getElementById('rc_paquete_despacho_usd'))document.getElementById('rc_paquete_despacho_usd').innerText='US$ '+fmt(paqueteDespachoUSD);
-        document.getElementById('rc_despacho_rds').innerText='RD$ '+fmt(despachoRds);document.getElementById('rc_placa_rds').innerText='RD$ '+fmt(placaRds);document.getElementById('rc_reparacion_local').innerText='RD$ '+fmt(reparacionesRds);document.getElementById('rc_total_local').innerText='RD$ '+fmt(totalDestinoRds);document.getElementById('rc_landed_usd').innerText='US$ '+fmt(landedCostUsd);document.getElementById('rc_precio_venta_usd').innerText='US$ '+fmt(precioVentaUsd);document.getElementById('rc_margen_neto_usd').innerText='US$ '+fmt(margenDespuesHonorarios);document.getElementById('rc_margen_neto_rds').innerText='RD$ '+fmt(margenDespuesHonorarios*t);
-        if(document.getElementById('rc_margen_honorarios_usd'))document.getElementById('rc_margen_honorarios_usd').innerText='US$ '+fmt(dealerUsd)+' (manual)';if(document.getElementById('rc_margen_despues_honorarios_usd'))document.getElementById('rc_margen_despues_honorarios_usd').innerText='US$ '+fmt(margenDespuesHonorarios);
-        const cro_pago1=depositoUsd,cro_pago2=Math.max(0,(subasta+fees+feeBroker)-cro_pago1),cro_pago3=inland+documentacionOrigen+reparacionMiami,cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t),cro_pago5=placaRds/t;
-        document.getElementById('cro_pago1').innerText='US$ '+fmt(cro_pago1);document.getElementById('cro_pago2').innerText='US$ '+fmt(cro_pago2);document.getElementById('cro_pago3').innerText='US$ '+fmt(cro_pago3);document.getElementById('cro_pago4').innerText='US$ '+fmt(cro_pago4);document.getElementById('cro_pago5').innerText='US$ '+fmt(cro_pago5);document.getElementById('cro_total').innerText='US$ '+fmt(landedCostUsd);updateFinalSummary();nextGBLiveCostUpdate();
+        const n = id => parseFloat(document.getElementById(id)?.value)||0;
+        const subasta=n('costo_subasta'), fees=n('fees_subasta'), inland=n('grua_inland');
+        const flete=n('flete_real'), documentacionOrigen=n('documentacion_origen_usd'), reparacionMiami=n('reparacion_miami_usd'), feeBroker=n('fee_broker_usd');
+        const honorarios=n('derecho_dealer_usd'), paqueteDespachoUSD=n('paquete_despacho_usd');
+        const despachoRds=n('c_despacho_rds'), normativa0325=n('normativa_0325_rds'), placaPP=n('placa_pp_rds'), gestionEndoso=n('gestion_endoso_rds');
+        const reparacionesRds=n('reparaciones_rds'), precioVentaUsd=n('precio_venta_estimado_usd'), depositoUsd=n('pago_inicial_usd'), t=n('tasa')||60.60;
+        const fobMiamiUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker+honorarios;
+        const totalDespachoSinPlacaUsd=fobMiamiUsd+flete+paqueteDespachoUSD+(despachoRds/t);
+        const totalPlacaRds=normativa0325+placaPP+gestionEndoso;
+        // Impuesto DGII de Primera Placa + CO2 + Marbete, calculado en Aduanas.
+        // Es distinto de la Emisión de Placa (PP + Gestión/Endoso + Normativa)
+        // y debe entrar al costo real de la operación una sola vez.
+        const impuestoPrimeraPlacaRds=Number(window.currentPlaca||0);
+        const totalDestinoRds=despachoRds+impuestoPrimeraPlacaRds+totalPlacaRds+reparacionesRds;
+        const landedCostUsd=totalDespachoSinPlacaUsd+(impuestoPrimeraPlacaRds/t)+(totalPlacaRds/t)+(reparacionesRds/t);
+        const margen=precioVentaUsd-landedCostUsd;
+        const roi=landedCostUsd>0 ? margen/landedCostUsd*100 : 0;
+        window.c_fob_miami=fobMiamiUsd; window.c_despacho_sin_placa=totalDespachoSinPlacaUsd;
+        window.c_impuesto_primera_placa=impuestoPrimeraPlacaRds; window.c_emision_placa_rds=totalPlacaRds;
+        window.c_landed=landedCostUsd; window.c_venta=precioVentaUsd; window.c_margen=margen; window.c_margen_despues_honorarios=margen; window.c_honorarios=honorarios; window.c_roi=roi;
+        const put=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v};
+        put('rc_subasta_usd','US$ '+fmt(subasta+fees)); put('rc_inland_usd','US$ '+fmt(inland)); put('rc_documentos_usd','US$ '+fmt(documentacionOrigen+reparacionMiami)); put('rc_broker_honorarios_usd','US$ '+fmt(feeBroker)); put('rc_margen_honorarios_usd','US$ '+fmt(honorarios)+' (manual)'); put('rc_total_origen_usd','US$ '+fmt(fobMiamiUsd));
+        put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
+        put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
+        put('rc_impuesto_primera_placa_rds','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_total_placa_operacion_rds','RD$ '+fmt(impuestoPrimeraPlacaRds+totalPlacaRds));
+        put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
+        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t); const cro_pago5=totalPlacaRds/t;
+        put('cro_pago1','US$ '+fmt(cro_pago1)); put('cro_pago2','US$ '+fmt(cro_pago2)); put('cro_pago3','US$ '+fmt(cro_pago3)); put('cro_pago4','US$ '+fmt(cro_pago4)); put('cro_pago5','US$ '+fmt(cro_pago5)); put('cro_total','US$ '+fmt(landedCostUsd));
+        updateFinalSummary(); nextGBLiveCostUpdate();
     }
 
     function setAuctionPlatform(platform) {
@@ -1828,7 +1897,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         document.getElementById('lblMillaje').innerText = millaje ? fmt(millaje) + " mi" : "--";
         
         document.getElementById('c_despacho_rds').value = dSin.toFixed(2);
-        document.getElementById('c_placa_rds').value = subPla.toFixed(2);
+        // La Placa PP pertenece a EMISIÓN DE PLACA y es manual (RD$2,000 por defecto).
         calcCostos();
 
         document.getElementById('lblVehiculo').innerText = window.currentVehiculo; document.getElementById('lblTasaGlobal').innerText = t.toFixed(2); document.getElementById('lblPorcentajeGravamen').innerText = pAr === 0 ? "0" : "10";
@@ -1841,7 +1910,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     // ==========================================
     // CALCULADORA DE GRÚA (OPENROUTESERVICE)
     // ==========================================
-    window.ORS_API_KEY = window.ORS_API_KEY || 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjkwMTdiYzhkZDBkMjRiYmE4NTJlZDk3OGVmM2IzOGM2IiwiaCI6Im11cm11cjY0In0=';
+    const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjkwMTdiYzhkZDBkMjRiYmE4NTJlZDk3OGVmM2IzOGM2IiwiaCI6Im11cm11cjY0In0=';
     const DESTINO_MIAMI = [-80.1917902, 25.7616798];
 
     async function obtenerCoordenadas(zipCode) {
@@ -1932,7 +2001,17 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         txt += `🔹 *Pago 2 (Balance Subasta):* ${p2}\n_Facturas, fees de subasta, broker y honorarios._\n\n`;
         txt += `🔹 *Pago 3 (Logística Origen):* ${p3}\n_Grúa inland, taller y documentación._\n\n`;
         txt += `🔹 *Pago 4 (Aduanas y Flete):* ${p4}\n_Flete, agente aduanal, parqueo e impuestos DGA._\n\n`;
-        txt += `🔹 *Pago 5 (Placa y Endoso):* ${p5}\n_Impuestos DGII Placa y normativa 03-20._\n\n`;
+        const tasa = parseFloat(document.getElementById('tasa')?.value) || 60.60;
+        const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
+        const placaPP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
+        const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
+        const totalPlaca = normativa + placaPP + gestion;
+        txt += `🔹 *Pago 5 (Emisión de Placa):* ${p5}\n`;
+        txt += `_Emisión de placa y gestión._\n`;
+        txt += `   • Normativa 03-25: RD$ ${fmt(normativa)}\n`;
+        txt += `   • Placa PP: RD$ ${fmt(placaPP)}\n`;
+        txt += `   • Gestión / Endoso: RD$ ${fmt(gestion)}\n`;
+        txt += `   • *TOTAL EMISIÓN DE PLACA:* RD$ ${fmt(totalPlaca)} → *Pago 5: ${p5}*\n\n`;
         
         txt += `🏁 *TOTAL INVERSIÓN (Landed):* ${total}\n\n`;
         txt += `_Nota: Valores en USD. Presupuesto sujeto a disponibilidad en subasta y variación naviera._\n\n`;
@@ -1979,7 +2058,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         let dealer_usd = parseFloat(document.getElementById('derecho_dealer_usd').value) || 0;
         
         let despacho_rds = parseFloat(document.getElementById('c_despacho_rds').value) || 0;
-        let placa_rds = parseFloat(document.getElementById('c_placa_rds').value) || 0;
+        let placa_rds = parseFloat(document.getElementById('placa_pp_rds').value) || 0;
         let rep_rds = parseFloat(document.getElementById('reparaciones_rds').value) || 0;
         
         let txt = `📊 *REPORTE INTERNO DE INVERSIÓN*\nNext GB Auto Import\n\n`;
@@ -1996,7 +2075,14 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         txt += `*Gastos Destino Local (RD):*\n`;
         txt += `🚢 *Flete Marítimo:* US$ ${fmt(flete)}\n`;
         txt += `🏢 *Despacho Aduanal (Sin Placa):* RD$ ${fmt(despacho_rds)}\n`;
-        txt += `🏷️ *Primera Placa y Marbete:* RD$ ${fmt(placa_rds)}\n`;
+        const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
+        const placaPP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
+        const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
+        txt += `🏷️ *Emisión de Placa:*\n`;
+        txt += `   • Normativa 03-25: RD$ ${fmt(normativa)}\n`;
+        txt += `   • Placa PP: RD$ ${fmt(placaPP)}\n`;
+        txt += `   • Gestión / Endoso: RD$ ${fmt(gestion)}\n`;
+        txt += `   • *Total Emisión de Placa:* RD$ ${fmt(normativa + placaPP + gestion)}\n`;
         txt += `🇩🇴 *Reparación en RD:* RD$ ${fmt(rep_rds)}\n\n`;
         
         txt += `📉 *LANDED COST TOTAL:* US$ ${fmt(window.c_landed || 0)}\n`;
@@ -2177,7 +2263,12 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const docs = (parseFloat(document.getElementById('documentacion_usd')?.value) || 0) + (parseFloat(document.getElementById('taller_miami_usd')?.value) || 0);
         const broker = (parseFloat(document.getElementById('fee_broker_usd')?.value) || 0) + (parseFloat(document.getElementById('derecho_dealer_usd')?.value) || 0);
         const freight = parseFloat(document.getElementById('flete_real')?.value) || 0;
-        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + (parseFloat(document.getElementById('c_placa_rds')?.value) || 0) + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
+        const fobMiami = window.c_fob_miami || 0;
+        const dispatchNoPlate = window.c_despacho_sin_placa || 0;
+        const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
+        const platePP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
+        const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
+        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + normativa + platePP + gestion + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
         const score = getInvestmentScore(pct);
 
         set('final-vehicle', vehicle);
@@ -2196,6 +2287,13 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         set('final-docs', 'US$ ' + fmt(docs));
         set('final-broker', 'US$ ' + fmt(broker));
         set('final-freight', 'US$ ' + fmt(freight));
+        set('final-fob-miami', 'US$ ' + fmt(fobMiami));
+        set('final-dispatch-no-plate', 'US$ ' + fmt(dispatchNoPlate));
+        set('final-first-plate-tax', 'RD$ ' + fmt(Number(window.c_impuesto_primera_placa||window.currentPlaca||0)));
+        set('final-normativa', 'RD$ ' + fmt(normativa));
+        set('final-plate-pp', 'RD$ ' + fmt(platePP));
+        set('final-gestion', 'RD$ ' + fmt(gestion));
+        set('final-total-plate', 'RD$ ' + fmt(normativa + platePP + gestion));
         set('final-local', 'RD$ ' + fmt(localRds));
         set('final-total-emphasis', 'US$ ' + fmt(landed));
         set('final-margin-copy', 'US$ ' + fmt(margin));
@@ -2886,7 +2984,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const margen=n(window.c_margen);
         const neto=n(window.c_margen_despues_honorarios);
         const origenFreight=n(document.getElementById('costo_subasta')?.value)+n(document.getElementById('fees_subasta')?.value)+n(document.getElementById('grua_inland')?.value)+n(document.getElementById('documentacion_origen_usd')?.value)+n(document.getElementById('reparacion_miami_usd')?.value)+n(document.getElementById('fee_broker_usd')?.value)+n(document.getElementById('flete_real')?.value)+n(document.getElementById('paquete_despacho_usd')?.value);
-        const customs=(n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('c_placa_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value))/tasa;
+        const customs=(n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('placa_pp_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value))/tasa;
         const roi=inversion>0 ? (neto/inversion)*100 : 0;
         const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
         put('live-investment','US$ '+fmt(inversion)); put('live-sale','US$ '+fmt(venta)); put('live-margin','US$ '+fmt(margen)); put('live-net-margin','US$ '+fmt(neto)); put('live-origin-freight','US$ '+fmt(origenFreight)); put('live-customs','US$ '+fmt(customs)); put('live-roi',fmt(roi)+'%');
@@ -3086,7 +3184,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   const money=v=>'US$ '+fmt(num(v));
   const saveState=()=>{
     try{
-      const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','c_placa_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen','marca','modelo','anio','version'];
+      const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','normativa_0325_rds','placa_pp_rds','gestion_endoso_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen','marca','modelo','anio','version'];
       const fields={}; ids.forEach(id=>{const e=document.getElementById(id);if(e)fields[id]=e.value});
       localStorage.setItem(KEY,JSON.stringify({fields,query:document.getElementById('nextgb-ai-input')?.value||'',savedAt:Date.now()}));
     }catch(e){}
@@ -3118,9 +3216,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const result=document.getElementById('nextgb-ai-result'); if(!result) return;
     const vals={}; result.querySelectorAll('[data-ai-field]').forEach(e=>vals[e.dataset.aiField]=num(e.value));
     const purchase=vals.costo_subasta, fees=vals.fees_subasta, inland=vals.grua_inland, docs=vals.documentacion_origen_usd, repair=vals.reparacion_miami_usd, broker=vals.fee_broker_usd, freight=vals.flete_real, port=vals.paquete_despacho_usd, sale=vals.precio_venta_estimado_usd, honor=vals.derecho_dealer_usd, rate=num(document.getElementById('tasa')?.value)||60.60;
-    const local=num(document.getElementById('c_despacho_rds')?.value)+num(document.getElementById('c_placa_rds')?.value)+num(document.getElementById('reparaciones_rds')?.value);
-    const landed=purchase+fees+inland+docs+repair+broker+freight+port+(local/rate);
-    const gross=sale-landed, net=gross-honor, roi=landed?net/landed*100:0;
+    const despacho=num(document.getElementById('c_despacho_rds')?.value), normativa=num(document.getElementById('normativa_0325_rds')?.value), placaPP=num(document.getElementById('placa_pp_rds')?.value), gestion=num(document.getElementById('gestion_endoso_rds')?.value), reparacionRD=num(document.getElementById('reparaciones_rds')?.value);
+    const fob=purchase+fees+inland+docs+repair+broker+honor;
+    const despachoSinPlaca=fob+freight+port+(despacho/rate);
+    const landed=despachoSinPlaca+(normativa+placaPP+gestion+reparacionRD)/rate;
+    const gross=sale-landed, net=gross, roi=landed?net/landed*100:0;
     ['v14-investment','v14-gross','v14-net','v14-roi'].forEach(id=>{});
     const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
     put('v14-investment',money(landed));put('v14-gross',money(gross));put('v14-net',money(net));put('v14-roi',fmt(roi)+'%');
@@ -3245,7 +3345,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     shell.querySelector('.nextgb-ai-row')?.after(wrap);
   }
   function bindPersistence(){
-    const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','c_placa_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen'];
+    const ids=['cliente','vin','costo_subasta','fees_subasta','grua_inland','flete_real','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','derecho_dealer_usd','paquete_despacho_usd','c_despacho_rds','normativa_0325_rds','placa_pp_rds','gestion_endoso_rds','reparaciones_rds','precio_venta_estimado_usd','pago_inicial_usd','tasa','valor','flete','seguro','tratado','gastos_adicionales_dga','pais_origen'];
     ids.forEach(id=>document.getElementById(id)?.addEventListener('input',saveState));
     document.getElementById('nextgb-ai-input')?.addEventListener('input',saveState);
   }
@@ -3396,7 +3496,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     /* FIX CRÍTICO: compra pasa también a auction_bid antes de recalcular fees. */
     if(vals.costo_subasta!==undefined){set('costo_subasta',vals.costo_subasta);set('auction_bid',vals.costo_subasta);}
     if(vals.fees_subasta!==undefined)set('fees_subasta',vals.fees_subasta);
-    ['grua_inland','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','flete_real','paquete_despacho_usd'].forEach(id=>{if(vals[id]!==undefined)set(id,vals[id])});
+    ['grua_inland','documentacion_origen_usd','reparacion_miami_usd','fee_broker_usd','flete_real','paquete_despacho_usd','normativa_0325_rds','placa_pp_rds','gestion_endoso_rds'].forEach(id=>{if(vals[id]!==undefined)set(id,vals[id])});
     if(original.honorarios!=null && vals.derecho_dealer_usd!==undefined)set('derecho_dealer_usd',vals.derecho_dealer_usd);
     if(original.venta!=null && vals.precio_venta_estimado_usd!==undefined)set('precio_venta_estimado_usd',vals.precio_venta_estimado_usd);
     /* Si el fee no fue manual, recalcular usando el máximo conservador. */
@@ -3409,11 +3509,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   window.nextGBLiveCostUpdate=function(){
     const rate=n(document.getElementById('tasa')?.value)||60.60;
     const purchase=n(document.getElementById('costo_subasta')?.value), fees=n(document.getElementById('fees_subasta')?.value), inland=n(document.getElementById('grua_inland')?.value), docs=n(document.getElementById('documentacion_origen_usd')?.value), repair=n(document.getElementById('reparacion_miami_usd')?.value), broker=n(document.getElementById('fee_broker_usd')?.value), freight=n(document.getElementById('flete_real')?.value), port=n(document.getElementById('paquete_despacho_usd')?.value);
-    const fob=purchase+fees+inland+docs+repair+broker;
-    const local=n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('c_placa_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value);
+    const honor=n(document.getElementById('derecho_dealer_usd')?.value); const fob=purchase+fees+inland+docs+repair+broker+honor;
+    const local=n(document.getElementById('c_despacho_rds')?.value)+n(document.getElementById('placa_pp_rds')?.value)+n(document.getElementById('reparaciones_rds')?.value);
     const customs=local/rate; const sale=n(window.c_venta), investment=n(window.c_landed), gross=n(window.c_margen), net=n(window.c_margen_despues_honorarios), roi=investment?net/investment*100:0;
     const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-    put('live-investment',money(investment));put('live-sale',money(sale));put('live-margin',money(gross));put('live-net-margin',money(net));put('live-origin-freight',money(fob));put('live-customs',money(customs));put('live-roi',fmt(roi)+'%');
+    put('live-investment',money(investment));put('live-sale',money(sale));put('live-margin',money(gross));put('live-net-margin',money(net));put('live-origin-freight',money(fob));put('live-customs',money(customs));put('live-fob-miami',money(fob));put('live-despacho-sin-placa',money(window.c_despacho_sin_placa||0));put('live-roi',fmt(roi)+'%');
     put('v15-live-fob',money(fob));put('v15-live-freight',money(freight));put('v15-live-rd',money(port+customs));put('v15-live-total',money(investment));
   };
   const oldCalcCostos=window.calcCostos;
@@ -3555,13 +3655,20 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const honor=o.honorarios!=null?o.honorarios:0;
     const sale=o.venta!=null?o.venta:null;
     const rate=n24(document.getElementById('tasa')?.value)||60.60;
-    const local=n24(document.getElementById('c_despacho_rds')?.value)+n24(document.getElementById('c_placa_rds')?.value)+n24(document.getElementById('reparaciones_rds')?.value);
+    const despacho=n24(document.getElementById('c_despacho_rds')?.value);
+    const normativa=n24(document.getElementById('normativa_0325_rds')?.value);
+    const placaPP=n24(document.getElementById('placa_pp_rds')?.value);
+    const gestion=n24(document.getElementById('gestion_endoso_rds')?.value);
+    const reparacionRD=n24(document.getElementById('reparaciones_rds')?.value);
+    const local=despacho+normativa+placaPP+gestion+reparacionRD;
     const originTotal=purchase+fees+inland+docs+repair+broker+honor;
-    const landed=originTotal+freight+port+(local/rate);
+    const fob=originTotal;
+    const despachoSinPlaca=fob+freight+port+(despacho/rate);
+    const landed=despachoSinPlaca+((normativa+placaPP+gestion+reparacionRD)/rate);
     const gross=sale==null?0:sale-landed;
-    const net=gross-honor;
+    const net=gross;
     const roi=landed?net/landed*100:0;
-    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,landed,gross,net,roi};
+    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,fob,despachoSinPlaca,normativa,placaPP,gestion,reparacionRD,landed,gross,net,roi};
   }
   function render24(data){
     const result=document.getElementById('nextgb-ai-result');if(!result)return;
@@ -3576,7 +3683,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const payment2=d.purchase+d.fees+d.broker+d.honor;
     const payment3=d.inland+d.docs+d.repair;
     const payment4=d.freight+d.port+(n24(document.getElementById('c_despacho_rds')?.value)/d.rate);
-    const payment5=n24(document.getElementById('c_placa_rds')?.value)/d.rate;
+    const payment5=(n24(document.getElementById('normativa_0325_rds')?.value)+n24(document.getElementById('placa_pp_rds')?.value)+n24(document.getElementById('gestion_endoso_rds')?.value))/d.rate;
     result.classList.add('show','v14');
     result.innerHTML=`
       <div class="nextgb-v24-document ${isProforma?'proforma':''}" id="nextgb-v24-document">
@@ -3605,8 +3712,13 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-line subtotal"><span>Total Gastos en Origen (USD)</span><strong id="v24-origin-total">${money24(d.originTotal)}</strong></div>
             <div class="nextgb-v24-line"><span>Flete Marítimo</span><strong id="v24-freight">${money24(d.freight)}</strong></div>
             <div class="nextgb-v24-line"><span>Paquete despacho / puerto RD</span><strong id="v24-port">${money24(d.port)}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>FOB Miami</span><strong>${money24(d.fob)}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>Total Despacho Sin Placa</span><strong>${money24(d.despachoSinPlaca)}</strong></div>
             <div class="nextgb-v24-line"><span>Despacho Aduanal (Sin Placa)</span><strong>${'RD$ '+fmt(n24(document.getElementById('c_despacho_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line"><span>Primera Placa y Marbete</span><strong>${'RD$ '+fmt(n24(document.getElementById('c_placa_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line"><span>Normativa 03-25</span><strong>${'RD$ '+fmt(n24(document.getElementById('normativa_0325_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line"><span>Placa PP</span><strong>${'RD$ '+fmt(n24(document.getElementById('placa_pp_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line"><span>Gastos de Endoso / Gestión</span><strong>${'RD$ '+fmt(n24(document.getElementById('gestion_endoso_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>Total Emisión de Placa</span><strong>RD$ ${fmt(n24(document.getElementById('normativa_0325_rds')?.value)+n24(document.getElementById('placa_pp_rds')?.value)+n24(document.getElementById('gestion_endoso_rds')?.value))}</strong></div>
             <div class="nextgb-v24-line"><span>Reparación en RD</span><strong>${'RD$ '+fmt(n24(document.getElementById('reparaciones_rds')?.value))}</strong></div>
             <div class="nextgb-v24-line subtotal"><span>Total Destino Local (RD$)</span><strong>RD$ ${fmt(d.local)}</strong></div>
             <div class="nextgb-v24-line"><span>Margen después de honorarios</span><strong id="v24-net-inline">${money24(d.net)}</strong></div>
@@ -3624,6 +3736,9 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-edit"><label>Flete marítimo</label><input data-ai-field="flete_real" value="${n24(d.freight)}" type="number" step="0.01"></div>
             <div class="nextgb-v24-edit"><label>Paquete puerto RD</label><input data-ai-field="paquete_despacho_usd" value="${n24(d.port)}" type="number" step="0.01"></div>
             <div class="nextgb-v24-edit"><label>Honorarios NEXT GB</label><input data-ai-field="derecho_dealer_usd" value="${n24(d.honor)}" type="number" step="0.01"></div>
+            <div class="nextgb-v24-edit"><label>Normativa 03-25 (RD$)</label><input data-ai-field="normativa_0325_rds" value="${n24(d.normativa)}" type="number" step="0.01"></div>
+            <div class="nextgb-v24-edit"><label>Placa PP (RD$)</label><input data-ai-field="placa_pp_rds" value="${n24(d.placaPP)}" type="number" step="0.01"></div>
+            <div class="nextgb-v24-edit"><label>Gastos Endoso / Gestión (RD$)</label><input data-ai-field="gestion_endoso_rds" value="${n24(d.gestion)}" type="number" step="0.01"></div>
             <div class="nextgb-v24-edit"><label>Precio de venta</label><input data-ai-field="precio_venta_estimado_usd" value="${d.sale==null?'':n24(d.sale)}" type="number" step="0.01"></div>
           </div>
           ${isProforma?`<div class="nextgb-v24-proforma"><h4>Cronograma de pagos</h4>
@@ -3631,7 +3746,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-pay"><span>Pago 2: Balance Subasta</span><strong>${money24(payment2)}</strong></div>
             <div class="nextgb-v24-pay"><span>Pago 3: Logística Origen</span><strong>${money24(payment3)}</strong></div>
             <div class="nextgb-v24-pay"><span>Pago 4: Aduanas y Flete</span><strong>${money24(payment4)}</strong></div>
-            <div class="nextgb-v24-pay"><span>Pago 5: Placa y Endoso</span><strong>${money24(payment5)}</strong></div>
+            <div class="nextgb-v24-pay"><span>Pago 5: Emisión de Placa</span><strong>${money24(payment5)}</strong></div>
             <div class="nextgb-v24-pay" style="border-bottom:0;margin-top:4px;font-weight:900"><span>Total Inversión (USD)</span><strong style="font-size:13px;color:#2563eb">${money24(d.landed)}</strong></div>
           </div>`:''}
           <div class="nextgb-v24-note">*Todos los montos están expresados en dólares estadounidenses (USD). Al ser compras mediante subasta, este presupuesto es estrictamente referencial y está sujeto a la disponibilidad del vehículo y variación del mercado naviero. Válido por 24 horas o hasta la finalización de la puja.</div>
@@ -3664,6 +3779,68 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
   };
 })();
 </script>
+
+<script id="nextgb-v25-desktop-plate-fix">
+(function(){
+  'use strict';
+  const n=id=>Number(String(document.getElementById(id)?.value??'').replace(/,/g,''))||0;
+  const fmtD=v=>typeof fmt==='function'?fmt(v):Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const plateHTML=()=>{
+    const normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds');
+    return `<div class="nextgb-v25-plate-block" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border-color);">
+      <div class="nextgb-v24-line"><span>Normativa 03-25</span><strong>RD$ ${fmtD(normativa)}</strong></div>
+      <div class="nextgb-v24-line"><span>Placa PP</span><strong>RD$ ${fmtD(pp)}</strong></div>
+      <div class="nextgb-v24-line"><span>Gastos de Endoso / Gestión</span><strong>RD$ ${fmtD(gestion)}</strong></div>
+      <div class="nextgb-v24-line subtotal"><span>Total Emisión de Placa</span><strong>RD$ ${fmtD(normativa+pp+gestion)}</strong></div>
+    </div>`;
+  };
+  window.nextGBV25RefreshPlate=function(){
+    const result=document.getElementById('nextgb-ai-result');
+    if(!result) return;
+    const lines=result.querySelector('.nextgb-v24-lines');
+    if(!lines) return;
+    let block=lines.querySelector('.nextgb-v25-plate-block');
+    if(!block){
+      const candidates=[...lines.querySelectorAll('.nextgb-v24-line')];
+      const repair=candidates.find(x=>(x.textContent||'').includes('Reparación en RD'));
+      if(repair) repair.insertAdjacentHTML('beforebegin',plateHTML());
+      else lines.insertAdjacentHTML('beforeend',plateHTML());
+    }else block.outerHTML=plateHTML();
+  };
+  const oldCalc=window.calcCostos;
+  if(typeof oldCalc==='function') window.calcCostos=function(){const r=oldCalc.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
+  const oldRender=window.nextGBRenderAI;
+  if(typeof oldRender==='function') window.nextGBRenderAI=function(){const r=oldRender.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
+  window.addEventListener('load',()=>setTimeout(window.nextGBV25RefreshPlate,300));
+})();
+</script>
+
+<script id="nextgb-v28-desktop-plate-sync">
+(function(){
+  function sync(){
+    const first=Number(window.c_impuesto_primera_placa||window.currentPlaca||0);
+    const emission=Number(window.c_emision_placa_rds||0);
+    const total=first+emission;
+    window.nextGBFirstPlateTaxRds=first;
+    window.nextGBPlateEmissionRds=emission;
+    window.nextGBTotalPlateRelatedRds=total;
+
+    const set=(id,v)=>{
+      const e=document.getElementById(id);
+      if(e) e.textContent='RD$ '+Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    };
+    set('final-first-plate-tax',first);
+    set('final-total-plate',emission);
+    set('rc_impuesto_primera_placa_rds',first);
+    set('rc_total_placa_operacion_rds',total);
+  }
+  let n=0;
+  const timer=setInterval(()=>{sync(); if(++n>40)clearInterval(timer);},250);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',sync,{once:true});
+  else sync();
+})();
+</script>
+
 </body>
 </html>
 <style>
@@ -5580,264 +5757,41 @@ body.light-mode.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-has-analysis .v
 </script>
 
 
-<!-- NEXT-AVPRO-BETA.V2.1 · FINAL DARK MODE AI RESULT VISIBILITY -->
-<style id="next-avpro-v21-dark-ai-result">
-/* The AI result must remain readable in dark mode regardless of inline/template colors. */
-body:not(.light-mode) #nextgb-ai-result,
-body:not(.light-mode) #nextgb-ai-result * {
-  color: var(--text-main) !important;
-  text-shadow: none !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-kpi,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-answer,
-body:not(.light-mode) #nextgb-ai-result > div {
-  background-color: var(--bg-card-2) !important;
-  border-color: var(--border-strong) !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-kpi span,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-answer-body,
-body:not(.light-mode) #nextgb-ai-result [style*="color:var(--text-muted)"],
-body:not(.light-mode) #nextgb-ai-result [style*="color: var(--text-muted)"] {
-  color: var(--text-soft) !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-kpi strong,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-answer-title,
-body:not(.light-mode) #nextgb-ai-result b,
-body:not(.light-mode) #nextgb-ai-result strong {
-  color: #ffffff !important;
-}
-body:not(.light-mode) #nextgb-ai-result a { color: var(--accent-2) !important; }
-body:not(.light-mode) #nextgb-ai-result hr { border-color: var(--border-color) !important; }
-body:not(.light-mode) #nextgb-ai-result input,
-body:not(.light-mode) #nextgb-ai-result select,
-body:not(.light-mode) #nextgb-ai-result textarea {
-  background: var(--input-bg) !important;
-  color: var(--text-main) !important;
-  border-color: var(--border-strong) !important;
-}
-/* Tax/quick-query result cards that may be generated with inline light colors. */
-body:not(.light-mode) #nextgb-ai-result .nextgb-tax-result,
-body:not(.light-mode) #nextgb-ai-result .nextgb-tax-card,
-body:not(.light-mode) #nextgb-ai-result .nextgb-ai-tax,
-body:not(.light-mode) #nextgb-ai-result .nextgb-v24-document {
-  color: #0f172a !important;
-  background: #ffffff !important;
-}
-body:not(.light-mode) #nextgb-ai-result .nextgb-v24-document * { color: inherit !important; }
-</style>
-
-</body>
-
-
-<!-- NEXT-AVPRO-BETA.V2.5 · INTEGRATION PATCH -->
-<style id="next-avpro-v25-integration">
-  /* V2.5 keeps the Desktop shell intact; only adds compact fields inside existing areas. */
-  #cfg_zip_destino,#cfg_zip_destino_ref{min-height:38px}
-  #normativa_0325_rds,#placa_pp_rds,#endoso_gestion_rds{width:100%;min-width:0}
-</style>
-<script>
+<script id="nextgb-v25-desktop-plate-fix">
 (function(){
   'use strict';
-  const $=id=>document.getElementById(id);
-  const N=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0};
-  const cfgKey='nextgb_config';
-  const V25_DEFAULT_DEST_ZIP='33132';
-  const V25_DEFAULT_DEST_REF='PortMiami';
-
-  // Extend the existing configuration without replacing it.
-  const oldDefaults=window.NEXT_GB_DEFAULTS||{};
-  if(!oldDefaults.zipDestino) oldDefaults.zipDestino=V25_DEFAULT_DEST_ZIP;
-  if(!oldDefaults.zipDestinoRef) oldDefaults.zipDestinoRef=V25_DEFAULT_DEST_REF;
-  window.NEXT_GB_DEFAULTS=oldDefaults;
-  window.nextGBConfig=Object.assign({zipDestino:V25_DEFAULT_DEST_ZIP,zipDestinoRef:V25_DEFAULT_DEST_REF},window.nextGBConfig||{});
-
-  function loadCfg(){
-    try{ const saved=JSON.parse(localStorage.getItem(cfgKey)||'{}'); window.nextGBConfig=Object.assign({},window.NEXT_GB_DEFAULTS||{},saved); }
-    catch(e){ window.nextGBConfig=Object.assign({},window.NEXT_GB_DEFAULTS||{}); }
-    return window.nextGBConfig;
-  }
-  function saveCfg(){localStorage.setItem(cfgKey,JSON.stringify(window.nextGBConfig||{}));}
-
-  // Extend configuration dialog functions, preserving existing values and UI.
-  const priorOpen=window.nextGBAbrirConfiguracion;
-  window.nextGBAbrirConfiguracion=function(){
-    try{priorOpen?.();}catch(e){}
-    const c=loadCfg();
-    if($('cfg_zip_destino')) $('cfg_zip_destino').value=c.zipDestino||V25_DEFAULT_DEST_ZIP;
-    if($('cfg_zip_destino_ref')) $('cfg_zip_destino_ref').value=c.zipDestinoRef||V25_DEFAULT_DEST_REF;
+  const n=id=>Number(String(document.getElementById(id)?.value??'').replace(/,/g,''))||0;
+  const fmtD=v=>typeof fmt==='function'?fmt(v):Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const plateHTML=()=>{
+    const normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds');
+    return `<div class="nextgb-v25-plate-block" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border-color);">
+      <div class="nextgb-v24-line"><span>Normativa 03-25</span><strong>RD$ ${fmtD(normativa)}</strong></div>
+      <div class="nextgb-v24-line"><span>Placa PP</span><strong>RD$ ${fmtD(pp)}</strong></div>
+      <div class="nextgb-v24-line"><span>Gastos de Endoso / Gestión</span><strong>RD$ ${fmtD(gestion)}</strong></div>
+      <div class="nextgb-v24-line subtotal"><span>Total Emisión de Placa</span><strong>RD$ ${fmtD(normativa+pp+gestion)}</strong></div>
+    </div>`;
   };
-  const priorSave=window.nextGBGuardarConfiguracion;
-  window.nextGBGuardarConfiguracion=function(){
-    try{priorSave?.();}catch(e){}
-    loadCfg();
-    const z=String($('cfg_zip_destino')?.value||'').replace(/\D/g,'').slice(0,5);
-    if(z.length===5) window.nextGBConfig.zipDestino=z;
-    const ref=String($('cfg_zip_destino_ref')?.value||'').trim();
-    if(ref) window.nextGBConfig.zipDestinoRef=ref;
-    saveCfg();
-    applyDestinationZip();
+  window.nextGBV25RefreshPlate=function(){
+    const result=document.getElementById('nextgb-ai-result');
+    if(!result) return;
+    const lines=result.querySelector('.nextgb-v24-lines');
+    if(!lines) return;
+    let block=lines.querySelector('.nextgb-v25-plate-block');
+    if(!block){
+      const candidates=[...lines.querySelectorAll('.nextgb-v24-line')];
+      const repair=candidates.find(x=>(x.textContent||'').includes('Reparación en RD'));
+      if(repair) repair.insertAdjacentHTML('beforebegin',plateHTML());
+      else lines.insertAdjacentHTML('beforeend',plateHTML());
+    }else block.outerHTML=plateHTML();
   };
-  const priorRestore=window.nextGBRestaurarPredeterminados;
-  window.nextGBRestaurarPredeterminados=function(){
-    try{priorRestore?.();}catch(e){}
-    window.nextGBConfig=Object.assign({},window.NEXT_GB_DEFAULTS||{}, {zipDestino:V25_DEFAULT_DEST_ZIP,zipDestinoRef:V25_DEFAULT_DEST_REF});
-    if($('cfg_zip_destino')) $('cfg_zip_destino').value=V25_DEFAULT_DEST_ZIP;
-    if($('cfg_zip_destino_ref')) $('cfg_zip_destino_ref').value=V25_DEFAULT_DEST_REF;
-    saveCfg(); applyDestinationZip();
-  };
-
-  function applyDestinationZip(){
-    loadCfg();
-    window.nextGBDestinationZip=window.nextGBConfig.zipDestino||V25_DEFAULT_DEST_ZIP;
-    window.nextGBDestinationRef=window.nextGBConfig.zipDestinoRef||V25_DEFAULT_DEST_REF;
-  }
-  applyDestinationZip();
-
-  // Keep destination ZIP as configuration; origin ZIP remains operation-specific.
-  // On a new operation, reset origin ZIP but preserve configured destination.
-  const priorReset=window.limpiarCaso;
-  window.limpiarCaso=function(){
-    try{priorReset?.();}catch(e){}
-    // Plate defaults are business defaults, not calculated tax values.
-    if($('normativa_0325_rds')) $('normativa_0325_rds').value=0;
-    if($('placa_pp_rds')) $('placa_pp_rds').value=2000;
-    if($('endoso_gestion_rds')) $('endoso_gestion_rds').value=5000;
-    applyDestinationZip();
-    try{window.calcCostos?.();}catch(e){}
-  };
-
-  // AI parser: recognize a 5-digit US ZIP. If the query does not specify a separate destination,
-  // treat it as the auction/source ZIP because that is what the inland calculation needs.
-  const priorParser=window.nextGBInterpretarOrden;
-  window.nextGBInterpretarOrden=function(q){
-    const o=priorParser?priorParser(q):{};
-    const text=String(q||'');
-    const m=text.match(/(?:zip(?:\s*code)?|c[oó]digo\s*postal|postal)\s*[:#-]?\s*(\d{5})/i) || text.match(/\b(\d{5})\b/);
-    if(m){o.zipOrigen=m[1];o.zip_origen=m[1];}
-    return o;
-  };
-
-  // Apply ZIP extracted from AI and calculate inland automatically only when a ZIP exists and
-  // the user did not manually provide a grúa. Never invent a value if routing fails.
-  const priorApply=window.nextGBAplicarDatosIA;
-  window.nextGBAplicarDatosIA=function(datos){
-    try{priorApply?.(datos);}catch(e){}
-    const zip=String(datos?.zipOrigen||datos?.zip_origen||'').replace(/\D/g,'').slice(0,5);
-    if(zip && $('zip_origen')){
-      $('zip_origen').value=zip;
-      $('zip_origen').dataset.nextgbAI='1';
-      const hasManual=datos?.grua!=null || datos?.grua_inland!=null;
-      if(!hasManual && typeof window.calcularFleteORS==='function'){
-        setTimeout(()=>{try{window.calcularFleteORS();}catch(e){}},80);
-      }
-    }
-  };
-
-  // Expose a clean helper for future integrations (Bid.Cars/Copart/IAAI) without coupling them now.
-  window.nextGBGetAuctionLogisticsContext=function(){
-    return {zipOrigen:String($('zip_origen')?.value||''),zipDestino:String(window.nextGBDestinationZip||''),destinoReferencia:String(window.nextGBDestinationRef||''),grua:N($('grua_inland')?.value)};
-  };
-
-  // Replace the route target dynamically with the configured destination ZIP.
-  // If destination geocoding fails, fall back to the existing Miami coordinates.
-  const priorRoute=window.calcularFleteORS;
-  window.calcularFleteORS=async function(){
-    const zip=String($('zip_origen')?.value||'').trim();
-    if(!zip){try{window.showToast?.('Ingresa el ZIP de la subasta.','⚠️')}catch(e){};return;}
-    const btn=$('btn-calc-grua'); if(btn) {btn.innerText='⏳';btn.disabled=true;}
-    try{
-      applyDestinationZip();
-      const origin=await window.obtenerCoordenadas(zip);
-      let destination=null;
-      try{destination=await window.obtenerCoordenadas(window.nextGBDestinationZip);}catch(e){destination=[-80.1917902,25.7616798];}
-      const key=window.ORS_API_KEY;
-      const response=await fetch('https://api.openrouteservice.org/v2/directions/driving-car',{
-        method:'POST',headers:{'Authorization':key,'Content-Type':'application/json'},
-        body:JSON.stringify({coordinates:[origin,destination]})
-      });
-      if(!response.ok) throw new Error('Error obteniendo la ruta');
-      const data=await response.json();
-      const metros=data.routes?.[0]?.summary?.distance;
-      if(!Number.isFinite(metros)) throw new Error('Ruta no disponible');
-      const millas=Math.round(metros*0.000621371);
-      let tarifaCD=millas<=500?1:millas<=1000?.75:millas<=1500?.70:millas<=2000?.50:.40;
-      const tarifaAplicada=Math.min(tarifaCD,.90);
-      let costo=Math.round(millas*tarifaAplicada); if(costo<150)costo=150;
-      if($('grua_inland')) $('grua_inland').value=costo;
-      $('grua_inland')?.setAttribute('data-auto-zip','1');
-      window.nextGBLastInlandRoute={zipOrigen:zip,zipDestino:window.nextGBDestinationZip,destino:window.nextGBDestinationRef,millas,costo};
-      try{window.calcCostos?.();window.showToast?.(`Inland calculado por ZIP ${zip} → ${window.nextGBDestinationZip}: US$${costo}`,'📍');}catch(e){}
-    }catch(e){
-      console.warn('V2.5 ZIP inland',e);
-      try{window.showToast?.('No fue posible calcular la grúa con los ZIP indicados. No se inventó un costo.','❌')}catch(x){}
-    }finally{if(btn){btn.innerText='📍';btn.disabled=false;}}
-  };
-
-  // V2.5 authoritative cost synchronization: FOB, dispatch-before-plate, emission plate and 5 payments.
-  const priorCalc=window.calcCostos;
-  window.calcCostos=function(){
-    try{priorCalc?.();}catch(e){console.warn('base calcCostos',e)}
-    const sub=N($('costo_subasta')?.value), fees=N($('fees_subasta')?.value), inland=N($('grua_inland')?.value);
-    const docs=N($('documentacion_origen_usd')?.value), repair=N($('reparacion_miami_usd')?.value), broker=N($('fee_broker_usd')?.value);
-    const freight=N($('flete_real')?.value), dispatch=N($('paquete_despacho_usd')?.value), customs=N($('c_despacho_rds')?.value);
-    const honor=N($('derecho_dealer_usd')?.value), sale=N($('precio_venta_estimado_usd')?.value), rate=N($('tasa')?.value)||60.60;
-    const normative=N($('normativa_0325_rds')?.value), pp=N($('placa_pp_rds')?.value), endoso=N($('endoso_gestion_rds')?.value);
-    const plateRds=normative+pp+endoso;
-    if($('c_placa_rds')) $('c_placa_rds').value=plateRds.toFixed(2);
-    const fob=sub+fees+inland+docs+repair+broker;
-    const despachoSinPlaca=fob+freight+dispatch+(customs/rate);
-    const landed=despachoSinPlaca+(plateRds/rate)+N($('reparaciones_rds')?.value)/rate;
-    const gross=sale-landed, net=gross-honor, roi=landed?net/landed*100:0;
-    window.nextGBV25={fobMiami:fob,despachoSinPlaca,emisionPlacaRds:plateRds,landed,sale,grossMargin:gross,netMargin:net,roi,zipOrigen:String($('zip_origen')?.value||''),zipDestino:String(window.nextGBDestinationZip||'')};
-    window.c_landed=landed;window.c_venta=sale;window.c_margen=gross;window.c_margen_despues_honorarios=net;window.c_honorarios=honor;
-    const setText=(id,v)=>{if($(id))$(id).innerText=v};
-    setText('rc_landed_usd','US$ '+(landed.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})));
-    setText('rc_precio_venta_usd','US$ '+sale.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('rc_margen_neto_usd','US$ '+net.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('rc_margen_neto_rds','RD$ '+(net*rate).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('rc_despacho_rds','RD$ '+customs.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('rc_placa_rds','RD$ '+plateRds.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('rc_total_local','RD$ '+(customs+plateRds+N($('reparaciones_rds')?.value)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    // Explicit Live Cost fields if already present.
-    setText('live-investment','US$ '+landed.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('live-sale','US$ '+sale.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('live-margin','US$ '+gross.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('live-net-margin','US$ '+net.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('live-roi',roi.toFixed(1)+'%');
-    setText('live-origin-freight','US$ '+(fob+freight).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('live-customs','US$ '+((customs+plateRds+N($('reparaciones_rds')?.value))/rate).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    // Correct 5-payment schedule: no RD repair is hidden inside Pago 4.
-    const p1=N($('pago_inicial_usd')?.value);
-    const p2=Math.max(0,sub+fees+broker+honor-p1);
-    const p3=inland+docs+repair;
-    const p4=freight+dispatch+customs/rate;
-    const p5=plateRds/rate+N($('reparaciones_rds')?.value)/rate;
-    setText('cro_pago1','US$ '+p1.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('cro_pago2','US$ '+p2.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('cro_pago3','US$ '+p3.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('cro_pago4','US$ '+p4.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('cro_pago5','US$ '+p5.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    setText('cro_total','US$ '+landed.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    // Store exact current calculation context for current Desktop document generators.
-    window.nextGBCurrentDocumentContext={...(window.nextGBCurrentDocumentContext||{}),fobMiami:fob,totalDespachoSinPlaca:despachoSinPlaca,emisionPlacaRds:plateRds,zipOrigen:String($('zip_origen')?.value||''),zipDestino:String(window.nextGBDestinationZip||''),normativa0325:normative,placaPP:pp,endosoGestion:endoso,honorarios:honor};
-  };
-
-  // Ensure exact title/wording requested by the business rules without replacing the document templates.
-  document.querySelectorAll('label').forEach(l=>{if(l.textContent.trim()==='Placa y Marbete (RD$)')l.textContent='EMISIÓN DE PLACA';});
-  document.querySelectorAll('span').forEach(x=>{if(x.textContent.trim()==='Impuestos DGII Placa y Normativa 03-20.')x.textContent='Normativa 03-25, Placa PP y Endoso / Gestión.';});
-
-  // Keep the current Desktop PDF/WhatsApp generators intact; only feed them the authoritative state.
-  const oldW=window.generarWhatsAppProforma;
-  if(typeof oldW==='function'){
-    // Do not replace output template here; recalculation is enough to synchronize source values.
-  }
-
-  // Initial sync after all legacy patches have loaded.
-  setTimeout(()=>{try{applyDestinationZip();window.calcCostos?.();}catch(e){}},250);
+  const oldCalc=window.calcCostos;
+  if(typeof oldCalc==='function') window.calcCostos=function(){const r=oldCalc.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
+  const oldRender=window.nextGBRenderAI;
+  if(typeof oldRender==='function') window.nextGBRenderAI=function(){const r=oldRender.apply(this,arguments);setTimeout(window.nextGBV25RefreshPlate,0);return r};
+  window.addEventListener('load',()=>setTimeout(window.nextGBV25RefreshPlate,300));
 })();
 </script>
-
-<!-- NEXT-AVPRO-BETA.V2.5 · README METADATA -->
+</body>
 </html>
 
 <!-- NEXT-AVPRO-BETA.V1.0 · AI SESSION/APPLY PATCH -->
@@ -6152,7 +6106,7 @@ body:not(.light-mode) #nextgb-ai-result .nextgb-v24-document * { color: inherit 
     'auction_bid','costo_subasta','fees_subasta','grua_inland','flete_real','flete',
     'documentacion_origen_usd','reparacion_miami_usd','derecho_dealer_usd',
     'paquete_despacho_usd','precio_venta_estimado_usd','pago_inicial_usd',
-    'valor','seguro','gastos_adicionales_dga','c_despacho_rds','c_placa_rds',
+    'valor','seguro','gastos_adicionales_dga','c_despacho_rds','placa_pp_rds',
     'vin','cliente','millaje','zip_origen','reparaciones_rds'
   ];
 
@@ -6530,3 +6484,254 @@ body:not(.light-mode) #nextgb-ai-result h3{
   window.addEventListener('load',()=>setTimeout(bind,200));
 })();
 </script>
+
+<style id="nextgb-v20-mobile-final-fix">
+/* NEXT GB V2.0 — FINAL iPHONE MOBILE LAYOUT FIX */
+@media (max-width: 760px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;margin:0!important;padding:0!important}
+  body.nextgb-ai-main-view{padding:0!important;display:block!important}
+  body.nextgb-ai-main-view .app-shell{display:block!important;width:100%!important;max-width:none!important;min-height:100vh!important;margin:0!important;padding:0!important}
+  body.nextgb-ai-main-view .app-shell .app-container{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen{
+    position:relative!important;inset:auto!important;display:block!important;
+    width:100%!important;max-width:none!important;min-height:100vh!important;height:auto!important;
+    margin:0!important;padding:22px 16px 92px!important;box-sizing:border-box!important;
+    border:0!important;border-radius:0!important;overflow:visible!important;
+    align-items:initial!important;justify-content:initial!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-shell{
+    display:block!important;width:100%!important;max-width:none!important;min-width:0!important;
+    margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+    background:transparent!important;box-shadow:none!important;box-sizing:border-box!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-head{
+    display:flex!important;width:100%!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;text-align:center!important;
+    gap:12px!important;margin:0 0 20px!important;box-sizing:border-box!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-title{
+    display:flex!important;flex-direction:column!important;align-items:center!important;
+    justify-content:center!important;width:100%!important;gap:10px!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-title h3{
+    font-size:28px!important;line-height:1.05!important;margin:0!important;text-align:center!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-title p{
+    max-width:280px!important;margin:0!important;text-align:center!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-badge{display:none!important}
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-toolbar{
+    position:static!important;display:flex!important;width:100%!important;
+    justify-content:flex-end!important;align-items:center!important;margin:0 0 12px!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-toolbar span{display:none!important}
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-toolbar button{
+    position:static!important;max-width:100%!important;white-space:nowrap!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen > .nextgb-ai-head,
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen > .nextgb-ai-home-shell{
+    box-sizing:border-box!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-row{
+    display:flex!important;flex-direction:column!important;width:100%!important;max-width:none!important;
+    margin:0!important;padding:0!important;gap:10px!important;box-sizing:border-box!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-row textarea{
+    width:100%!important;min-width:0!important;box-sizing:border-box!important;min-height:132px!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-btn{
+    width:100%!important;min-width:0!important;height:50px!important;box-sizing:border-box!important;
+  }
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-examples,
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-suggestions,
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-result,
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-status,
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-enter,
+  body.nextgb-ai-main-view #nextgb-ai-aduanas.nextgb-ai-home-screen .nextgb-ai-home-note{
+    width:100%!important;max-width:none!important;box-sizing:border-box!important;margin-left:0!important;margin-right:0!important;
+  }
+}
+</style>
+
+
+<!-- NEXT GB V2.0 STABILIZATION PATCH: controlled wizard navigation + dedicated document printing -->
+<style id="nextgb-v20-stabilization">
+/* ===== Mobile workspace: one view at a time, never the desktop two-column shell ===== */
+@media (max-width:760px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  body:not(.nextgb-ai-main-view):not(.final-screen) .app-shell{width:100%!important;max-width:100%!important;min-width:0!important}
+  body:not(.nextgb-ai-main-view):not(.final-screen) #main-container{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0 12px 90px!important;box-sizing:border-box!important}
+  body:not(.nextgb-ai-main-view):not(.final-screen) #left-panel{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+  body:not(.nextgb-ai-main-view):not(.final-screen) #left-panel .tab-content{display:none!important;width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;box-sizing:border-box!important;overflow:visible!important}
+  body:not(.nextgb-ai-main-view):not(.final-screen) #left-panel .tab-content.active{display:block!important}
+  body:not(.nextgb-ai-main-view):not(.final-screen) #right-panel{display:none!important}
+  body.final-screen #main-container{display:block!important;width:100%!important;max-width:100%!important;padding:0 12px 90px!important;box-sizing:border-box!important}
+  body.final-screen #left-panel{display:none!important}
+  body.final-screen #right-panel{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;box-sizing:border-box!important}
+  .tab-content.wizard-transition{animation:nextgbMobileStepIn .38s cubic-bezier(.22,1,.36,1) both!important}
+  .tab-content.wizard-transition.from-right{animation-name:nextgbMobileStepFromBottom!important}
+  .tab-content.wizard-transition.from-left{animation-name:nextgbMobileStepFromTop!important}
+}
+@keyframes nextgbMobileStepFromBottom{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nextgbMobileStepFromTop{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nextgbMobileStepIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ===== Dedicated print stage. The browser prints this document, never the current app page. ===== */
+#nextgb-print-stage{display:none}
+@media print{
+  body>*{display:none!important}
+  #nextgb-print-stage{display:block!important;position:static!important;width:100%!important;background:#fff!important;color:#0f172a!important}
+  #nextgb-print-stage *{box-sizing:border-box!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  @page{size:A4;margin:12mm}
+  .ngb-print-doc{width:100%;max-width:190mm;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#0f172a}
+  .ngb-print-head{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #2563eb;padding-bottom:12px;margin-bottom:16px}
+  .ngb-print-brand{font-weight:900;font-size:20px;letter-spacing:-.5px}.ngb-print-brand small{display:block;font-size:8px;letter-spacing:2px;color:#64748b;margin-top:3px}
+  .ngb-print-type{text-align:right;font-size:18px;font-weight:900}.ngb-print-type small{display:block;font-size:8px;color:#64748b;letter-spacing:1.5px;margin-top:4px}
+  .ngb-print-meta{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px}.ngb-print-box{border:1px solid #cbd5e1;border-radius:8px;padding:9px}.ngb-print-box span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:1.1px;color:#64748b;font-weight:800}.ngb-print-box strong{display:block;font-size:11px;margin-top:4px}
+  .ngb-print-section{border:1px solid #cbd5e1;border-radius:9px;padding:12px;margin:10px 0}.ngb-print-section h3{margin:0 0 9px;font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#2563eb}
+  .ngb-print-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:6px 0;font-size:9px}.ngb-print-row:last-child{border-bottom:0}.ngb-print-row strong{font-size:9px;white-space:nowrap}.ngb-print-total{display:flex;justify-content:space-between;gap:12px;border-top:2px solid #0f172a;margin-top:8px;padding-top:8px;font-size:12px;font-weight:900}.ngb-print-total.blue{color:#1d4ed8}.ngb-print-note{font-size:7px;line-height:1.45;color:#64748b;margin-top:10px}.ngb-pay{display:grid;grid-template-columns:1fr auto;gap:6px;border-bottom:1px solid #e2e8f0;padding:7px 0}.ngb-pay strong{font-size:9px}.ngb-pay small{display:block;color:#64748b;font-size:7px;margin-top:2px}.ngb-print-footer{margin-top:16px;padding-top:8px;border-top:1px solid #cbd5e1;font-size:7px;color:#64748b;text-align:center}
+}
+</style>
+<script id="nextgb-v20-stabilization-script">
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const n=id=>Number(String($(id)?.value??'').replace(/,/g,''))||0;
+  const money=v=>'US$ '+new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v)||0);
+  const dop=v=>'RD$ '+new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v)||0);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function operation(){
+    const rate=n('tasa')||60.60;
+    const purchase=n('costo_subasta'), fees=n('fees_subasta'), inland=n('grua_inland'), docs=n('documentacion_origen_usd'), repairMiami=n('reparacion_miami_usd'), broker=n('fee_broker_usd'), honor=n('derecho_dealer_usd');
+    const freight=n('flete_real'), port=n('paquete_despacho_usd'), customs=n('c_despacho_rds'), normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds'), repairRD=n('reparaciones_rds'), sale=n('precio_venta_estimado_usd'), deposit=n('pago_inicial_usd');
+    const fob=purchase+fees+inland+docs+repairMiami+broker+honor;
+    const dispatch=fob+freight+port+(customs/rate);
+    const plateRD=normativa+pp+gestion;
+    const landed=dispatch+(plateRD+repairRD)/rate;
+    const margin=sale-landed;
+    return {rate,purchase,fees,inland,docs,repairMiami,broker,honor,freight,port,customs,normativa,pp,gestion,repairRD,sale,deposit,fob,dispatch,plateRD,landed,margin,
+      vehicle:window.currentVehiculo&&window.currentVehiculo!=='POR ESPECIFICAR'?window.currentVehiculo:'Vehículo por especificar',vin:String($('vin')?.value||'').trim(),mileage:window.currentMillaje||String($('millaje')?.value||'').trim(),client:String($('cliente')?.value||'').trim()};
+  }
+  function refresh(){try{window.calcAuctionFees?.();window.calc?.();window.calcCostos?.();window.updateFinalSummary?.()}catch(e){console.warn('V2 refresh',e)}}
+
+  /* ---- Controlled wizard: a step is a view, not a scroll target. ---- */
+  const baseOpen=window.openTab;
+  window.openTab=function(tabId){
+    const target=tabId==='tab-subastas'?1:tabId==='tab-aduanas'?2:3;
+    const previous=Number(window.wizardCurrentStep||1);
+    try{baseOpen(tabId)}catch(e){console.warn('openTab base',e)}
+    document.querySelectorAll('#left-panel .tab-content').forEach(x=>x.classList.remove('active'));
+    const panel=$(tabId); if(panel) panel.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===target-1));
+    document.querySelectorAll('#res-aduanas,#res-costos,#res-subastas').forEach(x=>x.classList.remove('active'));
+    const res=$('res-'+tabId.replace('tab-','')); if(res) res.classList.add('active');
+    window.wizardCurrentStep=target;
+    try{window.updateWizardUI?.(tabId)}catch(e){}
+    if(panel){panel.classList.remove('wizard-transition','from-right','from-left');void panel.offsetWidth;panel.classList.add('wizard-transition',target>=previous?'from-right':'from-left')}
+    /* Never let the legacy implementation move the page to another vertical position. */
+    if(window.scrollY!==0 && !document.body.classList.contains('final-screen')) window.scrollTo(0,0);
+    refresh();
+    return true;
+  };
+
+  const baseNext=window.nextWizardStep;
+  window.nextWizardStep=function(tabId){
+    const target=tabId==='tab-subastas'?1:tabId==='tab-aduanas'?2:3;
+    const unlocked=Number(window.wizardUnlockedStep||1);
+    if(target>unlocked+1){window.showToast?.('Completa el paso actual antes de continuar.','⚠️');return false}
+    if(target===2 && !(window.currentAuctionBid||window.currentAuctionFees)){window.showToast?.('Primero define la oferta de la subasta.','⚠️');return false}
+    if(target===3){const vin=String($('vin')?.value||'').trim(),marca=$('marca')?.value||'',valor=n('valor');if(!vin&&!marca&&!valor){window.showToast?.('Completa al menos los datos básicos del vehículo.','⚠️');return false}}
+    window.wizardInternalNavigation=true;
+    window.openTab(tabId);
+    window.wizardInternalNavigation=false;
+    window.wizardUnlockedStep=Math.max(unlocked,target);
+    window.markWizardStep?.(target);
+    return true;
+  };
+
+  /* Step 01 button uses this function in the existing HTML. Keep its business logic, then move one view. */
+  const baseSync=window.syncFeesToCostos;
+  window.syncFeesToCostos=function(){
+    const ok=typeof baseSync==='function'?baseSync.apply(this,arguments):false;
+    if(ok!==false){window.wizardUnlockedStep=Math.max(Number(window.wizardUnlockedStep||1),2);window.wizardInternalNavigation=true;window.openTab('tab-aduanas');window.wizardInternalNavigation=false;window.markWizardStep?.(2);}
+    return ok;
+  };
+
+  /* ---- Dedicated PDF/Cotización/Proforma document ---- */
+  function row(label,value,cls=''){return '<div class="ngb-print-row '+cls+'"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>';}
+  function buildDocument(type){
+    refresh();
+    const d=operation();
+    const isPro=type==='proforma';
+    const p1=d.deposit;
+    const p2=Math.max(0,d.purchase+d.fees+d.broker+d.honor-p1);
+    const p3=d.inland+d.docs+d.repairMiami;
+    const p4=d.freight+d.port+(d.customs/d.rate)+(d.repairRD/d.rate);
+    const p5=d.plateRD/d.rate;
+    const vehicle=d.vehicle;
+    let html='<div class="ngb-print-doc">';
+    html+='<div class="ngb-print-head"><div><div class="ngb-print-brand">NEXT GB AUTO IMPORT<small>SRL · ELITE</small></div></div><div class="ngb-print-type">'+(isPro?'FACTURA PROFORMA':'COTIZACIÓN')+'<small>DOCUMENTO GENERADO POR NEXT GB</small></div></div>';
+    html+='<div class="ngb-print-meta">'+
+      '<div class="ngb-print-box"><span>Vehículo</span><strong>'+esc(vehicle)+'</strong></div>'+
+      '<div class="ngb-print-box"><span>VIN</span><strong>'+esc(d.vin||'No especificado')+'</strong></div>'+
+      '<div class="ngb-print-box"><span>Tasa DOP</span><strong>'+new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(d.rate)+'</strong></div></div>';
+    html+='<div class="ngb-print-section"><h3>Inversión y costos</h3>';
+    html+=row('Subasta + Fees',money(d.purchase+d.fees));
+    html+=row('Grúa Inland (USA)',money(d.inland));
+    html+=row('Documentación y Taller Miami',money(d.docs+d.repairMiami));
+    html+=row('Fee Broker',money(d.broker));
+    html+=row('Honorarios NEXT GB (manual)',money(d.honor));
+    html+=row('FOB Miami',money(d.fob));
+    html+=row('Flete marítimo',money(d.freight));
+    html+=row('Paquete despacho / puerto RD',money(d.port));
+    html+=row('Despacho Aduanal / Impuestos',dop(d.customs));
+    html+=row('TOTAL DESPACHO SIN PLACA',money(d.dispatch),'ngb-print-total blue');
+    html+=row('Normativa 03-25',dop(d.normativa));
+    html+=row('Placa PP',dop(d.pp));
+    html+=row('Gastos de Endoso / Gestión',dop(d.gestion));
+    html+=row('TOTAL EMISIÓN DE PLACA',dop(d.plateRD),'ngb-print-total blue');
+    html+=row('Reparación en RD',dop(d.repairRD));
+    html+='<div class="ngb-print-total"><span>COSTO TOTAL LANDED</span><strong>'+money(d.landed)+'</strong></div></div>';
+    if(!isPro){
+      html+='<div class="ngb-print-section"><h3>Rentabilidad</h3>'+row('Precio de venta',money(d.sale))+row('Margen después de honorarios',money(d.margin))+row('ROI',d.landed?((d.margin/d.landed)*100).toFixed(2)+'%':'0.00%')+'</div>';
+    } else {
+      html+='<div class="ngb-print-section"><h3>Cronograma de pagos establecido</h3>';
+      html+='<div class="ngb-pay"><div><strong>Pago 1: Depósito de Seguridad</strong><small>Hoy, para iniciar el proceso.</small></div><strong>'+money(p1)+'</strong></div>';
+      html+='<div class="ngb-pay"><div><strong>Pago 2: Balance Subasta</strong><small>Facturas, fees de subasta, broker y honorarios.</small></div><strong>'+money(p2)+'</strong></div>';
+      html+='<div class="ngb-pay"><div><strong>Pago 3: Logística Origen</strong><small>Grúa inland, taller y documentación.</small></div><strong>'+money(p3)+'</strong></div>';
+      html+='<div class="ngb-pay"><div><strong>Pago 4: Aduanas y Flete</strong><small>Flete, agente aduanal, parqueo e impuestos DGA.</small></div><strong>'+money(p4)+'</strong></div>';
+      html+='<div class="ngb-pay"><div><strong>Pago 5: Emisión de Placa</strong><small>Normativa 03-25: '+dop(d.normativa)+' · Placa PP: '+dop(d.pp)+' · Gestión/Endoso: '+dop(d.gestion)+' · Total emisión: '+dop(d.plateRD)+'</small></div><strong>'+money(p5)+'</strong></div>';
+      html+='<div class="ngb-print-total blue"><span>TOTAL INVERSIÓN (LANDED)</span><strong>'+money(d.landed)+'</strong></div></div>';
+      html+='<div class="ngb-print-note">Valores expresados en USD salvo los conceptos identificados en RD$. Presupuesto referencial sujeto a disponibilidad de la unidad, variaciones de subasta, naviera, aduanas y cargos de terceros.</div>';
+    }
+    html+='<div class="ngb-print-footer">Next GB Auto Import SRL · Documento generado para la operación actual.</div></div>';
+    return html;
+  }
+  function ensurePrintStage(){let st=$('nextgb-print-stage');if(!st){st=document.createElement('div');st.id='nextgb-print-stage';document.body.appendChild(st)}return st}
+  window.imprimirPDF=function(){
+    const type=$('doc_type')?.value||'cotizacion';
+    const st=ensurePrintStage();st.innerHTML=buildDocument(type);
+    const vin=String($('vin')?.value||'').trim();const suffix=vin.length>=6?vin.slice(-6).toUpperCase():(type==='proforma'?'PROFORMA':'COTIZACION');
+    const oldTitle=document.title;document.title='NGB-'+suffix;
+    document.body.classList.add('ngb-printing');
+    const cleanup=()=>{document.body.classList.remove('ngb-printing');document.title=oldTitle;st.innerHTML='';window.removeEventListener('afterprint',cleanup)};
+    window.addEventListener('afterprint',cleanup,{once:true});
+    window.print();
+    setTimeout(()=>{if(document.body.classList.contains('ngb-printing'))cleanup()},1200);
+  };
+
+  /* Keep document type preview synchronized before PDF/WhatsApp actions. */
+  const oldToggle=window.toggleDocType;
+  window.toggleDocType=function(){try{oldToggle?.()}catch(e){} };
+
+  /* Prevent legacy final view from exposing the desktop right panel on normal mobile navigation. */
+  const oldFinish=window.finishWizard;
+  window.finishWizard=function(){
+    try{oldFinish?.()}catch(e){console.warn('finish legacy',e)}
+    document.body.classList.add('final-screen');
+    document.body.classList.remove('nextgb-ai-main-view');
+    try{window.updateFinalSummary?.()}catch(e){}
+  };
+})();
+</script>
+
