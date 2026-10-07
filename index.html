@@ -1331,6 +1331,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                         <div><span>Placa PP</span><strong id="final-plate-pp">RD$ 2,000.00</strong></div>
                         <div><span>Endoso / Gestión</span><strong id="final-gestion">RD$ 5,000.00</strong></div>
                         <div><span>Total Emisión de Placa</span><strong id="final-total-plate">RD$ 7,000.00</strong></div>
+                        <div class="final-plate-total-visible"><span>EMISIÓN DE PRIMERA PLACA · PAGO 5</span><strong id="final-first-plate-usd">US$ 0.00</strong></div>
                         <div><span>Destino local</span><strong id="final-local">RD$ 0.00</strong></div>
                     </div>
                     <div class="final-total-line"><span>Costo total Landed</span><strong id="final-total-emphasis">US$ 0.00</strong></div>
@@ -1707,16 +1708,16 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const fobMiamiUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker+honorarios;
         const totalDespachoSinPlacaUsd=fobMiamiUsd+flete+paqueteDespachoUSD+(despachoRds/t);
         const totalPlacaRds=normativa0325+placaPP+gestionEndoso;
-        // Impuesto DGII de Primera Placa + CO2 + Marbete, calculado en Aduanas.
-        // Es distinto de la Emisión de Placa (PP + Gestión/Endoso + Normativa)
-        // y debe entrar al costo real de la operación una sola vez.
+        // PAGO 5 / ÚLTIMO PAGO: toda la Primera Placa se paga al final.
+        // Incluye Primera Placa + CO₂ + Marbete + Emisión de Placa (PP/Endoso/Normativa).
         const impuestoPrimeraPlacaRds=Number(window.currentPlaca||0);
-        const totalDestinoRds=despachoRds+impuestoPrimeraPlacaRds+totalPlacaRds+reparacionesRds;
-        const landedCostUsd=totalDespachoSinPlacaUsd+(impuestoPrimeraPlacaRds/t)+(totalPlacaRds/t)+(reparacionesRds/t);
+        const totalPago5PlacaRds=impuestoPrimeraPlacaRds+totalPlacaRds;
+        const totalDestinoRds=despachoRds+totalPago5PlacaRds+reparacionesRds;
+        const landedCostUsd=totalDespachoSinPlacaUsd+(totalPago5PlacaRds/t)+(reparacionesRds/t);
         const margen=precioVentaUsd-landedCostUsd;
         const roi=landedCostUsd>0 ? margen/landedCostUsd*100 : 0;
         window.c_fob_miami=fobMiamiUsd; window.c_despacho_sin_placa=totalDespachoSinPlacaUsd;
-        window.c_impuesto_primera_placa=impuestoPrimeraPlacaRds; window.c_emision_placa_rds=totalPlacaRds;
+        window.c_impuesto_primera_placa=impuestoPrimeraPlacaRds; window.c_emision_placa_rds=totalPlacaRds; window.c_pago5_placa_total_rds=totalPago5PlacaRds;
         window.c_landed=landedCostUsd; window.c_venta=precioVentaUsd; window.c_margen=margen; window.c_margen_despues_honorarios=margen; window.c_honorarios=honorarios; window.c_roi=roi;
         const put=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v};
         put('rc_subasta_usd','US$ '+fmt(subasta+fees)); put('rc_inland_usd','US$ '+fmt(inland)); put('rc_documentos_usd','US$ '+fmt(documentacionOrigen+reparacionMiami)); put('rc_broker_honorarios_usd','US$ '+fmt(feeBroker)); put('rc_margen_honorarios_usd','US$ '+fmt(honorarios)+' (manual)'); put('rc_total_origen_usd','US$ '+fmt(fobMiamiUsd));
@@ -1724,7 +1725,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
         put('rc_impuesto_primera_placa_rds','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_total_placa_operacion_rds','RD$ '+fmt(impuestoPrimeraPlacaRds+totalPlacaRds));
         put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
-        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t); const cro_pago5=totalPlacaRds/t;
+        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t); const cro_pago5=totalPago5PlacaRds/t;
         put('cro_pago1','US$ '+fmt(cro_pago1)); put('cro_pago2','US$ '+fmt(cro_pago2)); put('cro_pago3','US$ '+fmt(cro_pago3)); put('cro_pago4','US$ '+fmt(cro_pago4)); put('cro_pago5','US$ '+fmt(cro_pago5)); put('cro_total','US$ '+fmt(landedCostUsd));
         updateFinalSummary(); nextGBLiveCostUpdate();
     }
@@ -2268,7 +2269,10 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
         const platePP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
-        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + normativa + platePP + gestion + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
+        const firstPlateTaxRds = Number(window.c_impuesto_primera_placa || window.currentPlaca || 0);
+        const plateEmissionRds = normativa + platePP + gestion;
+        const totalFirstPlateRds = firstPlateTaxRds + plateEmissionRds;
+        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + totalFirstPlateRds + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
         const score = getInvestmentScore(pct);
 
         set('final-vehicle', vehicle);
@@ -2289,11 +2293,12 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         set('final-freight', 'US$ ' + fmt(freight));
         set('final-fob-miami', 'US$ ' + fmt(fobMiami));
         set('final-dispatch-no-plate', 'US$ ' + fmt(dispatchNoPlate));
-        set('final-first-plate-tax', 'RD$ ' + fmt(Number(window.c_impuesto_primera_placa||window.currentPlaca||0)));
+        set('final-first-plate-tax', 'RD$ ' + fmt(firstPlateTaxRds));
         set('final-normativa', 'RD$ ' + fmt(normativa));
         set('final-plate-pp', 'RD$ ' + fmt(platePP));
         set('final-gestion', 'RD$ ' + fmt(gestion));
-        set('final-total-plate', 'RD$ ' + fmt(normativa + platePP + gestion));
+        set('final-total-plate', 'RD$ ' + fmt(totalFirstPlateRds));
+        set('final-first-plate-usd', 'US$ ' + fmt(totalFirstPlateRds / t));
         set('final-local', 'RD$ ' + fmt(localRds));
         set('final-total-emphasis', 'US$ ' + fmt(landed));
         set('final-margin-copy', 'US$ ' + fmt(margin));
@@ -3830,7 +3835,10 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
       if(e) e.textContent='RD$ '+Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     };
     set('final-first-plate-tax',first);
-    set('final-total-plate',emission);
+    set('final-total-plate',total);
+    const rate=Number(document.getElementById('tasa')?.value||60.60);
+    const usd=rate>0?total/rate:0;
+    const usdEl=document.getElementById('final-first-plate-usd'); if(usdEl) usdEl.textContent='US$ '+usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     set('rc_impuesto_primera_placa_rds',first);
     set('rc_total_placa_operacion_rds',total);
   }
@@ -3841,6 +3849,12 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 })();
 </script>
 
+
+<style id="nextgb-v29-plate-summary-css">
+.final-plate-total-visible{margin-top:10px;padding:11px 12px;border-radius:10px;border:1px solid var(--accent);background:rgba(34,197,94,.08);font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center;}
+.final-plate-total-visible span{font-size:11px;letter-spacing:.02em;}
+.final-plate-total-visible strong{font-size:15px;white-space:nowrap;}
+</style>
 </body>
 </html>
 <style>
