@@ -1329,6 +1329,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                         <div><span>Normativa 03-25</span><strong id="final-normativa">RD$ 0.00</strong></div>
                         <div><span>Placa PP</span><strong id="final-plate-pp">RD$ 2,000.00</strong></div>
                         <div><span>Endoso / Gestión</span><strong id="final-gestion">RD$ 5,000.00</strong></div>
+                        <div><span>Total Emisión de Placa</span><strong id="final-total-plate">RD$ 7,000.00</strong></div>
                         <div><span>Destino local</span><strong id="final-local">RD$ 0.00</strong></div>
                     </div>
                     <div class="final-total-line"><span>Costo total Landed</span><strong id="final-total-emphasis">US$ 0.00</strong></div>
@@ -1993,7 +1994,12 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         txt += `🔹 *Pago 2 (Balance Subasta):* ${p2}\n_Facturas, fees de subasta, broker y honorarios._\n\n`;
         txt += `🔹 *Pago 3 (Logística Origen):* ${p3}\n_Grúa inland, taller y documentación._\n\n`;
         txt += `🔹 *Pago 4 (Aduanas y Flete):* ${p4}\n_Flete, agente aduanal, parqueo e impuestos DGA._\n\n`;
-        txt += `🔹 *Pago 5 (Placa y Endoso):* ${p5}\n_Impuestos DGII Placa y normativa 03-25._\n\n`;
+        const normativaRds = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
+        const placaPPRds = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
+        const gestionRds = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
+        const totalPlacaRds = normativaRds + placaPPRds + gestionRds;
+        txt += `🔹 *Pago 5 (Placa y Endoso):* ${p5}\n`;
+        txt += `_Placa PP: RD$ ${fmt(placaPPRds)} · Gestión/Endoso: RD$ ${fmt(gestionRds)} · Normativa 03-25: RD$ ${fmt(normativaRds)} · Total placa: RD$ ${fmt(totalPlacaRds)}._\n\n`;
         
         txt += `🏁 *TOTAL INVERSIÓN (Landed):* ${total}\n\n`;
         txt += `_Nota: Valores en USD. Presupuesto sujeto a disponibilidad en subasta y variación naviera._\n\n`;
@@ -2054,10 +2060,15 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         txt += `🔧 *Taller Miami:* US$ ${fmt(taller_usd)}\n`;
         txt += `💼 *Fee Broker & Honorarios:* US$ ${fmt(fee_broker + dealer_usd)}\n\n`;
         
+        const normativa_rds = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
+        const gestion_rds = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
+        const total_emision_placa = normativa_rds + placa_rds + gestion_rds;
         txt += `*Gastos Destino Local (RD):*\n`;
         txt += `🚢 *Flete Marítimo:* US$ ${fmt(flete)}\n`;
         txt += `🏢 *Despacho Aduanal (Sin Placa):* RD$ ${fmt(despacho_rds)}\n`;
-        txt += `🏷️ *Primera Placa y Marbete:* RD$ ${fmt(placa_rds)}\n`;
+        txt += `🏷️ *Placa PP:* RD$ ${fmt(placa_rds)}\n`;
+        txt += `📑 *Gestión / Endoso:* RD$ ${fmt(gestion_rds)}\n`;
+        txt += `🏷️ *Total Emisión de Placa:* RD$ ${fmt(total_emision_placa)}\n`;
         txt += `🇩🇴 *Reparación en RD:* RD$ ${fmt(rep_rds)}\n\n`;
         
         txt += `📉 *LANDED COST TOTAL:* US$ ${fmt(window.c_landed || 0)}\n`;
@@ -2267,6 +2278,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         set('final-normativa', 'RD$ ' + fmt(normativa));
         set('final-plate-pp', 'RD$ ' + fmt(platePP));
         set('final-gestion', 'RD$ ' + fmt(gestion));
+        set('final-total-plate', 'RD$ ' + fmt(normativa + platePP + gestion));
         set('final-local', 'RD$ ' + fmt(localRds));
         set('final-total-emphasis', 'US$ ' + fmt(landed));
         set('final-margin-copy', 'US$ ' + fmt(margin));
@@ -6607,3 +6619,68 @@ body:not(.light-mode) #nextgb-ai-result h3{
 })();
 </script>
 
+
+
+<script id="nextgb-v26-mobile-plate-output">
+(function(){
+  'use strict';
+  function n(id){
+    const e=document.getElementById(id);
+    const v=parseFloat(e?.value);
+    return Number.isFinite(v)?v:0;
+  }
+  function moneyRD(v){
+    return 'RD$ ' + (typeof fmt==='function'
+      ? fmt(v)
+      : Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+  }
+  function plateBlock(){
+    const pp=n('placa_pp_rds');
+    const gestion=n('gestion_endoso_rds');
+    const normativa=n('normativa_0325_rds');
+    const total=pp+gestion+normativa;
+    const wrap=document.createElement('div');
+    wrap.id='nextgb-ai-plate-breakdown';
+    wrap.style.cssText='margin-top:14px;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(59,130,246,.045)';
+    wrap.innerHTML =
+      '<div style="font-weight:900;font-size:12px;margin-bottom:9px">🏷️ EMISIÓN DE PLACA</div>' +
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Placa PP</span><strong>'+moneyRD(pp)+'</strong></div>' +
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Gestión / Endoso</span><strong>'+moneyRD(gestion)+'</strong></div>' +
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0 0;margin-top:4px;border-top:1px solid var(--border-color);font-size:11px"><strong>Total Emisión de Placa</strong><strong>'+moneyRD(total)+'</strong></div>';
+    if(normativa>0){
+      wrap.innerHTML += '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:10px;color:var(--text-muted)"><span>Normativa 03-25</span><span>'+moneyRD(normativa)+'</span></div>';
+    }
+    return wrap;
+  }
+  function refreshAIPlate(){
+    const result=document.getElementById('nextgb-ai-result');
+    if(!result || !result.classList.contains('show')) return;
+    let b=document.getElementById('nextgb-ai-plate-breakdown');
+    if(!b) result.appendChild(plateBlock());
+  }
+  const mo=new MutationObserver(refreshAIPlate);
+  function init(){
+    const r=document.getElementById('nextgb-ai-result');
+    if(r) mo.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    refreshAIPlate();
+  }
+  window.addEventListener('load',()=>setTimeout(init,350));
+  setTimeout(init,900);
+})();
+</script>
+
+
+<script id="nextgb-v26-mobile-plate-alias">
+(function(){
+  function syncPlateAlias(){
+    const total=document.getElementById('rc_total_placa_rds');
+    const pp=document.getElementById('rc_placa_pp_rds');
+    const ge=document.getElementById('rc_gestion_endoso_rds');
+    if(total) total.setAttribute('data-plate-total','1');
+    if(pp) pp.setAttribute('data-plate-pp','1');
+    if(ge) ge.setAttribute('data-plate-gestion','1');
+  }
+  window.addEventListener('load',()=>setTimeout(syncPlateAlias,500));
+  setInterval(syncPlateAlias,1500);
+})();
+</script>
