@@ -1198,6 +1198,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="res-line" style="margin-top: 10px;"><span>Flete Marítimo</span><span id="rc_flete_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Paquete despacho / puerto RD</span><span id="rc_paquete_despacho_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Despacho Aduanal / Impuestos (RD$)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Impuesto Primera Placa + CO₂ + Marbete (RD$)</span><span id="rc_impuesto_primera_placa">RD$ 0.00</span></div>
             <div class="res-line highlight-subtotal"><span>🏁 Total Despacho Sin Placa</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
             <div class="res-line" style="margin-top:10px;"><span>Normativa 03-25</span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
             <div class="res-line"><span>Placa PP</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
@@ -1265,7 +1266,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                 <div class="res-line" style="padding: 10px 0;">
                     <div style="display: flex; flex-direction: column;">
                         <span style="color: var(--text-main); font-weight: 700;">Pago 5: Placa y Endoso</span>
-                        <span style="font-size: 9px; opacity: 0.7; text-transform: uppercase;">Impuestos DGII Placa y Normativa 03-25</span>
+                        <span style="font-size: 9px; opacity: 0.7; text-transform: uppercase;">Primera Placa + CO₂ + Marbete + Placa PP + Endoso</span>
                     </div>
                     <span id="cro_pago5">US$ 0.00</span>
                 </div>
@@ -1326,6 +1327,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
                         <div><span>Flete marítimo</span><strong id="final-freight">US$ 0.00</strong></div>
                         <div><span>FOB Miami</span><strong id="final-fob-miami">US$ 0.00</strong></div>
                         <div><span>Total Despacho Sin Placa</span><strong id="final-dispatch-no-plate">US$ 0.00</strong></div>
+                        <div><span>Impuesto Primera Placa + CO₂ + Marbete</span><strong id="final-first-plate">RD$ 0.00</strong></div>
                         <div><span>Normativa 03-25</span><strong id="final-normativa">RD$ 0.00</strong></div>
                         <div><span>Placa PP</span><strong id="final-plate-pp">RD$ 2,000.00</strong></div>
                         <div><span>Endoso / Gestión</span><strong id="final-gestion">RD$ 5,000.00</strong></div>
@@ -1704,20 +1706,21 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const despachoRds=n('c_despacho_rds'), normativa0325=n('normativa_0325_rds'), placaPP=n('placa_pp_rds'), gestionEndoso=n('gestion_endoso_rds');
         const reparacionesRds=n('reparaciones_rds'), precioVentaUsd=n('precio_venta_estimado_usd'), depositoUsd=n('pago_inicial_usd'), t=n('tasa')||60.60;
         const fobMiamiUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker+honorarios;
+        const impuestoPrimeraPlacaRds=parseFloat(window.currentPlaca)||0;
         const totalDespachoSinPlacaUsd=fobMiamiUsd+flete+paqueteDespachoUSD+(despachoRds/t);
         const totalPlacaRds=normativa0325+placaPP+gestionEndoso;
-        const totalDestinoRds=despachoRds+totalPlacaRds+reparacionesRds;
-        const landedCostUsd=totalDespachoSinPlacaUsd+(totalPlacaRds/t)+(reparacionesRds/t);
+        const totalDestinoRds=despachoRds+impuestoPrimeraPlacaRds+totalPlacaRds+reparacionesRds;
+        const landedCostUsd=totalDespachoSinPlacaUsd+(impuestoPrimeraPlacaRds/t)+(totalPlacaRds/t)+(reparacionesRds/t);
         const margen=precioVentaUsd-landedCostUsd;
         const roi=landedCostUsd>0 ? margen/landedCostUsd*100 : 0;
         window.c_fob_miami=fobMiamiUsd; window.c_despacho_sin_placa=totalDespachoSinPlacaUsd;
         window.c_landed=landedCostUsd; window.c_venta=precioVentaUsd; window.c_margen=margen; window.c_margen_despues_honorarios=margen; window.c_honorarios=honorarios; window.c_roi=roi;
         const put=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v};
         put('rc_subasta_usd','US$ '+fmt(subasta+fees)); put('rc_inland_usd','US$ '+fmt(inland)); put('rc_documentos_usd','US$ '+fmt(documentacionOrigen+reparacionMiami)); put('rc_broker_honorarios_usd','US$ '+fmt(feeBroker)); put('rc_margen_honorarios_usd','US$ '+fmt(honorarios)+' (manual)'); put('rc_total_origen_usd','US$ '+fmt(fobMiamiUsd));
-        put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
+        put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_impuesto_primera_placa','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
         put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
         put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
-        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t)+(reparacionesRds/t); const cro_pago5=totalPlacaRds/t;
+        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t); const cro_pago5=(impuestoPrimeraPlacaRds+totalPlacaRds+reparacionesRds)/t;
         put('cro_pago1','US$ '+fmt(cro_pago1)); put('cro_pago2','US$ '+fmt(cro_pago2)); put('cro_pago3','US$ '+fmt(cro_pago3)); put('cro_pago4','US$ '+fmt(cro_pago4)); put('cro_pago5','US$ '+fmt(cro_pago5)); put('cro_total','US$ '+fmt(landedCostUsd));
         updateFinalSummary(); nextGBLiveCostUpdate();
     }
@@ -2254,7 +2257,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const normativa = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
         const platePP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
-        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + normativa + platePP + gestion + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
+        const firstPlateRds = parseFloat(window.currentPlaca) || 0;
+        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + firstPlateRds + normativa + platePP + gestion + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
         const score = getInvestmentScore(pct);
 
         set('final-vehicle', vehicle);
@@ -2275,6 +2279,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         set('final-freight', 'US$ ' + fmt(freight));
         set('final-fob-miami', 'US$ ' + fmt(fobMiami));
         set('final-dispatch-no-plate', 'US$ ' + fmt(dispatchNoPlate));
+        set('final-first-plate', 'RD$ ' + fmt(firstPlateRds));
         set('final-normativa', 'RD$ ' + fmt(normativa));
         set('final-plate-pp', 'RD$ ' + fmt(platePP));
         set('final-gestion', 'RD$ ' + fmt(gestion));
