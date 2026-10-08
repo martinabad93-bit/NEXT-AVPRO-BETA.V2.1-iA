@@ -1198,13 +1198,14 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="res-line" style="margin-top: 10px;"><span>Flete Marítimo</span><span id="rc_flete_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Paquete despacho / puerto RD</span><span id="rc_paquete_despacho_usd">US$ 0.00</span></div>
             <div class="res-line"><span>Despacho Aduanal / Impuestos (RD$)</span><span id="rc_despacho_rds">RD$ 0.00</span></div>
-            <div class="res-line"><span>Impuesto Primera Placa + CO₂ + Marbete (RD$)</span><span id="rc_impuesto_primera_placa">RD$ 0.00</span></div>
             <div class="res-line highlight-subtotal"><span>🏁 Total Despacho Sin Placa</span><span id="rc_total_despacho_sin_placa">US$ 0.00</span></div>
-            <div class="res-line" style="margin-top:10px;"><span>Normativa 03-25</span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
-            <div class="res-line"><span>Placa PP</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
-            <div class="res-line"><span>Gastos de Endoso / Gestión</span><span id="rc_gestion_endoso_rds">RD$ 5,000.00</span></div>
-            <div class="res-line subtotal-line"><span>Total Emisión de Placa</span><span id="rc_total_placa_rds">RD$ 7,000.00</span></div>
             <div class="res-line"><span>Reparación en RD</span><span id="rc_reparacion_local">RD$ 0.00</span></div>
+            <div style="margin-top:14px;padding:10px 0 4px;border-top:1px solid var(--border-color);font-weight:900;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;font-size:11px;">Emisión Placa &amp; Endoso</div>
+            <div class="res-line"><span>Placa &amp; CO₂</span><span id="rc_impuesto_primera_placa">RD$ 0.00</span></div>
+            <div class="res-line"><span>Normativa 03-25 <small>(manual)</small></span><span id="rc_normativa_0325_rds">RD$ 0.00</span></div>
+            <div class="res-line"><span>Placa PP</span><span id="rc_placa_pp_rds">RD$ 2,000.00</span></div>
+            <div class="res-line"><span>Gestión de Endoso</span><span id="rc_gestion_endoso_rds">RD$ 5,000.00</span></div>
+            <div class="res-line subtotal-line"><span>Total Emisión de Placa</span><span id="rc_total_placa_rds">RD$ 7,000.00</span></div>
             <div class="res-line subtotal-line"><span>Total Destino Local (RD$)</span><span id="rc_total_local">RD$ 7,000.00</span></div>
             
             <div class="res-line" style="font-size:11px"><span>Margen después de honorarios</span><span id="rc_margen_despues_honorarios_usd">US$ 0.00</span></div><div class="res-line highlight-subtotal" style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); border-left-color: var(--danger);">
@@ -1708,9 +1709,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const fobMiamiUsd=subasta+fees+inland+documentacionOrigen+reparacionMiami+feeBroker+honorarios;
         const impuestoPrimeraPlacaRds=parseFloat(window.currentPlaca)||0;
         const totalDespachoSinPlacaUsd=fobMiamiUsd+flete+paqueteDespachoUSD+(despachoRds/t);
-        const totalPlacaRds=normativa0325+placaPP+gestionEndoso;
-        const totalDestinoRds=despachoRds+impuestoPrimeraPlacaRds+totalPlacaRds+reparacionesRds;
-        const landedCostUsd=totalDespachoSinPlacaUsd+(impuestoPrimeraPlacaRds/t)+(totalPlacaRds/t)+(reparacionesRds/t);
+        // Fuente única de verdad para EMISIÓN DE PLACA:
+        // Primera Placa + CO₂ + Marbete + Placa PP + Gestión / Endoso.
+        const totalPlacaRds=impuestoPrimeraPlacaRds+normativa0325+placaPP+gestionEndoso;
+        const totalDestinoRds=despachoRds+totalPlacaRds+reparacionesRds;
+        const landedCostUsd=totalDespachoSinPlacaUsd+(totalPlacaRds/t)+(reparacionesRds/t);
         const margen=precioVentaUsd-landedCostUsd;
         const roi=landedCostUsd>0 ? margen/landedCostUsd*100 : 0;
         window.c_fob_miami=fobMiamiUsd; window.c_despacho_sin_placa=totalDespachoSinPlacaUsd;
@@ -1720,7 +1723,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_impuesto_primera_placa','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
         put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
         put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
-        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t); const cro_pago5=(impuestoPrimeraPlacaRds+totalPlacaRds)/t;
+        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t); const cro_pago5=totalPlacaRds/t;
         put('cro_pago1','US$ '+fmt(cro_pago1)); put('cro_pago2','US$ '+fmt(cro_pago2)); put('cro_pago3','US$ '+fmt(cro_pago3)); put('cro_pago4','US$ '+fmt(cro_pago4)); put('cro_pago5','US$ '+fmt(cro_pago5)); put('cro_total','US$ '+fmt(landedCostUsd));
         updateFinalSummary(); nextGBLiveCostUpdate();
     }
@@ -2000,7 +2003,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const normativaRds = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
         const placaPPRds = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestionRds = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
-        const totalPlacaRds = normativaRds + placaPPRds + gestionRds;
+        const totalPlacaRds = (parseFloat(window.currentPlaca)||0) + normativaRds + placaPPRds + gestionRds;
         txt += `🔹 *Pago 5 (Emisión de Placa):* ${p5}\n`;
         txt += `_Placa PP: RD$ ${fmt(placaPPRds)} · Gestión/Endoso: RD$ ${fmt(gestionRds)} · Normativa 03-25: RD$ ${fmt(normativaRds)} · Total placa: RD$ ${fmt(totalPlacaRds)}._\n\n`;
         
@@ -2065,10 +2068,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         
         const normativa_rds = parseFloat(document.getElementById('normativa_0325_rds')?.value) || 0;
         const gestion_rds = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
-        const total_emision_placa = normativa_rds + placa_rds + gestion_rds;
+        const total_emision_placa = (parseFloat(window.currentPlaca)||0) + normativa_rds + placa_rds + gestion_rds;
         txt += `*Gastos Destino Local (RD):*\n`;
         txt += `🚢 *Flete Marítimo:* US$ ${fmt(flete)}\n`;
         txt += `🏢 *Despacho Aduanal (Sin Placa):* RD$ ${fmt(despacho_rds)}\n`;
+        txt += `🏷️ *Placa & CO₂:* RD$ ${fmt(parseFloat(window.currentPlaca)||0)}\n`;
         txt += `🏷️ *Placa PP:* RD$ ${fmt(placa_rds)}\n`;
         txt += `📑 *Gestión / Endoso:* RD$ ${fmt(gestion_rds)}\n`;
         txt += `🏷️ *Total Emisión de Placa:* RD$ ${fmt(total_emision_placa)}\n`;
@@ -2180,6 +2184,9 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     let wizardUnlockedStep = 1;
     let wizardCurrentStep = 1;
     let wizardInternalNavigation = false;
+    // V3.75: unificar el estado del wizard entre el motor original y las capas Mobile.
+    Object.defineProperty(window, 'wizardUnlockedStep', { configurable:true, get:()=>wizardUnlockedStep, set:v=>{ const n=Number(v); if(Number.isFinite(n)) wizardUnlockedStep=n; } });
+    Object.defineProperty(window, 'wizardCurrentStep', { configurable:true, get:()=>wizardCurrentStep, set:v=>{ const n=Number(v); if(Number.isFinite(n)) wizardCurrentStep=n; } });
 
     function markWizardStep(step) {
         wizardUnlockedStep = Math.max(wizardUnlockedStep, step);
@@ -4543,9 +4550,9 @@ window.nextGBAduanasAI=async function(){
 
 /* -------- Tab 2 right-side result always refreshed -------- */
 const priorOpenTab=window.openTab;
-window.openTab=function(tabId){try{priorOpenTab(tabId)}catch(e){console.warn('openTab recovery',e);document.querySelectorAll('#left-panel .tab-content').forEach(x=>x.classList.remove('active'));el(tabId)?.classList.add('active')}if(tabId==='tab-aduanas'){el('res-aduanas')?.classList.add('active');try{if(typeof calc==='function')calc()}catch(e){}}};
+window.openTab=function(tabId){try{priorOpenTab(tabId)}catch(e){console.warn('openTab recovery',e);document.querySelectorAll('#left-panel .tab-content').forEach(x=>x.classList.remove('active'));el(tabId)?.classList.add('active')}};
 const priorCalc=window.calc;
-if(typeof priorCalc==='function')window.calc=function(){let r;try{r=priorCalc.apply(this,arguments)}catch(e){console.warn('calc recovery',e)}el('res-aduanas')?.classList.add('active');return r};
+if(typeof priorCalc==='function')window.calc=function(){let r;try{r=priorCalc.apply(this,arguments)}catch(e){console.warn('calc recovery',e)}return r};
 
 /* -------- VIN/CSV matching: exact year + model + trim; AWD/4WD/4X4 equivalent -------- */
 function normT(v){const t=String(v||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Z0-9 ]/g,' ').replace(/\s+/g,' ').trim();if(/\b(AWD|4WD|4X4|ALL WHEEL DRIVE|FOUR WHEEL DRIVE)\b/.test(t))return'AWD';if(/\b(FWD|2WD|FRONT WHEEL DRIVE)\b/.test(t))return'FWD';if(/\b(RWD|REAR WHEEL DRIVE)\b/.test(t))return'RWD';if(/\b(4X2)\b/.test(t))return'4X2';return''}
@@ -6690,48 +6697,71 @@ body:not(.light-mode) #nextgb-ai-result h3{
 <script id="nextgb-v26-mobile-plate-output">
 (function(){
   'use strict';
-  function n(id){
-    const e=document.getElementById(id);
-    const v=parseFloat(e?.value);
-    return Number.isFinite(v)?v:0;
-  }
-  function moneyRD(v){
-    return 'RD$ ' + (typeof fmt==='function'
-      ? fmt(v)
-      : Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-  }
-  function plateBlock(){
+  const n=id=>{const v=parseFloat(document.getElementById(id)?.value);return Number.isFinite(v)?v:0};
+  const money=v=>'RD$ '+(typeof fmt==='function'?fmt(v):Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+  function values(){
+    const primera=Number(window.currentPlaca)||0;
+    const normativa=n('normativa_0325_rds');
     const pp=n('placa_pp_rds');
     const gestion=n('gestion_endoso_rds');
-    const normativa=n('normativa_0325_rds');
-    const total=pp+gestion+normativa;
-    const wrap=document.createElement('div');
-    wrap.id='nextgb-ai-plate-breakdown';
-    wrap.style.cssText='margin-top:14px;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(59,130,246,.045)';
-    wrap.innerHTML =
-      '<div style="font-weight:900;font-size:12px;margin-bottom:9px">🏷️ EMISIÓN DE PLACA</div>' +
-      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Placa PP</span><strong>'+moneyRD(pp)+'</strong></div>' +
-      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Gestión / Endoso</span><strong>'+moneyRD(gestion)+'</strong></div>' +
-      '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0 0;margin-top:4px;border-top:1px solid var(--border-color);font-size:11px"><strong>Total Emisión de Placa</strong><strong>'+moneyRD(total)+'</strong></div>';
-    if(normativa>0){
-      wrap.innerHTML += '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:10px;color:var(--text-muted)"><span>Normativa 03-25</span><span>'+moneyRD(normativa)+'</span></div>';
-    }
-    return wrap;
+    return {primera,normativa,pp,gestion,total:primera+normativa+pp+gestion};
   }
-  function refreshAIPlate(){
+  function ensure(){
     const result=document.getElementById('nextgb-ai-result');
     if(!result || !result.classList.contains('show')) return;
+    const v=values();
     let b=document.getElementById('nextgb-ai-plate-breakdown');
-    if(!b) result.appendChild(plateBlock());
+    if(!b){
+      b=document.createElement('div');
+      b.id='nextgb-ai-plate-breakdown';
+      b.style.cssText='margin-top:14px;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(59,130,246,.045)';
+      result.appendChild(b);
+    }
+    b.innerHTML=
+      '<div style="font-weight:900;font-size:12px;margin-bottom:9px">🏷️ EMISIÓN DE PLACA</div>'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Placa Provisional</span><strong>'+money(v.pp)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Gestión / Endoso</span><strong>'+money(v.gestion)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Normativa 03-25 <small>(manual)</small></span><strong>'+money(v.normativa)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Primera Placa + CO₂ + Marbete</span><strong>'+money(v.primera)+'</strong></div>'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0 0;margin-top:4px;border-top:1px solid var(--border-color);font-size:11px"><strong>Total Emisión de Placa</strong><strong>'+money(v.total)+'</strong></div>';
   }
-  const mo=new MutationObserver(refreshAIPlate);
-  function init(){
-    const r=document.getElementById('nextgb-ai-result');
-    if(r) mo.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
-    refreshAIPlate();
+  /* V3.75 AI freeze fix: the old observer watched childList and then changed
+     innerHTML inside its own callback, creating an endless mutation/render loop.
+     Render the breakdown only on AI result state changes, with a value guard. */
+  let lastKey='';
+  let rendering=false;
+  function ensure(){
+    if(rendering)return;
+    const result=document.getElementById('nextgb-ai-result');
+    if(!result || !result.classList.contains('show')) return;
+    const v=values();
+    const key=[v.primera,v.normativa,v.pp,v.gestion].join('|');
+    let b=document.getElementById('nextgb-ai-plate-breakdown');
+    if(b && b.dataset.plateKey===key)return;
+    rendering=true;
+    try{
+      if(!b){
+        b=document.createElement('div');
+        b.id='nextgb-ai-plate-breakdown';
+        b.style.cssText='margin-top:14px;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(59,130,246,.045)';
+        result.appendChild(b);
+      }
+      b.innerHTML=
+        '<div style="font-weight:900;font-size:12px;margin-bottom:9px">🏷️ EMISIÓN DE PLACA</div>'+
+        '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Placa Provisional</span><strong>'+money(v.pp)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Gestión / Endoso</span><strong>'+money(v.gestion)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Normativa 03-25 <small>(manual)</small></span><strong>'+money(v.normativa)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:11px"><span>Primera Placa + CO₂ + Marbete</span><strong>'+money(v.primera)+'</strong></div>'+
+        '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0 0;margin-top:4px;border-top:1px solid var(--border-color);font-size:11px"><strong>Total Emisión de Placa</strong><strong>'+money(v.total)+'</strong></div>';
+      b.dataset.plateKey=key;
+      lastKey=key;
+    }finally{rendering=false;}
   }
-  window.addEventListener('load',()=>setTimeout(init,350));
-  setTimeout(init,900);
+  function schedule(){setTimeout(ensure,0);}
+  window.addEventListener('load',()=>setTimeout(ensure,350));
+  document.addEventListener('click',schedule,true);
+  document.addEventListener('input',schedule,true);
+  setTimeout(ensure,900);
 })();
 </script>
 
