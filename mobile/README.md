@@ -1,53 +1,37 @@
-# NEXT AVPRO BETA V2.7 — MOBILE
+# NEXT GB AUTO IMPORT — Mobile V2.7
 
-## Corrección principal
+## Corrección aplicada: sincronización de placa
 
-Se corrigió la sincronización de los conceptos relacionados con placa.
+Se corrigió exclusivamente el flujo de placa de la versión Mobile V2.7 para que exista un único valor canónico de **Emisión de Placa & Endoso**.
 
-### 1. Impuesto de Primera Placa
-El valor calculado en la sección **Aduanas** como:
+### Fórmula canónica
 
-- Primera Placa
-- CO₂
-- Marbete
+**TOTAL EMISIÓN DE PLACA = Primera Placa 17% + CO₂/Marbete + Normativa 03-25 + Placa PP + Gestión/Endoso**
 
-ahora se incorpora al costo real de la operación y al cálculo de inversión/Landed.
+La **Reparación en RD permanece separada** y no forma parte de la emisión de placa.
 
-### 2. Emisión de Placa
-Se mantiene como concepto separado:
+### Dónde se corrigió
 
-- Placa PP: RD$ 2,000.00
-- Gestión / Endoso: RD$ 5,000.00
-- Normativa 03-25: RD$ 0.00 por defecto
-- **Total Emisión de Placa:** suma de los tres conceptos.
+- **IA gráfica Mobile (`get24()` / `render24()`):** ahora usa el total completo de placa, incluyendo `window.currentPlaca`.
+- **Pago 5:** ahora corresponde únicamente al total completo de Emisión de Placa convertido a USD. No incluye Reparación en RD.
+- **Total Destino Local:** incluye el total de placa una sola vez y mantiene Reparación RD como concepto separado.
+- **Landed Cost:** utiliza el mismo total canónico de placa.
+- **Margen / ROI:** se derivan del Landed Cost corregido.
+- **Resumen final:** `Total Emisión de Placa` utiliza Primera Placa + Normativa + PP + Gestión.
+- **PDF:** utiliza el mismo total canónico y presenta una sola línea de Emisión de Placa & Endoso; Reparación RD queda separada.
+- **Proforma / WhatsApp:** reciben el Pago 5 ya corregido desde el cronograma sincronizado.
+- **V2.7 plate sync:** se simplificó para sincronizar el valor canónico, sin volver a sumar manualmente Primera Placa sobre los totales finales.
 
-### 3. Pago 5
-El Pago 5 ya no debe presentar solamente “RD$7,000” como si ese fuera el monto final del pago.
+### Validación realizada
 
-El sistema debe tomar el **total de Emisión de Placa**, convertirlo a USD según la tasa de la operación y usar ese monto como importe del Pago 5.
+- Se verificó que no permanezca el cálculo anterior de Pago 5 que excluía Primera Placa.
+- Se verificó que Pago 5 ya no incluya Reparación RD.
+- Se verificó que el PDF use el mismo total de placa.
+- Se realizó comprobación de sintaxis de los bloques JavaScript embebidos: **20 bloques revisados, 0 errores de sintaxis**.
 
-### 4. Sincronización
-Los conceptos se mantienen sincronizados entre:
+### Archivos
 
-- Aduanas
-- Costos
-- Resumen final
-- Total de operación / Landed
-- Cotización / Proforma
-- WhatsApp
-- Salida de IA cuando corresponda
+- `index (1).html` — Mobile V2.7 corregida.
+- `README.md` — documentación de esta corrección.
 
-### Regla importante
-
-**Impuesto Primera Placa + CO₂ + Marbete** y **Emisión de Placa (PP + Gestión/Endoso + Normativa)** son conceptos diferentes.
-
-No deben mezclarse ni contarse dos veces.
-
-## Archivos
-
-- `NEXT-AVPRO-BETA.V2.7-MOBILE.html` — versión corregida.
-- ZIP incluido para distribución.
-
-## Nota de prueba
-
-La corrección fue aplicada sobre el código existente. No se realizó una prueba interactiva completa en un navegador dentro de esta ejecución.
+> Esta corrección no modifica la lógica de Desktop ni pretende reemplazar la V2.5 estable.

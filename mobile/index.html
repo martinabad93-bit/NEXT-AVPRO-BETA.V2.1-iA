@@ -1720,7 +1720,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         put('rc_flete_usd','US$ '+fmt(flete)); put('rc_paquete_despacho_usd','US$ '+fmt(paqueteDespachoUSD)); put('rc_despacho_rds','RD$ '+fmt(despachoRds)); put('rc_impuesto_primera_placa','RD$ '+fmt(impuestoPrimeraPlacaRds)); put('rc_total_despacho_sin_placa','US$ '+fmt(totalDespachoSinPlacaUsd));
         put('rc_normativa_0325_rds','RD$ '+fmt(normativa0325)); put('rc_placa_pp_rds','RD$ '+fmt(placaPP)); put('rc_gestion_endoso_rds','RD$ '+fmt(gestionEndoso)); put('rc_total_placa_rds','RD$ '+fmt(totalPlacaRds));
         put('rc_reparacion_local','RD$ '+fmt(reparacionesRds)); put('rc_total_local','RD$ '+fmt(totalDestinoRds)); put('rc_landed_usd','US$ '+fmt(landedCostUsd)); put('rc_precio_venta_usd','US$ '+fmt(precioVentaUsd)); put('rc_margen_neto_usd','US$ '+fmt(margen)); put('rc_margen_neto_rds','RD$ '+fmt(margen*t)); put('rc_margen_despues_honorarios_usd','US$ '+fmt(margen)); put('metric-landed','US$ '+fmt(landedCostUsd)); put('metric-sale','US$ '+fmt(precioVentaUsd)); put('metric-margin','US$ '+fmt(margen));
-        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t); const cro_pago5=(impuestoPrimeraPlacaRds+totalPlacaRds+reparacionesRds)/t;
+        const cro_pago1=depositoUsd; const cro_pago2=Math.max(0,subasta+fees+feeBroker+honorarios-cro_pago1); const cro_pago3=inland+documentacionOrigen+reparacionMiami; const cro_pago4=flete+paqueteDespachoUSD+(despachoRds/t); const cro_pago5=(impuestoPrimeraPlacaRds+totalPlacaRds)/t;
         put('cro_pago1','US$ '+fmt(cro_pago1)); put('cro_pago2','US$ '+fmt(cro_pago2)); put('cro_pago3','US$ '+fmt(cro_pago3)); put('cro_pago4','US$ '+fmt(cro_pago4)); put('cro_pago5','US$ '+fmt(cro_pago5)); put('cro_total','US$ '+fmt(landedCostUsd));
         updateFinalSummary(); nextGBLiveCostUpdate();
     }
@@ -2258,7 +2258,8 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const platePP = parseFloat(document.getElementById('placa_pp_rds')?.value) || 0;
         const gestion = parseFloat(document.getElementById('gestion_endoso_rds')?.value) || 0;
         const firstPlateRds = parseFloat(window.currentPlaca) || 0;
-        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + firstPlateRds + normativa + platePP + gestion + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
+        const totalPlateRds = firstPlateRds + normativa + platePP + gestion;
+        const localRds = (parseFloat(document.getElementById('c_despacho_rds')?.value) || 0) + totalPlateRds + (parseFloat(document.getElementById('reparaciones_rds')?.value) || 0);
         const score = getInvestmentScore(pct);
 
         set('final-vehicle', vehicle);
@@ -2283,7 +2284,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         set('final-normativa', 'RD$ ' + fmt(normativa));
         set('final-plate-pp', 'RD$ ' + fmt(platePP));
         set('final-gestion', 'RD$ ' + fmt(gestion));
-        set('final-total-plate', 'RD$ ' + fmt(normativa + platePP + gestion));
+        set('final-total-plate', 'RD$ ' + fmt(totalPlateRds));
         set('final-local', 'RD$ ' + fmt(localRds));
         set('final-total-emphasis', 'US$ ' + fmt(landed));
         set('final-margin-copy', 'US$ ' + fmt(margin));
@@ -3649,16 +3650,18 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const normativa=n24(document.getElementById('normativa_0325_rds')?.value);
     const placaPP=n24(document.getElementById('placa_pp_rds')?.value);
     const gestion=n24(document.getElementById('gestion_endoso_rds')?.value);
+    const primeraPlaca=n24(window.currentPlaca);
     const reparacionRD=n24(document.getElementById('reparaciones_rds')?.value);
-    const local=despacho+normativa+placaPP+gestion+reparacionRD;
+    const plateRD=primeraPlaca+normativa+placaPP+gestion;
+    const local=despacho+plateRD+reparacionRD;
     const originTotal=purchase+fees+inland+docs+repair+broker+honor;
     const fob=originTotal;
     const despachoSinPlaca=fob+freight+port+(despacho/rate);
-    const landed=despachoSinPlaca+((normativa+placaPP+gestion+reparacionRD)/rate);
+    const landed=despachoSinPlaca+((plateRD+reparacionRD)/rate);
     const gross=sale==null?0:sale-landed;
     const net=gross;
     const roi=landed?net/landed*100:0;
-    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,fob,despachoSinPlaca,normativa,placaPP,gestion,reparacionRD,landed,gross,net,roi};
+    return {o,purchase,fees,inland,docs,repair,broker,freight,port,honor,sale,rate,local,originTotal,fob,despachoSinPlaca,primeraPlaca,normativa,placaPP,gestion,plateRD,reparacionRD,landed,gross,net,roi};
   }
   function render24(data){
     const result=document.getElementById('nextgb-ai-result');if(!result)return;
@@ -3673,7 +3676,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
     const payment2=d.purchase+d.fees+d.broker+d.honor;
     const payment3=d.inland+d.docs+d.repair;
     const payment4=d.freight+d.port+(n24(document.getElementById('c_despacho_rds')?.value)/d.rate);
-    const payment5=(n24(document.getElementById('normativa_0325_rds')?.value)+n24(document.getElementById('placa_pp_rds')?.value)+n24(document.getElementById('gestion_endoso_rds')?.value))/d.rate;
+    const payment5=d.plateRD/d.rate;
     result.classList.add('show','v14');
     result.innerHTML=`
       <div class="nextgb-v24-document ${isProforma?'proforma':''}" id="nextgb-v24-document">
@@ -3705,7 +3708,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
             <div class="nextgb-v24-line subtotal"><span>FOB Miami</span><strong>${money24(d.fob)}</strong></div>
             <div class="nextgb-v24-line subtotal"><span>Total Despacho Sin Placa</span><strong>${money24(d.despachoSinPlaca)}</strong></div>
             <div class="nextgb-v24-line"><span>Despacho Aduanal (Sin Placa)</span><strong>${'RD$ '+fmt(n24(document.getElementById('c_despacho_rds')?.value))}</strong></div>
-            <div class="nextgb-v24-line"><span>Primera Placa y Marbete</span><strong>${'RD$ '+fmt(n24(document.getElementById('placa_pp_rds')?.value))}</strong></div>
+            <div class="nextgb-v24-line subtotal"><span>Emisión de Placa & Endoso</span><strong>${'RD$ '+fmt(d.plateRD)}</strong></div>
             <div class="nextgb-v24-line"><span>Reparación en RD</span><strong>${'RD$ '+fmt(n24(document.getElementById('reparaciones_rds')?.value))}</strong></div>
             <div class="nextgb-v24-line subtotal"><span>Total Destino Local (RD$)</span><strong>RD$ ${fmt(d.local)}</strong></div>
             <div class="nextgb-v24-line"><span>Margen después de honorarios</span><strong id="v24-net-inline">${money24(d.net)}</strong></div>
@@ -3770,150 +3773,58 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
 <script id="nextgb-v27-plate-total-sync">
 (function(){
   'use strict';
-
   function num(id){
     const el=document.getElementById(id);
     if(!el) return 0;
     const v=parseFloat(String(el.value ?? el.textContent ?? '').replace(/[^0-9.-]/g,''));
-    return isFinite(v)?v:0;
+    return Number.isFinite(v)?v:0;
   }
   function money(v){
     return 'RD$ ' + Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
   }
-  function usd(v){
-    return 'US$ ' + Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  }
-
-  // Customer-facing plate emission is ONE total:
-  // Normativa 03-25 + Placa PP + Gestión/Endoso.
-  function plateEmissionRds(){
-    return num('normativa_0325_rds') + num('placa_pp_rds') + num('gestion_endoso_rds');
-  }
-
-  // Tax-side "Primera Placa + CO2 + Marbete" is separate and must also enter
-  // the operation total. calc() stores it in window.currentPlaca.
   function firstPlateTaxRds(){
     const v=Number(window.currentPlaca||0);
-    return isFinite(v)?v:0;
+    return Number.isFinite(v)?v:0;
   }
-
-  function totalPlateRds(){
-    return firstPlateTaxRds() + plateEmissionRds();
+  function plateEmissionRds(){
+    return firstPlateTaxRds()+num('normativa_0325_rds')+num('placa_pp_rds')+num('gestion_endoso_rds');
   }
-
-  function setText(id,value){
-    const e=document.getElementById(id);
-    if(e) e.textContent=value;
-  }
-
   function syncPlateOutputs(){
-    const emission=plateEmissionRds();
-    const first=firstPlateTaxRds();
-    const combined=totalPlateRds();
-
-    // Explicit totals wherever the UI has a matching field.
-    setText('final-total-plate', money(emission));
-    setText('rc_total_placa_rds', money(emission));
-
-    // Add/refresh a dedicated tax-side total without replacing the existing
-    // "Primera Placa + CO2 + Marbete" breakdown.
-    let box=document.getElementById('nextgb-first-plate-total');
-    if(!box){
-      const anchor=document.getElementById('rc_total_placa_rds') ||
-                   document.getElementById('final-total-plate');
-      if(anchor){
-        box=document.createElement('div');
-        box.id='nextgb-first-plate-total';
-        box.style.cssText='margin-top:8px;padding:10px;border-radius:10px;background:rgba(34,197,94,.08);font-weight:700;';
-        anchor.parentNode.insertBefore(box,anchor.nextSibling);
-      }
-    }
-    if(box){
-      box.innerHTML =
-        '<div>Impuesto Primera Placa + CO₂ + Marbete: <strong>'+money(first)+'</strong></div>'+
-        '<div style="margin-top:4px">Emisión de Placa (PP + Gestión/Endoso + Normativa): <strong>'+money(emission)+'</strong></div>'+
-        '<div style="margin-top:6px;font-size:1.05em">Total relacionado a placa: <strong>'+money(combined)+'</strong></div>';
-    }
-
-    // Keep a single canonical value available to every downstream output.
-    window.nextGBPlateEmissionRds=emission;
-    window.nextGBFirstPlateTaxRds=first;
-    window.nextGBTotalPlateRds=combined;
+    const total=plateEmissionRds();
+    window.nextGBFirstPlateTaxRds=firstPlateTaxRds();
+    window.nextGBPlateEmissionRds=total;
+    window.nextGBTotalPlateRds=total;
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+    set('final-total-plate',money(total));
+    set('rc_total_placa_rds',money(total));
   }
-
-  // Wrap calcCostos after all original scripts have loaded. This does not
-  // replace its calculation; it only adds the first-plate tax to the operation
-  // totals and refreshes synchronized outputs.
-  function wrap(){
-    if(typeof window.calcCostos==='function' && !window.__nextgbV27Wrapped){
+  function wrapCalc(){
+    if(typeof window.calcCostos==='function' && !window.__nextgbV27CanonicalWrapped){
       const original=window.calcCostos;
       window.calcCostos=function(){
         const result=original.apply(this,arguments);
-        const first=firstPlateTaxRds();
-        const emission=plateEmissionRds();
-
-        // Existing destination total is dispatch + emission + local repair.
-        // Add the tax-side first-plate amount exactly once.
-        const dispatch=num('c_despacho_rds');
-        const repairs=num('reparaciones_rds');
-        const corrected=dispatch + first + emission + repairs;
-        window.currentTotalDestinoRds=corrected;
-
-        setText('rc_total_local', money(corrected));
         syncPlateOutputs();
         return result;
       };
-      window.__nextgbV27Wrapped=true;
+      window.__nextgbV27CanonicalWrapped=true;
     }
   }
-
-  // Wrap updateFinalSummary so Landed/final totals include the first-plate tax.
   function wrapFinal(){
-    if(typeof window.updateFinalSummary==='function' && !window.__nextgbV27FinalWrapped){
+    if(typeof window.updateFinalSummary==='function' && !window.__nextgbV27CanonicalFinalWrapped){
       const original=window.updateFinalSummary;
       window.updateFinalSummary=function(){
         const result=original.apply(this,arguments);
         syncPlateOutputs();
-
-        // If the app exposes a final landed/total field, add first-plate tax
-        // to the existing displayed amount only once by using a canonical
-        // base captured from the current calculated components.
-        const landedIds=['final-landed','final-total','final-investment','final-destino'];
-        const first=firstPlateTaxRds();
-        for(const id of landedIds){
-          const el=document.getElementById(id);
-          if(!el || el.dataset.nextgbV27Synced==='1') continue;
-          const raw=parseFloat((el.textContent||'').replace(/[^0-9.-]/g,''));
-          if(isFinite(raw) && first>0){
-            // Mark and refresh on subsequent calls from the underlying
-            // calculation by subtracting our prior addition first.
-            const base=el.dataset.nextgbV27Base ? parseFloat(el.dataset.nextgbV27Base) : raw;
-            el.dataset.nextgbV27Base=String(base);
-            el.textContent=money(base+first);
-            el.dataset.nextgbV27Synced='1';
-          }
-        }
         return result;
       };
-      window.__nextgbV27FinalWrapped=true;
+      window.__nextgbV27CanonicalFinalWrapped=true;
     }
   }
-
-  function install(){
-    wrap();
-    wrapFinal();
-    syncPlateOutputs();
-  }
-
-  // The app defines functions progressively, so retry briefly after load.
+  function install(){wrapCalc();wrapFinal();syncPlateOutputs();}
   let tries=0;
-  const timer=setInterval(function(){
-    install();
-    if(++tries>40) clearInterval(timer);
-  },250);
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',install,{once:true});
-  }else install();
+  const timer=setInterval(function(){install();if(++tries>40)clearInterval(timer);},250);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
 })();
 </script>
 
@@ -6645,9 +6556,10 @@ body:not(.light-mode) #nextgb-ai-result h3{
     const rate=n('tasa')||60.60;
     const purchase=n('costo_subasta'), fees=n('fees_subasta'), inland=n('grua_inland'), docs=n('documentacion_origen_usd'), repairMiami=n('reparacion_miami_usd'), broker=n('fee_broker_usd'), honor=n('derecho_dealer_usd');
     const freight=n('flete_real'), port=n('paquete_despacho_usd'), customs=n('c_despacho_rds'), normativa=n('normativa_0325_rds'), pp=n('placa_pp_rds'), gestion=n('gestion_endoso_rds'), repairRD=n('reparaciones_rds'), sale=n('precio_venta_estimado_usd'), deposit=n('pago_inicial_usd');
+    const primeraPlaca=parseFloat(window.currentPlaca)||0;
     const fob=purchase+fees+inland+docs+repairMiami+broker+honor;
     const dispatch=fob+freight+port+(customs/rate);
-    const plateRD=normativa+pp+gestion;
+    const plateRD=primeraPlaca+normativa+pp+gestion;
     const landed=dispatch+(plateRD+repairRD)/rate;
     const margin=sale-landed;
     return {rate,purchase,fees,inland,docs,repairMiami,broker,honor,freight,port,customs,normativa,pp,gestion,repairRD,sale,deposit,fob,dispatch,plateRD,landed,margin,
@@ -6727,9 +6639,7 @@ body:not(.light-mode) #nextgb-ai-result h3{
     html+=row('Paquete despacho / puerto RD',money(d.port));
     html+=row('Despacho Aduanal / Impuestos',dop(d.customs));
     html+=row('TOTAL DESPACHO SIN PLACA',money(d.dispatch),'ngb-print-total blue');
-    html+=row('Normativa 03-25',dop(d.normativa));
-    html+=row('Placa PP',dop(d.pp));
-    html+=row('Gastos de Endoso / Gestión',dop(d.gestion));
+    html+=row('Emisión de Placa & Endoso',dop(d.plateRD));
     html+=row('Reparación en RD',dop(d.repairRD));
     html+='<div class="ngb-print-total"><span>COSTO TOTAL LANDED</span><strong>'+money(d.landed)+'</strong></div></div>';
     if(!isPro){
