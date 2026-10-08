@@ -6667,14 +6667,59 @@ body:not(.light-mode) #nextgb-ai-result h3{
   function ensurePrintStage(){let st=$('nextgb-print-stage');if(!st){st=document.createElement('div');st.id='nextgb-print-stage';document.body.appendChild(st)}return st}
   window.imprimirPDF=function(){
     const type=$('doc_type')?.value||'cotizacion';
-    const st=ensurePrintStage();st.innerHTML=buildDocument(type);
-    const vin=String($('vin')?.value||'').trim();const suffix=vin.length>=6?vin.slice(-6).toUpperCase():(type==='proforma'?'PROFORMA':'COTIZACION');
-    const oldTitle=document.title;document.title='NGB-'+suffix;
-    document.body.classList.add('ngb-printing');
-    const cleanup=()=>{document.body.classList.remove('ngb-printing');document.title=oldTitle;st.innerHTML='';window.removeEventListener('afterprint',cleanup)};
-    window.addEventListener('afterprint',cleanup,{once:true});
-    window.print();
-    setTimeout(()=>{if(document.body.classList.contains('ngb-printing'))cleanup()},1200);
+    const documentHtml=buildDocument(type);
+    const vin=String($('vin')?.value||'').trim();
+    const suffix=vin.length>=6?vin.slice(-6).toUpperCase():(type==='proforma'?'PROFORMA':'COTIZACION');
+
+    /* Print ONLY the generated document in an isolated iframe.
+       This prevents the three application pages from being included in the PDF. */
+    const iframe=document.createElement('iframe');
+    iframe.setAttribute('aria-hidden','true');
+    iframe.style.position='fixed';
+    iframe.style.right='0';
+    iframe.style.bottom='0';
+    iframe.style.width='0';
+    iframe.style.height='0';
+    iframe.style.border='0';
+    iframe.style.visibility='hidden';
+    document.body.appendChild(iframe);
+
+    const printCSS=`
+      @page{size:A4;margin:12mm}
+      html,body{margin:0!important;padding:0!important;background:#fff!important}
+      body{font-family:Arial,Helvetica,sans-serif;color:#0f172a}
+      *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      .ngb-print-doc{width:100%;max-width:190mm;margin:0 auto;color:#0f172a}
+      .ngb-print-head{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #2563eb;padding-bottom:12px;margin-bottom:16px}
+      .ngb-print-brand{font-weight:900;font-size:20px;letter-spacing:-.5px}.ngb-print-brand small{display:block;font-size:8px;letter-spacing:2px;color:#64748b;margin-top:3px}
+      .ngb-print-type{text-align:right;font-size:18px;font-weight:900}.ngb-print-type small{display:block;font-size:8px;color:#64748b;letter-spacing:1.5px;margin-top:4px}
+      .ngb-print-meta{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px}.ngb-print-box{border:1px solid #cbd5e1;border-radius:8px;padding:9px}.ngb-print-box span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:1.1px;color:#64748b;font-weight:800}.ngb-print-box strong{display:block;font-size:11px;margin-top:4px}
+      .ngb-print-section{border:1px solid #cbd5e1;border-radius:9px;padding:12px;margin:10px 0}.ngb-print-section h3{margin:0 0 9px;font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#2563eb}
+      .ngb-print-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #e2e8f0;padding:6px 0;font-size:9px}.ngb-print-row:last-child{border-bottom:0}.ngb-print-row strong{font-size:9px;white-space:nowrap}.ngb-print-total{display:flex;justify-content:space-between;gap:12px;border-top:2px solid #0f172a;margin-top:8px;padding-top:8px;font-size:12px;font-weight:900}.ngb-print-total.blue{color:#1d4ed8}.ngb-print-note{font-size:7px;line-height:1.45;color:#64748b;margin-top:10px}.ngb-pay{display:grid;grid-template-columns:1fr auto;gap:6px;border-bottom:1px solid #e2e8f0;padding:7px 0}.ngb-pay strong{font-size:9px}.ngb-pay small{display:block;color:#64748b;font-size:7px;margin-top:2px}.ngb-print-footer{margin-top:16px;padding-top:8px;border-top:1px solid #cbd5e1;font-size:7px;color:#64748b;text-align:center}
+      .ngb-print-section,.ngb-print-meta,.ngb-print-head{break-inside:avoid;page-break-inside:avoid}
+    `;
+
+    const doc=iframe.contentDocument||iframe.contentWindow.document;
+    doc.open();
+    doc.write('<!doctype html><html><head><meta charset="utf-8"><title>NGB-'+esc(suffix)+'</title><style>'+printCSS+'</style></head><body>'+documentHtml+'</body></html>');
+    doc.close();
+
+    let printed=false;
+    const cleanup=()=>{
+      if(printed) return;
+      printed=true;
+      try{iframe.remove()}catch(e){}
+    };
+    iframe.onload=()=>{
+      setTimeout(()=>{
+        try{
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        }finally{
+          setTimeout(cleanup,1500);
+        }
+      },80);
+    };
   };
 
   /* Keep document type preview synchronized before PDF/WhatsApp actions. */

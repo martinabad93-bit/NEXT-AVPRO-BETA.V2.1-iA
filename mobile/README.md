@@ -1,25 +1,89 @@
-# NEXT GB MOBILE V3.75 — AI Freeze Fix
+# NEXT GB AUTO IMPORT — MOBILE V3.75
+## PDF Cotización y Factura Proforma — alineación con Desktop
 
-## Corrección aplicada
+### Corrección aplicada
 
-Se corrigió el congelamiento de la página que ocurría al enviar una consulta a la IA.
+Se alineó la sección de documentos PDF de Mobile V3.75 con la estructura utilizada en Desktop para **Cotización** y **Factura Proforma**.
 
-### Causa encontrada
-El bloque que añadía el desglose de EMISIÓN DE PLACA utilizaba un `MutationObserver` sobre `#nextgb-ai-result`. El observer vigilaba cambios en `childList` y, dentro de su propio callback, volvía a modificar `innerHTML`. Esa modificación generaba otra mutación y podía producir un ciclo continuo de renderizado que congelaba el navegador.
+### Cotización
 
-### Solución
-Se eliminó ese ciclo de observación recursiva y se sustituyó por una actualización controlada:
-- Actualiza el desglose solo cuando cambian los valores.
-- Usa una clave de valores para evitar renders repetidos.
-- Bloquea reentrada durante el render.
-- Mantiene Placa Provisional, Gestión/Endoso, Normativa, Primera Placa + CO₂ + Marbete y Total Emisión.
-- No modifica el cálculo principal de la cotización.
+El documento mantiene:
 
-## Validación
+- Encabezado NEXT GB AUTO IMPORT / SRL · ELITE.
+- Tipo de documento: COTIZACIÓN.
+- Vehículo, VIN y tasa DOP.
+- Inversión y costos.
+- FOB Miami.
+- Flete marítimo.
+- Paquete despacho / puerto RD.
+- Despacho Aduanal / Impuestos.
+- Reparación en RD.
+- Total Despacho Sin Placa.
+- Sección **EMISIÓN DE PLACA & ENDOSO**.
+- Normativa 03-25.
+- Placa Provisional.
+- Gestión de Endoso.
+- Primera Placa (17%).
+- CO₂ & Marbete.
+- Total Emisión de Placa.
+- Costo Total Landed.
+- Rentabilidad, precio de venta, margen y ROI.
+
+### Factura Proforma
+
+Mantiene la misma estructura de costos y agrega el cronograma:
+
+1. Depósito de Seguridad.
+2. Balance Subasta.
+3. Logística Origen.
+4. Aduanas y Flete.
+5. Emisión de Primera Placa.
+
+El Pago 5 utiliza el total completo de emisión de placa y no incluye reparación en RD.
+
+### Sincronización de placa
+
+El documento utiliza el mismo cálculo de la operación Mobile:
+
+**Primera Placa + CO₂ + Marbete + Normativa 03-25 + Placa PP + Gestión de Endoso**
+
+El Total Emisión de Placa no se calcula como únicamente PP + Gestión.
+
+### Impresión
+
+Se conserva el sistema de documento dedicado de Mobile V3.75 para que el PDF imprima el documento generado y no la interfaz completa de la aplicación.
+
+### Validación
+
 - 20 bloques JavaScript revisados.
-- 0 errores de sintaxis con `node --check`.
-- Se mantienen las lógicas existentes de placa, Aduana, Inversión, Pago 5 y sincronización.
-- La corrección se limita al flujo que provocaba el congelamiento de la IA.
+- 0 errores de sintaxis.
+- No se modificaron cálculos ajenos a Cotización/Proforma.
+- Se mantiene la estabilización de IA de V3.75.
+- Se mantiene la navegación y sincronización existente.
 
 ## Archivo
-`index (1).html` — NEXT GB MOBILE V3.75 con corrección del freeze de IA.
+
+`index (1).html` — NEXT GB MOBILE V3.75 con PDF Cotización/Proforma alineado con Desktop.
+
+
+## Corrección adicional — PDF en Mobile V3.75
+
+Se corrigió el problema por el cual al imprimir PDF el navegador incluía las páginas de la aplicación antes del documento.
+
+### Causa
+La impresión utilizaba `window.print()` sobre la página principal y dependía del CSS para ocultar la aplicación. El navegador podía conservar parte del contenido de las tres vistas de Mobile y agregarlas antes de la Cotización/Proforma.
+
+### Solución
+`imprimirPDF()` ahora:
+1. Genera únicamente el documento seleccionado.
+2. Crea un iframe de impresión aislado.
+3. Inserta dentro del iframe solamente el documento y sus estilos.
+4. Ejecuta `print()` dentro del iframe.
+5. Elimina el iframe después de la impresión.
+
+### Resultado esperado
+- Cotización: solo las páginas de la Cotización.
+- Proforma: solo las páginas de la Proforma.
+- No deben aparecer las tres páginas de la aplicación antes del documento.
+
+Validación: 20 bloques JavaScript revisados, 0 errores de sintaxis.
