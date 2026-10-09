@@ -2045,8 +2045,9 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         let grua = parseFloat(document.getElementById('grua_inland').value) || 0;
         let flete = parseFloat(document.getElementById('flete_real').value) || 0;
         
-        let doc_usd = parseFloat(document.getElementById('documentacion_usd').value) || 0;
-        let taller_usd = parseFloat(document.getElementById('taller_miami_usd').value) || 0;
+        // WhatsApp must use the active editable fields, not legacy hidden compatibility values.
+        let doc_usd = parseFloat(document.getElementById('documentacion_origen_usd')?.value) || 0;
+        let taller_usd = parseFloat(document.getElementById('reparacion_miami_usd')?.value) || 0;
         
         let fee_broker = parseFloat(document.getElementById('fee_broker_usd').value) || 0;
         let dealer_usd = parseFloat(document.getElementById('derecho_dealer_usd').value) || 0;
@@ -2256,7 +2257,7 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         const roi = landed > 0 ? (margin / landed) * 100 : 0;
         const subasta = (parseFloat(document.getElementById('costo_subasta')?.value) || 0) + (parseFloat(document.getElementById('fees_subasta')?.value) || 0);
         const inland = parseFloat(document.getElementById('grua_inland')?.value) || 0;
-        const docs = (parseFloat(document.getElementById('documentacion_usd')?.value) || 0) + (parseFloat(document.getElementById('taller_miami_usd')?.value) || 0);
+        const docs = (parseFloat(document.getElementById('documentacion_origen_usd')?.value) || 0) + (parseFloat(document.getElementById('reparacion_miami_usd')?.value) || 0);
         const broker = (parseFloat(document.getElementById('fee_broker_usd')?.value) || 0) + (parseFloat(document.getElementById('derecho_dealer_usd')?.value) || 0);
         const freight = parseFloat(document.getElementById('flete_real')?.value) || 0;
         const fobMiami = window.c_fob_miami || 0;
