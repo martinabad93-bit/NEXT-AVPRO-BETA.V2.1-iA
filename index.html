@@ -1947,8 +1947,11 @@ body.final-screen #right-panel.final-mode { min-height: calc(100vh - 36px); }
         let grua = parseFloat(document.getElementById('grua_inland').value) || 0;
         let flete = parseFloat(document.getElementById('flete_real').value) || 0;
         
-        let doc_usd = parseFloat(document.getElementById('documentacion_usd').value) || 0;
-        let taller_usd = parseFloat(document.getElementById('taller_miami_usd').value) || 0;
+        // WhatsApp debe usar las mismas fuentes activas que la plataforma/PDF:
+        // documentación origen (editable, predeterminado US$675) y taller/reparación Miami ingresado por el usuario.
+        let doc_usd = parseFloat(document.getElementById('documentacion_origen_usd')?.value);
+        if (!Number.isFinite(doc_usd)) doc_usd = 675;
+        let taller_usd = parseFloat(document.getElementById('reparacion_miami_usd')?.value) || 0;
         
         let fee_broker = parseFloat(document.getElementById('fee_broker_usd').value) || 0;
         let dealer_usd = parseFloat(document.getElementById('derecho_dealer_usd').value) || 0;
